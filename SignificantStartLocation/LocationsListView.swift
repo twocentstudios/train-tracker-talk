@@ -91,12 +91,12 @@ struct LocationRowView: View {
     var body: some View {
         HStack(spacing: 8) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(location.timestamp, format: .dateTime.hour().minute())
+                Text(location.timestamp, format: .dateTime.hour().minute().second(.twoDigits).secondFraction(.fractional(3)))
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(.secondary)
 
-                let latitude = location.latitude.formatted(.number.precision(.fractionLength(4)))
-                let longitude = location.longitude.formatted(.number.precision(.fractionLength(4)))
+                let latitude = location.latitude.formatted(.number.precision(.fractionLength(7)))
+                let longitude = location.longitude.formatted(.number.precision(.fractionLength(7)))
                 Text(verbatim: "(\(latitude), \(longitude))")
                     .font(.system(.caption2, design: .monospaced))
                     .lineLimit(1)
@@ -105,12 +105,12 @@ struct LocationRowView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 2) {
-                let horizontalAccuracy = (location.horizontalAccuracy ?? 0).formatted(.number.precision(.fractionLength(1)))
+                let horizontalAccuracy = (location.horizontalAccuracy ?? -1).formatted(.number.precision(.fractionLength(1)))
                 Text("Acc: \(horizontalAccuracy)")
                     .font(.system(.caption2, design: .monospaced))
                     .foregroundStyle(.secondary)
 
-                let speed = (location.speed ?? 0).formatted(.number.precision(.significantDigits(2)))
+                let speed = (location.speed ?? -1).formatted(.number.precision(.significantDigits(2)))
                 Text("Speed: \(speed)")
                     .font(.system(.caption2, design: .monospaced))
             }

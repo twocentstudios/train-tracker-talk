@@ -2,7 +2,7 @@ import CoreLocation
 import Foundation
 import SharingGRDB
 
-@Table struct Location: Hashable, Identifiable {
+@Table struct Location: Hashable, Identifiable, Codable {
     let id: UUID
     var latitude: Double
     var longitude: Double

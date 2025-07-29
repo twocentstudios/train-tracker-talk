@@ -10,6 +10,7 @@ import SharingGRDB
 
     private(set) var authorizationStatus: CLAuthorizationStatus
     private(set) var isMonitoring: Bool
+    private var hasHandledFirstLocationFromColdLaunch = false
 
     var state: State
 
@@ -56,8 +57,13 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
         withErrorReporting {
             try database.write { db in
                 for clLocation in locations {
-                    let location = Location(from: clLocation)
+                    let isFromColdLaunch = !hasHandledFirstLocationFromColdLaunch
+                    let location = Location(from: clLocation, isFromColdLaunch: isFromColdLaunch)
                     try Location.insert { location }.execute(db)
+                    
+                    if !hasHandledFirstLocationFromColdLaunch {
+                        hasHandledFirstLocationFromColdLaunch = true
+                    }
                 }
             }
         }

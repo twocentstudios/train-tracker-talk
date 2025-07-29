@@ -50,7 +50,8 @@ func appDatabase() throws -> any DatabaseWriter {
             horizontalAccuracy REAL,
             verticalAccuracy REAL,
             course REAL,
-            speed REAL
+            speed REAL,
+            isFromColdLaunch INTEGER NOT NULL DEFAULT 0
         )
         """)
 

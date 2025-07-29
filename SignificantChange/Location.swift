@@ -12,6 +12,7 @@ import SharingGRDB
     var verticalAccuracy: Double?
     var course: Double?
     var speed: Double?
+    var isFromColdLaunch: Bool
 
     init(
         id: UUID = UUID(),
@@ -22,7 +23,8 @@ import SharingGRDB
         horizontalAccuracy: Double? = nil,
         verticalAccuracy: Double? = nil,
         course: Double? = nil,
-        speed: Double? = nil
+        speed: Double? = nil,
+        isFromColdLaunch: Bool = false
     ) {
         self.id = id
         self.latitude = latitude
@@ -33,11 +35,12 @@ import SharingGRDB
         self.verticalAccuracy = verticalAccuracy
         self.course = course
         self.speed = speed
+        self.isFromColdLaunch = isFromColdLaunch
     }
 }
 
 extension Location {
-    init(from clLocation: CLLocation) {
+    init(from clLocation: CLLocation, isFromColdLaunch: Bool = false) {
         self.init(
             latitude: clLocation.coordinate.latitude,
             longitude: clLocation.coordinate.longitude,
@@ -46,7 +49,8 @@ extension Location {
             horizontalAccuracy: clLocation.horizontalAccuracy,
             verticalAccuracy: clLocation.verticalAccuracy,
             course: clLocation.course >= 0 ? clLocation.course : nil,
-            speed: clLocation.speed >= 0 ? clLocation.speed : nil
+            speed: clLocation.speed >= 0 ? clLocation.speed : nil,
+            isFromColdLaunch: isFromColdLaunch
         )
     }
 }

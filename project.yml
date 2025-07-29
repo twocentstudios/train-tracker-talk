@@ -1,7 +1,7 @@
 name: train-tracker-talk
 
 options:
-  bundleIdPrefix: com.ctrott.train-tracker-talk
+  bundleIdPrefix: com.twocentstudios.train-tracker-talk
   deploymentTarget:
     iOS: "18.0"
     macOS: "15.0"
@@ -29,6 +29,9 @@ targets:
           - "CLAUDE.md"
     dependencies:
       - package: SharingGRDB
+    settings:
+      DEVELOPMENT_TEAM: YK25EF78NT
+      TARGETED_DEVICE_FAMILY: "1"
     info:
       path: SignificantChange/Info.plist
       properties:

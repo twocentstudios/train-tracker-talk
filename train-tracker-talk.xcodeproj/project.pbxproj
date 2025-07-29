@@ -119,6 +119,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					927024F8DD398C84AE4D215E = {
+						DevelopmentTeam = YK25EF78NT;
+					};
 				};
 			};
 			buildConfigurationList = D6CFBAB1A18DF3F455ABF4EF /* Build configuration list for PBXProject "train-tracker-talk" */;
@@ -298,14 +301,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YK25EF78NT;
 				INFOPLIST_FILE = SignificantChange/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ctrott.train-tracker-talk.SignificantChange";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.SignificantChange";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -314,14 +318,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YK25EF78NT;
 				INFOPLIST_FILE = SignificantChange/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ctrott.train-tracker-talk.SignificantChange";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.SignificantChange";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

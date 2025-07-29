@@ -1,8 +1,11 @@
 import MapKit
 import SwiftUI
+import SharingGRDB
 
 struct LocationsMapView: View {
-    let locations: [Location]
+    @ObservationIgnored
+    @FetchAll(Location.order { $0.timestamp.desc() }, animation: .default)
+    var locations
 
     private var mapCameraPosition: MapCameraPosition {
         guard !locations.isEmpty else {

@@ -6,9 +6,6 @@ import SwiftUI
 struct RootView: View {
     let store: RootStore
 
-    @ObservationIgnored
-    @FetchAll(Location.order { $0.timestamp.desc() }, animation: .default)
-    var locations
 
     var body: some View {
         ZStack {
@@ -23,7 +20,7 @@ struct RootView: View {
                 TabView {
                     Tab("List", systemImage: "list.bullet") {
                         NavigationStack {
-                            LocationsListView(locations: locations)
+                            LocationsListView()
                                 .toolbarTitleDisplayMode(.inline)
                                 .navigationTitle("Locations")
                         }
@@ -31,7 +28,7 @@ struct RootView: View {
 
                     Tab("Map", systemImage: "map") {
                         NavigationStack {
-                            LocationsMapView(locations: locations)
+                            LocationsMapView()
                                 .toolbarVisibility(.hidden, for: .navigationBar)
                                 .navigationTitle("Map")
                         }

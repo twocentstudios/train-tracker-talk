@@ -10,12 +10,18 @@ configs:
   Debug: debug
   Release: release
 
+fileGroups:
+  - CLAUDE.md
+  - SignificantChange/CLAUDE.md
+
 targets:
   SignificantChange:
     type: application
     platform: iOS
     sources:
-      - SignificantChange
+      - path: SignificantChange
+        excludes:
+          - "CLAUDE.md"
     info:
       path: SignificantChange/Info.plist
       properties:

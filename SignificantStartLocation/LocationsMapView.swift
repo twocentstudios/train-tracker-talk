@@ -42,7 +42,7 @@ struct LocationsMapView: View {
                     location.timestamp.formatted(.dateTime.month(.twoDigits).day(.twoDigits).hour().minute()),
                     coordinate: coordinate
                 )
-                .tint(location.isFromColdLaunch ? .blue : .red)
+                .tint(.red)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

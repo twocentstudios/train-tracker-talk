@@ -44,7 +44,8 @@ func appDatabase() throws -> any DatabaseWriter {
         CREATE TABLE sessions (
             id TEXT PRIMARY KEY NOT NULL,
             date TEXT NOT NULL,
-            notes TEXT
+            notes TEXT,
+            isFromColdLaunch INTEGER NOT NULL DEFAULT 0
         ) STRICT
         """)
 
@@ -65,7 +66,6 @@ func appDatabase() throws -> any DatabaseWriter {
             verticalAccuracy REAL,
             course REAL,
             speed REAL,
-            isFromColdLaunch INTEGER NOT NULL DEFAULT 0,
             sessionID TEXT NOT NULL,
 
             FOREIGN KEY(sessionID) REFERENCES sessions(id) ON DELETE CASCADE

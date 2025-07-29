@@ -9,7 +9,6 @@ struct LocationsListView: View {
         GridItem(.fixed(140), spacing: 4),
         GridItem(.fixed(40), spacing: 4),
         GridItem(.fixed(50), spacing: 4),
-        GridItem(.fixed(40), spacing: 4),
     ]
 
     var body: some View {
@@ -23,8 +22,6 @@ struct LocationsListView: View {
                     Text(verbatim: "Acc.")
                         .font(.caption.monospacedDigit())
                     Text(verbatim: "Speed")
-                        .font(.caption.monospacedDigit())
-                    Text(verbatim: "Cold")
                         .font(.caption.monospacedDigit())
 
                     ForEach(locations) { location in
@@ -60,11 +57,6 @@ struct LocationsListView: View {
 
                         Text(speed)
                             .font(.system(.caption2, design: .monospaced))
-                            .lineLimit(1)
-
-                        Image(systemName: location.isFromColdLaunch ? "snowflake" : "circle")
-                            .font(.system(.caption2, design: .monospaced))
-                            .foregroundStyle(location.isFromColdLaunch ? .blue : .secondary)
                             .lineLimit(1)
                     }
                 }

@@ -1,5 +1,5 @@
-import UIKit
 import SharingGRDB
+import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let rootStore: RootStore = .init(state: .init())
@@ -8,7 +8,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         prepareDependencies {
             $0.defaultDatabase = try! appDatabase()
         }
-        
+
         rootStore.startMonitoring()
         return true
     }

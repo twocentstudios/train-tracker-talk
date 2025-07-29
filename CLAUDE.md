@@ -23,6 +23,9 @@ This is a repo for the Train Tracker conference talk for iOSDC. The repo showcas
 - [StructuredQueriesGRDB](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/StructuredQueriesGRDB/Documentation.docc)
 - [StructuredQueriesGRDBCore](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/StructuredQueriesGRDBCore/Documentation.docc)
 
+### Swift Structured Queries Documentation
+- [StructuredQueriesCore](./DerivedData/train-tracker-talk/SourcePackages/checkouts/swift-structured-queries/Sources/StructuredQueriesCore/Documentation.docc)
+
 ## CLI Commands
 
 ```zsh

@@ -1,10 +1,12 @@
 import CoreLocation
 import Observation
+import SharingGRDB
 
 @MainActor @Observable final class RootStore: NSObject {
     struct State: Equatable {}
 
     @ObservationIgnored private let manager: CLLocationManager
+    @ObservationIgnored @Dependency(\.defaultDatabase) private var database
 
     private(set) var authorizationStatus: CLAuthorizationStatus
     private(set) var isMonitoring: Bool
@@ -51,7 +53,14 @@ import Observation
 // Always called on thread on which `CLLocationManager` was initialized
 extension RootStore: @preconcurrency CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print(locations)
+        withErrorReporting {
+            try database.write { db in
+                for clLocation in locations {
+                    let location = Location(from: clLocation)
+                    try Location.insert { location }.execute(db)
+                }
+            }
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {

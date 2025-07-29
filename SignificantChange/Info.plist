@@ -23,9 +23,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Find your train in the background and start a Live Activity to track it</string>
+	<string>Document signficant locations in the background</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Find your train and follow its next stations</string>
+	<string>Document signficant locations</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

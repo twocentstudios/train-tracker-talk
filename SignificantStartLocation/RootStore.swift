@@ -11,6 +11,7 @@ import SharingGRDB
     private(set) var authorizationStatus: CLAuthorizationStatus
     private(set) var isMonitoring: Bool
     private var hasHandledFirstLocationFromColdLaunch = false
+    private var currentSessionID: Session.ID?
 
     var state: State
 
@@ -45,6 +46,18 @@ import SharingGRDB
         guard !isMonitoring else { return }
         isMonitoring = true
 
+        // Create a new session for this monitoring period
+        @Dependency(\.uuid) var uuid
+        let sessionID = uuid()
+        currentSessionID = sessionID
+
+        withErrorReporting {
+            try database.write { db in
+                let session = Session(id: sessionID, date: Date())
+                try Session.insert { session }.execute(db)
+            }
+        }
+
         manager.allowsBackgroundLocationUpdates = true
         manager.startMonitoringSignificantLocationChanges()
         manager.pausesLocationUpdatesAutomatically = false
@@ -59,7 +72,7 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
             try database.write { db in
                 for clLocation in locations {
                     let isFromColdLaunch = !hasHandledFirstLocationFromColdLaunch
-                    let location = Location(from: clLocation, id: uuid(), isFromColdLaunch: isFromColdLaunch)
+                    let location = Location(from: clLocation, id: uuid(), isFromColdLaunch: isFromColdLaunch, sessionID: currentSessionID!)
                     try Location.insert { location }.execute(db)
 
                     if !hasHandledFirstLocationFromColdLaunch {

@@ -39,6 +39,20 @@ func appDatabase() throws -> any DatabaseWriter {
         migrator.eraseDatabaseOnSchemaChange = true
     #endif
 
+    migrator.registerMigration("Create `sessions` table") { db in
+        try db.execute(sql: """
+        CREATE TABLE sessions (
+            id TEXT PRIMARY KEY NOT NULL,
+            date TEXT NOT NULL,
+            notes TEXT
+        ) STRICT
+        """)
+
+        try db.execute(sql: """
+        CREATE INDEX idx_session_date ON sessions(date)
+        """)
+    }
+
     migrator.registerMigration("Create `locations` table") { db in
         try db.execute(sql: """
         CREATE TABLE locations (
@@ -51,12 +65,19 @@ func appDatabase() throws -> any DatabaseWriter {
             verticalAccuracy REAL,
             course REAL,
             speed REAL,
-            isFromColdLaunch INTEGER NOT NULL DEFAULT 0
-        )
+            isFromColdLaunch INTEGER NOT NULL DEFAULT 0,
+            sessionID TEXT NOT NULL,
+
+            FOREIGN KEY(sessionID) REFERENCES sessions(id) ON DELETE CASCADE
+        ) STRICT
         """)
 
         try db.execute(sql: """
         CREATE INDEX idx_location_timestamp ON locations(timestamp)
+        """)
+
+        try db.execute(sql: """
+        CREATE INDEX idx_location_sessionID ON locations(sessionID)
         """)
     }
 

@@ -48,22 +48,20 @@ import Observation
     }
 }
 
-extension RootStore: CLLocationManagerDelegate {
-    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+// Always called on thread on which `CLLocationManager` was initialized
+extension RootStore: @preconcurrency CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print(locations)
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         print(error)
     }
 
-    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        let status = manager.authorizationStatus
-        Task { @MainActor in
-            self.authorizationStatus = status
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        authorizationStatus = manager.authorizationStatus
 
-            // Start after initial authorization passes
-            startMonitoring()
-        }
+        // Start after initial authorization passes
+        startMonitoring()
     }
 }

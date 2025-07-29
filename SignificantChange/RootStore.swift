@@ -60,7 +60,7 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                     let isFromColdLaunch = !hasHandledFirstLocationFromColdLaunch
                     let location = Location(from: clLocation, isFromColdLaunch: isFromColdLaunch)
                     try Location.insert { location }.execute(db)
-                    
+
                     if !hasHandledFirstLocationFromColdLaunch {
                         hasHandledFirstLocationFromColdLaunch = true
                     }

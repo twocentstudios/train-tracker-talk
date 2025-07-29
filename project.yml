@@ -14,6 +14,11 @@ fileGroups:
   - CLAUDE.md
   - SignificantChange/CLAUDE.md
 
+packages:
+  SharingGRDB:
+    url: https://github.com/pointfreeco/sharing-grdb
+    from: 0.1.0
+
 targets:
   SignificantChange:
     type: application
@@ -22,6 +27,8 @@ targets:
       - path: SignificantChange
         excludes:
           - "CLAUDE.md"
+    dependencies:
+      - package: SharingGRDB
     info:
       path: SignificantChange/Info.plist
       properties:

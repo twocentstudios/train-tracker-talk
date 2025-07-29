@@ -26,3 +26,7 @@ targets:
         UILaunchStoryboardName: LaunchScreen
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        UIBackgroundModes:
+          - location
+        NSLocationAlwaysAndWhenInUseUsageDescription: "Document signficant locations in the background"
+        NSLocationWhenInUseUsageDescription: "Document signficant locations"

@@ -15,11 +15,11 @@ import SharingGRDB
     var isFromColdLaunch: Bool
 
     init(
-        id: UUID = UUID(),
+        id: UUID,
         latitude: Double,
         longitude: Double,
         altitude: Double? = nil,
-        timestamp: Date = Date(),
+        timestamp: Date,
         horizontalAccuracy: Double? = nil,
         verticalAccuracy: Double? = nil,
         course: Double? = nil,
@@ -40,8 +40,9 @@ import SharingGRDB
 }
 
 extension Location {
-    init(from clLocation: CLLocation, isFromColdLaunch: Bool = false) {
+    init(from clLocation: CLLocation, id: UUID, isFromColdLaunch: Bool = false) {
         self.init(
+            id: id,
             latitude: clLocation.coordinate.latitude,
             longitude: clLocation.coordinate.longitude,
             altitude: clLocation.altitude,

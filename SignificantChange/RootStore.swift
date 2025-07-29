@@ -54,11 +54,12 @@ import SharingGRDB
 // Always called on thread on which `CLLocationManager` was initialized
 extension RootStore: @preconcurrency CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        @Dependency(\.uuid) var uuid
         withErrorReporting {
             try database.write { db in
                 for clLocation in locations {
                     let isFromColdLaunch = !hasHandledFirstLocationFromColdLaunch
-                    let location = Location(from: clLocation, isFromColdLaunch: isFromColdLaunch)
+                    let location = Location(from: clLocation, id: uuid(), isFromColdLaunch: isFromColdLaunch)
                     try Location.insert { location }.execute(db)
 
                     if !hasHandledFirstLocationFromColdLaunch {

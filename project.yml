@@ -1,0 +1,28 @@
+name: train-tracker-talk
+
+options:
+  bundleIdPrefix: com.ctrott.train-tracker-talk
+  deploymentTarget:
+    iOS: "18.0"
+    macOS: "15.0"
+
+configs:
+  Debug: debug
+  Release: release
+
+targets:
+  SignificantChange:
+    type: application
+    platform: iOS
+    sources:
+      - SignificantChange
+    info:
+      path: SignificantChange/Info.plist
+      properties:
+        CFBundleDisplayName: 01 SigChange
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        LSRequiresIPhoneOS: true
+        UILaunchStoryboardName: LaunchScreen
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait

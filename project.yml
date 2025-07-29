@@ -13,6 +13,7 @@ configs:
 fileGroups:
   - CLAUDE.md
   - SignificantChange/CLAUDE.md
+  - SignificantStartLocation/CLAUDE.md
 
 packages:
   SharingGRDB:
@@ -36,6 +37,33 @@ targets:
       path: SignificantChange/Info.plist
       properties:
         CFBundleDisplayName: 01 SigChange
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        LSRequiresIPhoneOS: true
+        UILaunchStoryboardName: LaunchScreen
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIBackgroundModes:
+          - location
+        NSLocationAlwaysAndWhenInUseUsageDescription: "Document signficant locations in the background"
+        NSLocationWhenInUseUsageDescription: "Document signficant locations"
+
+  SignificantStartLocation:
+    type: application
+    platform: iOS
+    sources:
+      - path: SignificantStartLocation
+        excludes:
+          - "CLAUDE.md"
+    dependencies:
+      - package: SharingGRDB
+    settings:
+      DEVELOPMENT_TEAM: YK25EF78NT
+      TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: SignificantStartLocation/Info.plist
+      properties:
+        CFBundleDisplayName: 02 SigStartLoc
         CFBundleShortVersionString: "1.0"
         CFBundleVersion: "1"
         LSRequiresIPhoneOS: true

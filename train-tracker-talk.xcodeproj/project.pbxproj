@@ -7,35 +7,61 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06EFF948623BB35D22D1DC6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DFECA1069660FAA648050B0 /* Assets.xcassets */; };
 		0BD24F885FC96153684E2F1F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF8C1C445D58EB6666F7CE8C /* SharingGRDB */; };
 		1EAFD3CE313896296E746E9D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DE96769FB2682C96E7AEE19 /* Preview Assets.xcassets */; };
 		24FD563F397813FD77676C51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BF42960E46892C2915F62E /* AppDelegate.swift */; };
 		365993E605D8CBCE5EE46C76 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DB8414A61BDACE26E37CF6 /* Database.swift */; };
+		37C31ED4C008EEC1DB8DC26A /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D248DB47E5D3E0016341B09 /* LocationsListView.swift */; };
 		3A68E1EF527846AEFA9F0872 /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A980B6C9D8758336F7EFD2 /* LocationsListView.swift */; };
 		3EA748AB832D8076E5FCCAB8 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9B3D31D2A5F5734B67586A /* Location.swift */; };
+		3F5E9F2380B2CB12934E625B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */; };
+		43685311A4EC64051EF0B5E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */; };
+		5054E20E33A88546D41C82CD /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA0F7F3304FEDC073F6D5B8 /* Location.swift */; };
 		6219471F49867A780C3B7B9E /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D53BD5A16BF0E9944384945 /* RootStore.swift */; };
+		6366FDD1D1EED275181AF221 /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3E77091A9B18687A505840 /* RootStore.swift */; };
+		6D39DA0FC02F616C6CB07348 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = ADFBA59BD17E6946420D0029 /* SharingGRDB */; };
 		7F56D14ACE3A1596EEFDA931 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AEAE8A0D8067E23297CED8 /* RootView.swift */; };
 		7FE675FA6BCE6AC24A88D8CD /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0B1AF77B1C360C708EF95C /* ExportDatabaseView.swift */; };
+		904607AD0E8F1FA23CDC2F4E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA0681B1A09621E436687D8 /* RootView.swift */; };
 		A6920835C11A449BB487CF41 /* LocationsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7004D086012A90FFE8BCF8FD /* LocationsMapView.swift */; };
+		AED4450655CB8E583ABA5ED9 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52439038A1A2A4A6F06F4BC6 /* Database.swift */; };
 		B9C545FB7C2FA199923BACA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE705A7A0AF5A9C780685B5B /* Assets.xcassets */; };
+		C6F84DEF8D062293128B470B /* LocationsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EC9F943DABD1B422C6637F /* LocationsMapView.swift */; };
+		CC03F24C2FAFD8292FD1FF1B /* SignificantStartLocationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */; };
+		D2F42FAE0691BB13515544BB /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */; };
 		E8776F18A720BCB905A319CB /* SignificantChangeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D53BD5A16BF0E9944384945 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
+		2697D8AD74FFA20C9B22A119 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		2DC8E53696E3F00122162025 /* SignificantStartLocation.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantStartLocation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38AEAE8A0D8067E23297CED8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantChangeApp.swift; sourceTree = "<group>"; };
+		4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		52439038A1A2A4A6F06F4BC6 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		5BA0681B1A09621E436687D8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		60DB8414A61BDACE26E37CF6 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		66EC9F943DABD1B422C6637F /* LocationsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsMapView.swift; sourceTree = "<group>"; };
+		6B3E77091A9B18687A505840 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 		6E9B3D31D2A5F5734B67586A /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		7004D086012A90FFE8BCF8FD /* LocationsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsMapView.swift; sourceTree = "<group>"; };
 		71A63CC4FCD4A2BE3837A98F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantStartLocationApp.swift; sourceTree = "<group>"; };
+		8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
 		8DE96769FB2682C96E7AEE19 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8DFECA1069660FAA648050B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E0B1AF77B1C360C708EF95C /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
 		91A980B6C9D8758336F7EFD2 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
+		9D248DB47E5D3E0016341B09 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
+		ABA0F7F3304FEDC073F6D5B8 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		B73FE975540A245E41FAFE34 /* SignificantChange.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantChange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD13A584825DAB91B60CD092 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		C4265C695B3D3FCAF7294813 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		D1BF42960E46892C2915F62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		EC84DD785019854A366C3B45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EE705A7A0AF5A9C780685B5B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -48,9 +74,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C37D5DAC7187CC7410DD7D7E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D39DA0FC02F616C6CB07348 /* SharingGRDB in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07DEF060A4972A6820FE24E0 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		2ED4A01FB25DE796DA863A47 /* SignificantChange */ = {
 			isa = PBXGroup;
 			children = (
@@ -76,14 +118,36 @@
 			children = (
 				BD13A584825DAB91B60CD092 /* CLAUDE.md */,
 				2ED4A01FB25DE796DA863A47 /* SignificantChange */,
+				3B4016F608ACB7792BDE4CE6 /* SignificantStartLocation */,
 				6E7DF4051BD1174630658B0A /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		3B4016F608ACB7792BDE4CE6 /* SignificantStartLocation */ = {
+			isa = PBXGroup;
+			children = (
+				0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */,
+				8DFECA1069660FAA648050B0 /* Assets.xcassets */,
+				2697D8AD74FFA20C9B22A119 /* CLAUDE.md */,
+				52439038A1A2A4A6F06F4BC6 /* Database.swift */,
+				8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */,
+				EC84DD785019854A366C3B45 /* Info.plist */,
+				ABA0F7F3304FEDC073F6D5B8 /* Location.swift */,
+				9D248DB47E5D3E0016341B09 /* LocationsListView.swift */,
+				66EC9F943DABD1B422C6637F /* LocationsMapView.swift */,
+				6B3E77091A9B18687A505840 /* RootStore.swift */,
+				5BA0681B1A09621E436687D8 /* RootView.swift */,
+				87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */,
+				07DEF060A4972A6820FE24E0 /* Preview Content */,
+			);
+			path = SignificantStartLocation;
 			sourceTree = "<group>";
 		};
 		6E7DF4051BD1174630658B0A /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				B73FE975540A245E41FAFE34 /* SignificantChange.app */,
+				2DC8E53696E3F00122162025 /* SignificantStartLocation.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -99,6 +163,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4A9ABFBEE0679A7C42D9D8A0 /* SignificantStartLocation */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE3CC435B02A1CE1D05D2F5F /* Build configuration list for PBXNativeTarget "SignificantStartLocation" */;
+			buildPhases = (
+				B2B9E3E38DA7AA7F298547B1 /* Sources */,
+				D2872F6C22F2A3B3CCB7BC71 /* Resources */,
+				C37D5DAC7187CC7410DD7D7E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SignificantStartLocation;
+			packageProductDependencies = (
+				ADFBA59BD17E6946420D0029 /* SharingGRDB */,
+			);
+			productName = SignificantStartLocation;
+			productReference = 2DC8E53696E3F00122162025 /* SignificantStartLocation.app */;
+			productType = "com.apple.product-type.application";
+		};
 		927024F8DD398C84AE4D215E /* SignificantChange */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9C98A8FBDCDCF237FDC7725E /* Build configuration list for PBXNativeTarget "SignificantChange" */;
@@ -128,6 +212,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					4A9ABFBEE0679A7C42D9D8A0 = {
+						DevelopmentTeam = YK25EF78NT;
+					};
 					927024F8DD398C84AE4D215E = {
 						DevelopmentTeam = YK25EF78NT;
 					};
@@ -151,6 +238,7 @@
 			projectRoot = "";
 			targets = (
 				927024F8DD398C84AE4D215E /* SignificantChange */,
+				4A9ABFBEE0679A7C42D9D8A0 /* SignificantStartLocation */,
 			);
 		};
 /* End PBXProject section */
@@ -162,6 +250,15 @@
 			files = (
 				B9C545FB7C2FA199923BACA8 /* Assets.xcassets in Resources */,
 				1EAFD3CE313896296E746E9D /* Preview Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2872F6C22F2A3B3CCB7BC71 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06EFF948623BB35D22D1DC6C /* Assets.xcassets in Resources */,
+				3F5E9F2380B2CB12934E625B /* Preview Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,9 +281,42 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B2B9E3E38DA7AA7F298547B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43685311A4EC64051EF0B5E3 /* AppDelegate.swift in Sources */,
+				AED4450655CB8E583ABA5ED9 /* Database.swift in Sources */,
+				D2F42FAE0691BB13515544BB /* ExportDatabaseView.swift in Sources */,
+				5054E20E33A88546D41C82CD /* Location.swift in Sources */,
+				37C31ED4C008EEC1DB8DC26A /* LocationsListView.swift in Sources */,
+				C6F84DEF8D062293128B470B /* LocationsMapView.swift in Sources */,
+				6366FDD1D1EED275181AF221 /* RootStore.swift in Sources */,
+				904607AD0E8F1FA23CDC2F4E /* RootView.swift in Sources */,
+				CC03F24C2FAFD8292FD1FF1B /* SignificantStartLocationApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		30519FB5EF5CC489C5FE0ADE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = SignificantStartLocation/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.SignificantStartLocation";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		59FC4154B2EE2226BD152162 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -342,6 +472,23 @@
 			};
 			name = Release;
 		};
+		F4A5390273E4C430C297FE74 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = SignificantStartLocation/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.SignificantStartLocation";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -363,6 +510,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		EE3CC435B02A1CE1D05D2F5F /* Build configuration list for PBXNativeTarget "SignificantStartLocation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4A5390273E4C430C297FE74 /* Debug */,
+				30519FB5EF5CC489C5FE0ADE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -377,6 +533,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		ADFBA59BD17E6946420D0029 /* SharingGRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;
+			productName = SharingGRDB;
+		};
 		CF8C1C445D58EB6666F7CE8C /* SharingGRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;

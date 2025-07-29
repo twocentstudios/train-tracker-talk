@@ -30,8 +30,8 @@ struct LocationsListView: View {
                     ForEach(locations) { location in
                         let latitude = location.latitude.formatted(.number.precision(.fractionLength(4)))
                         let longitude = location.longitude.formatted(.number.precision(.fractionLength(4)))
-                        let horizontalAccuracy = (location.horizontalAccuracy ?? 0).formatted(.number.precision(.fractionLength(1)))
-                        let speed = (location.speed ?? 0).formatted(.number.precision(.significantDigits(2)))
+                        let horizontalAccuracy = (location.horizontalAccuracy ?? -1).formatted(.number.precision(.fractionLength(1)))
+                        let speed = (location.speed ?? -1).formatted(.number.precision(.significantDigits(2)))
 
                         Text(location.timestamp, format: .dateTime.month(.twoDigits).day(.twoDigits).hour().minute())
                             .font(.system(.caption2, design: .monospaced))

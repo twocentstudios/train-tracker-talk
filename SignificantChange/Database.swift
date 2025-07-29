@@ -39,9 +39,9 @@ func appDatabase() throws -> any DatabaseWriter {
         migrator.eraseDatabaseOnSchemaChange = true
     #endif
 
-    migrator.registerMigration("Create Location table") { db in
+    migrator.registerMigration("Create `locations` table") { db in
         try db.execute(sql: """
-        CREATE TABLE location (
+        CREATE TABLE locations (
             id TEXT PRIMARY KEY NOT NULL,
             latitude REAL NOT NULL,
             longitude REAL NOT NULL,
@@ -55,7 +55,7 @@ func appDatabase() throws -> any DatabaseWriter {
         """)
 
         try db.execute(sql: """
-        CREATE INDEX idx_location_timestamp ON location(timestamp)
+        CREATE INDEX idx_location_timestamp ON locations(timestamp)
         """)
     }
 

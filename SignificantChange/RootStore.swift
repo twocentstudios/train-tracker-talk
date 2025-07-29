@@ -7,12 +7,14 @@ import Observation
     @ObservationIgnored private let manager: CLLocationManager
 
     private(set) var authorizationStatus: CLAuthorizationStatus
+    private(set) var isMonitoring: Bool
 
     var state: State
 
     init(state: State) {
         manager = CLLocationManager()
         authorizationStatus = manager.authorizationStatus
+        isMonitoring = false
         self.state = state
 
         super.init()
@@ -37,6 +39,9 @@ import Observation
             return
         }
 
+        guard !isMonitoring else { return }
+        isMonitoring = true
+
         manager.allowsBackgroundLocationUpdates = true
         manager.startMonitoringSignificantLocationChanges()
         manager.pausesLocationUpdatesAutomatically = false
@@ -56,6 +61,9 @@ extension RootStore: CLLocationManagerDelegate {
         let status = manager.authorizationStatus
         Task { @MainActor in
             self.authorizationStatus = status
+
+            // Start after initial authorization passes
+            startMonitoring()
         }
     }
 }

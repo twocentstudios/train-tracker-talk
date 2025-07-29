@@ -15,6 +15,14 @@ This is a repo for the Train Tracker conference talk for iOSDC. The repo showcas
 - ALWAYS run `xcodegen` when creating, moving, or deleting Swift files. The xcodeproj is generated from `project.yml`.
 - NEVER write comments that are not timeless (e.g. `// I just updated this line`)
 
+## Package Documentation
+
+### Sharing-GRDB Documentation
+- [SharingGRDB](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/SharingGRDB/Documentation.docc)
+- [SharingGRDBCore](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/SharingGRDBCore/Documentation.docc)
+- [StructuredQueriesGRDB](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/StructuredQueriesGRDB/Documentation.docc)
+- [StructuredQueriesGRDBCore](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/StructuredQueriesGRDBCore/Documentation.docc)
+
 ## CLI Commands
 
 ```zsh

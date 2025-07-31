@@ -6,6 +6,7 @@ This is a repo for the Train Tracker conference talk for iOSDC. The repo showcas
 
 - `SignificantChange` - collects data to understand CoreLocation significant location change API.
 - `SignificantStartLocation` - uses CoreLocation significant location change data to trigger collection of additional location data in the background.
+- `MotionActivity` - views both live and historical Motion Activity entries using Core Motion to understand the device motion lifecycle as related to riding trains.
 
 ## Workflow
 

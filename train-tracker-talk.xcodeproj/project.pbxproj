@@ -30,16 +30,19 @@
 		B9C545FB7C2FA199923BACA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE705A7A0AF5A9C780685B5B /* Assets.xcassets */; };
 		CC03F24C2FAFD8292FD1FF1B /* SignificantStartLocationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */; };
 		D2F42FAE0691BB13515544BB /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */; };
+		DC5FB667C17AB9F677415726 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 7CBCFCEE905CD52DBBABE955 /* SharingGRDB */; };
 		E8776F18A720BCB905A319CB /* SignificantChangeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D53BD5A16BF0E9944384945 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
+		1AAA35A7FC5CA714786D61FB /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		2697D8AD74FFA20C9B22A119 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		2DC8E53696E3F00122162025 /* SignificantStartLocation.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantStartLocation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38AEAE8A0D8067E23297CED8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantChangeApp.swift; sourceTree = "<group>"; };
+		3A4827235F752896C0936D92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		52439038A1A2A4A6F06F4BC6 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		5BA0681B1A09621E436687D8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -58,6 +61,7 @@
 		9D248DB47E5D3E0016341B09 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
 		ABA0F7F3304FEDC073F6D5B8 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		B73FE975540A245E41FAFE34 /* SignificantChange.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantChange.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B95AE31087A9034BB2203463 /* MotionActivity.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MotionActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD13A584825DAB91B60CD092 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		C4265C695B3D3FCAF7294813 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		D1BF42960E46892C2915F62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -66,6 +70,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0660CC9CB45219AAF2CEBD6B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC5FB667C17AB9F677415726 /* SharingGRDB in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0AA1C857B474662AA6A76893 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -117,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				BD13A584825DAB91B60CD092 /* CLAUDE.md */,
+				E8113F1C80F295DF7579DE7F /* MotionActivity */,
 				2ED4A01FB25DE796DA863A47 /* SignificantChange */,
 				3B4016F608ACB7792BDE4CE6 /* SignificantStartLocation */,
 				6E7DF4051BD1174630658B0A /* Products */,
@@ -146,10 +159,20 @@
 		6E7DF4051BD1174630658B0A /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				B95AE31087A9034BB2203463 /* MotionActivity.app */,
 				B73FE975540A245E41FAFE34 /* SignificantChange.app */,
 				2DC8E53696E3F00122162025 /* SignificantStartLocation.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E8113F1C80F295DF7579DE7F /* MotionActivity */ = {
+			isa = PBXGroup;
+			children = (
+				1AAA35A7FC5CA714786D61FB /* CLAUDE.md */,
+				3A4827235F752896C0936D92 /* Info.plist */,
+			);
+			path = MotionActivity;
 			sourceTree = "<group>";
 		};
 		ECEFE74AF76BB4C473BEEF1A /* Preview Content */ = {
@@ -203,6 +226,25 @@
 			productReference = B73FE975540A245E41FAFE34 /* SignificantChange.app */;
 			productType = "com.apple.product-type.application";
 		};
+		9501D029290422CFE3C43A31 /* MotionActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3A8282DBA83D6A26A7B4AF0 /* Build configuration list for PBXNativeTarget "MotionActivity" */;
+			buildPhases = (
+				16E79ACA996D3F28EDF4AEF8 /* Sources */,
+				0660CC9CB45219AAF2CEBD6B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MotionActivity;
+			packageProductDependencies = (
+				7CBCFCEE905CD52DBBABE955 /* SharingGRDB */,
+			);
+			productName = MotionActivity;
+			productReference = B95AE31087A9034BB2203463 /* MotionActivity.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -216,6 +258,9 @@
 						DevelopmentTeam = YK25EF78NT;
 					};
 					927024F8DD398C84AE4D215E = {
+						DevelopmentTeam = YK25EF78NT;
+					};
+					9501D029290422CFE3C43A31 = {
 						DevelopmentTeam = YK25EF78NT;
 					};
 				};
@@ -237,6 +282,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				9501D029290422CFE3C43A31 /* MotionActivity */,
 				927024F8DD398C84AE4D215E /* SignificantChange */,
 				4A9ABFBEE0679A7C42D9D8A0 /* SignificantStartLocation */,
 			);
@@ -278,6 +324,13 @@
 				6219471F49867A780C3B7B9E /* RootStore.swift in Sources */,
 				7F56D14ACE3A1596EEFDA931 /* RootView.swift in Sources */,
 				E8776F18A720BCB905A319CB /* SignificantChangeApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16E79ACA996D3F28EDF4AEF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +434,23 @@
 			};
 			name = Debug;
 		};
+		69B78F67F62DC06BECC6B6B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = MotionActivity/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.MotionActivity";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 		9B76E2AA768508995A028B53 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -435,6 +505,23 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A29A308D64A5F6D6DF47BBDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = MotionActivity/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.MotionActivity";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -519,6 +606,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		F3A8282DBA83D6A26A7B4AF0 /* Build configuration list for PBXNativeTarget "MotionActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				69B78F67F62DC06BECC6B6B3 /* Debug */,
+				A29A308D64A5F6D6DF47BBDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -533,6 +629,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7CBCFCEE905CD52DBBABE955 /* SharingGRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;
+			productName = SharingGRDB;
+		};
 		ADFBA59BD17E6946420D0029 /* SharingGRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;

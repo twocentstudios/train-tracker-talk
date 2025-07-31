@@ -1,4 +1,5 @@
 import CoreMotion
+import Foundation
 import SwiftUI
 
 enum MotionActivityFormatters {
@@ -31,5 +32,46 @@ enum MotionActivityFormatters {
             }
         }
         return result
+    }
+    
+    static func colorForActivityType(_ type: String) -> Color {
+        switch type {
+        case "Stationary": .red
+        case "Walking": .green
+        case "Running": .orange
+        case "Automotive": .blue
+        case "Cycling": .purple
+        case "Unknown": .yellow
+        default: .secondary
+        }
+    }
+
+    static func formatDuration(_ duration: TimeInterval) -> String {
+        let hours = Int(duration) / 3600
+        let minutes = Int(duration) % 3600 / 60
+
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        } else {
+            return "\(minutes)m"
+        }
+    }
+
+    static func formatTimeRange(start: Date, end: Date) -> String {
+        let formatter = DateFormatter()
+
+        // Check if dates are on the same day
+        if Calendar.current.isDate(start, inSameDayAs: end) {
+            formatter.dateFormat = "MMM d, h:mm a"
+            let startString = formatter.string(from: start)
+            formatter.dateFormat = "h:mm a"
+            let endString = formatter.string(from: end)
+            return "\(startString) - \(endString)"
+        } else {
+            formatter.dateFormat = "MMM d, h:mm a"
+            let startString = formatter.string(from: start)
+            let endString = formatter.string(from: end)
+            return "\(startString) - \(endString)"
+        }
     }
 }

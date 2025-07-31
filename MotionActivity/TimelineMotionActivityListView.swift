@@ -5,7 +5,7 @@ struct TimelineMotionActivityListView: View {
     let activities: [MotionActivity]
     let isLoading: Bool
     let error: String?
-    
+
     private static let minGroupSize = 5
 
     private var activityGroups: [MotionActivityGroup] {
@@ -50,15 +50,15 @@ struct TimelineMotionActivityListView: View {
                             HStack {
                                 Text(group.activityType)
                                     .font(.headline)
-                                    .foregroundStyle(colorForActivityType(group.activityType))
+                                    .foregroundStyle(MotionActivityFormatters.colorForActivityType(group.activityType))
                                 Spacer()
-                                Text(formatDuration(group.duration))
+                                Text(MotionActivityFormatters.formatDuration(group.duration))
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
 
                             HStack {
-                                Text(formatTimeRange(start: group.startDate, end: group.endDate))
+                                Text(MotionActivityFormatters.formatTimeRange(start: group.startDate, end: group.endDate))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                                 Spacer()
@@ -75,49 +75,8 @@ struct TimelineMotionActivityListView: View {
         }
     }
 
-    private func colorForActivityType(_ type: String) -> Color {
-        switch type {
-        case "Stationary": .red
-        case "Walking": .green
-        case "Running": .orange
-        case "Automotive": .blue
-        case "Cycling": .purple
-        case "Unknown": .yellow
-        default: .secondary
-        }
-    }
-
-    private func formatDuration(_ duration: TimeInterval) -> String {
-        let hours = Int(duration) / 3600
-        let minutes = Int(duration) % 3600 / 60
-
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else {
-            return "\(minutes)m"
-        }
-    }
-
-    private func formatTimeRange(start: Date, end: Date) -> String {
-        let formatter = DateFormatter()
-
-        // Check if dates are on the same day
-        if Calendar.current.isDate(start, inSameDayAs: end) {
-            formatter.dateFormat = "MMM d, h:mm a"
-            let startString = formatter.string(from: start)
-            formatter.dateFormat = "h:mm a"
-            let endString = formatter.string(from: end)
-            return "\(startString) - \(endString)"
-        } else {
-            formatter.dateFormat = "MMM d, h:mm a"
-            let startString = formatter.string(from: start)
-            let endString = formatter.string(from: end)
-            return "\(startString) - \(endString)"
-        }
-    }
-    
     // MARK: - Timeline Grouping Functions
-    
+
     private func createActivityGroups(from activities: [MotionActivity]) -> [MotionActivityGroup] {
         let highConfidenceActivities = activities.filter { $0.confidence == .high }
         let singleTypeActivities = filterSingleActivityTypes(highConfidenceActivities)
@@ -126,7 +85,7 @@ struct TimelineMotionActivityListView: View {
         let filteredGroups = filterGroupsBySize(groups, minSize: Self.minGroupSize)
         return filteredGroups.sorted { $0.startDate > $1.startDate }
     }
-    
+
     private func filterSingleActivityTypes(_ activities: [MotionActivity]) -> [MotionActivity] {
         activities.filter { activity in
             let activeTypes = [
@@ -140,7 +99,7 @@ struct TimelineMotionActivityListView: View {
             return activeTypes.filter(\.self).count == 1
         }
     }
-    
+
     private func groupConsecutiveActivities(_ activities: [MotionActivity]) -> [MotionActivityGroup] {
         guard !activities.isEmpty else { return [] }
 
@@ -167,11 +126,11 @@ struct TimelineMotionActivityListView: View {
 
         return groups
     }
-    
+
     private func filterGroupsBySize(_ groups: [MotionActivityGroup], minSize: Int) -> [MotionActivityGroup] {
         groups.filter { $0.entryCount > minSize }
     }
-    
+
     private func primaryActivityType(_ activity: MotionActivity) -> String {
         if activity.stationary { return "Stationary" }
         if activity.walking { return "Walking" }
@@ -181,7 +140,7 @@ struct TimelineMotionActivityListView: View {
         if activity.unknown { return "Unknown" }
         return "None"
     }
-    
+
     private func createGroup(from activities: [MotionActivity]) -> MotionActivityGroup? {
         guard !activities.isEmpty else { return nil }
 

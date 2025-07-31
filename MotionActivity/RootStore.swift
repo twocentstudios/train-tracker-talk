@@ -4,9 +4,9 @@ import Observation
 @MainActor @Observable final class RootStore {
     private(set) var isMotionAvailable: Bool
     private(set) var activities: [MotionActivity] = []
+    private(set) var isUpdating = false
     private let activityManager = CMMotionActivityManager()
     private let queue = OperationQueue()
-    private var isUpdating = false
 
     init() {
         self.isMotionAvailable = CMMotionActivityManager.isActivityAvailable()

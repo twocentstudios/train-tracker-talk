@@ -42,6 +42,20 @@ struct RootView: View {
                     MotionActivityListView(activities: store.activities)
                         .navigationTitle("Motion Activity")
                         .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                if store.isUpdating {
+                                    HStack(spacing: 4) {
+                                        Circle()
+                                            .fill(.red)
+                                            .frame(width: 8, height: 8)
+                                        Text("Live")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
+                        }
                 }
             }
         }

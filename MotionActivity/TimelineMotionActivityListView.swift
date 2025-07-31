@@ -18,7 +18,6 @@ struct TimelineMotionActivityListView: View {
             if isLoading {
                 VStack(spacing: 16) {
                     ProgressView()
-                        .scaleEffect(1.2)
                     Text("Loading historical data...")
                         .font(.headline)
                         .foregroundStyle(.secondary)

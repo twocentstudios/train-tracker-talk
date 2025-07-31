@@ -3,10 +3,14 @@ import Observation
 
 @MainActor @Observable final class RootStore {
     private(set) var isMotionAvailable: Bool
-    private(set) var activities: [MotionActivity] = []
+    private(set) var liveActivities: [MotionActivity] = []
+    private(set) var historicalActivities: [MotionActivity] = []
     private(set) var isUpdating = false
+    private(set) var isLoadingHistorical = false
+    private(set) var historicalError: String?
     private(set) var authorizationStatus: CMAuthorizationStatus
     private let activityManager = CMMotionActivityManager()
+    private var hasLoadedHistorical = false
 
     init() {
         isMotionAvailable = CMMotionActivityManager.isActivityAvailable()
@@ -44,10 +48,39 @@ import Observation
 
             let newActivity = MotionActivity(from: cmActivity)
 
-            if let existingIndex = activities.firstIndex(where: { $0.startDate == newActivity.startDate }) {
-                activities[existingIndex] = newActivity
+            if let existingIndex = liveActivities.firstIndex(where: { $0.startDate == newActivity.startDate }) {
+                liveActivities[existingIndex] = newActivity
             } else {
-                activities.append(newActivity)
+                liveActivities.append(newActivity)
+            }
+        }
+    }
+
+    func fetchHistoricalActivities() {
+        guard isMotionAvailable, isAuthorized, !hasLoadedHistorical, !isLoadingHistorical else { return }
+        
+        isLoadingHistorical = true
+        historicalError = nil
+        hasLoadedHistorical = true
+        
+        let endDate = Date()
+        let startDate = endDate.addingTimeInterval(-30 * 24 * 60 * 60) // 30 days to get maximum available
+        
+        activityManager.queryActivityStarting(
+            from: startDate,
+            to: endDate,
+            to: OperationQueue.main
+        ) { [weak self] cmActivities, error in
+            guard let self else { return }
+            
+            self.isLoadingHistorical = false
+            
+            if let error = error {
+                self.historicalError = "Failed to load historical data: \(error.localizedDescription)"
+            } else if let cmActivities = cmActivities {
+                self.historicalActivities = cmActivities.map(MotionActivity.init)
+            } else {
+                self.historicalError = "No historical data available"
             }
         }
     }

@@ -19,7 +19,7 @@ struct RootView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if !store.isAuthorized || store.activities.isEmpty {
+            } else if !store.isAuthorized {
                 VStack(spacing: 16) {
                     Image(systemName: "figure.walk.motion")
                         .font(.largeTitle)
@@ -38,24 +38,29 @@ struct RootView: View {
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                NavigationStack {
-                    MotionActivityListView(activities: store.activities)
-                        .navigationTitle("Motion Activity")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                if store.isUpdating {
-                                    HStack(spacing: 4) {
-                                        Circle()
-                                            .fill(.red)
-                                            .frame(width: 8, height: 8)
-                                        Text("Live")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
+                TabView {
+                    Tab("Live", systemImage: "dot.radiowaves.left.and.right") {
+                        NavigationStack {
+                            LiveMotionActivityListView(activities: store.liveActivities, isUpdating: store.isUpdating)
+                                .navigationTitle("Live Activity")
+                                .navigationBarTitleDisplayMode(.inline)
+                        }
+                    }
+
+                    Tab("Historical", systemImage: "clock") {
+                        NavigationStack {
+                            HistoricalMotionActivityListView(
+                                activities: store.historicalActivities,
+                                isLoading: store.isLoadingHistorical,
+                                error: store.historicalError
+                            )
+                            .navigationTitle("Historical Activity")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .onAppear {
+                                store.fetchHistoricalActivities()
                             }
                         }
+                    }
                 }
             }
         }

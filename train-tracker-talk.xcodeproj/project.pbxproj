@@ -11,12 +11,14 @@
 		0BD24F885FC96153684E2F1F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF8C1C445D58EB6666F7CE8C /* SharingGRDB */; };
 		1EAFD3CE313896296E746E9D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DE96769FB2682C96E7AEE19 /* Preview Assets.xcassets */; };
 		24FD563F397813FD77676C51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BF42960E46892C2915F62E /* AppDelegate.swift */; };
+		2B838D27DFA29B434C7FDC0B /* LiveMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C45715C100CCC41E6D7837E /* LiveMotionActivityListView.swift */; };
 		365993E605D8CBCE5EE46C76 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DB8414A61BDACE26E37CF6 /* Database.swift */; };
 		37C31ED4C008EEC1DB8DC26A /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D248DB47E5D3E0016341B09 /* LocationsListView.swift */; };
 		3A68E1EF527846AEFA9F0872 /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A980B6C9D8758336F7EFD2 /* LocationsListView.swift */; };
 		3EA748AB832D8076E5FCCAB8 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9B3D31D2A5F5734B67586A /* Location.swift */; };
 		3F5E9F2380B2CB12934E625B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */; };
 		402FBF98A15C4C7B2CBEAAED /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A2E7A8554B937A77675F /* Session.swift */; };
+		4155086E41B9FA8C47FF5831 /* MotionActivityFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F5422266AA1794A50424F9 /* MotionActivityFormatters.swift */; };
 		43685311A4EC64051EF0B5E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */; };
 		4B78F4BEB098A523D5E9F6A4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E13B17C8C3FED78E865937A /* RootView.swift */; };
 		5054E20E33A88546D41C82CD /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA0F7F3304FEDC073F6D5B8 /* Location.swift */; };
@@ -26,12 +28,12 @@
 		7F56D14ACE3A1596EEFDA931 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AEAE8A0D8067E23297CED8 /* RootView.swift */; };
 		7FE675FA6BCE6AC24A88D8CD /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0B1AF77B1C360C708EF95C /* ExportDatabaseView.swift */; };
 		904607AD0E8F1FA23CDC2F4E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA0681B1A09621E436687D8 /* RootView.swift */; };
+		96F644EDF87BFF09D15A8635 /* HistoricalMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87CA1C895354D04B8033CF9 /* HistoricalMotionActivityListView.swift */; };
 		A6920835C11A449BB487CF41 /* LocationsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7004D086012A90FFE8BCF8FD /* LocationsMapView.swift */; };
 		AED4450655CB8E583ABA5ED9 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52439038A1A2A4A6F06F4BC6 /* Database.swift */; };
 		B9C545FB7C2FA199923BACA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE705A7A0AF5A9C780685B5B /* Assets.xcassets */; };
 		BCD3E69ED74B4A4569328CC5 /* MotionActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56884514DD5574AF0E79F52 /* MotionActivityApp.swift */; };
 		CC03F24C2FAFD8292FD1FF1B /* SignificantStartLocationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */; };
-		CDC3E08329E003984E17FF23 /* MotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75171AD52BAA45A0C4A2207E /* MotionActivityListView.swift */; };
 		D2F42FAE0691BB13515544BB /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */; };
 		DC5FB667C17AB9F677415726 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 7CBCFCEE905CD52DBBABE955 /* SharingGRDB */; };
 		E8776F18A720BCB905A319CB /* SignificantChangeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */; };
@@ -41,6 +43,7 @@
 
 /* Begin PBXFileReference section */
 		0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		07F5422266AA1794A50424F9 /* MotionActivityFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityFormatters.swift; sourceTree = "<group>"; };
 		0D53BD5A16BF0E9944384945 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 		1AAA35A7FC5CA714786D61FB /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		2697D8AD74FFA20C9B22A119 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
@@ -57,7 +60,7 @@
 		6E9B3D31D2A5F5734B67586A /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		7004D086012A90FFE8BCF8FD /* LocationsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsMapView.swift; sourceTree = "<group>"; };
 		71A63CC4FCD4A2BE3837A98F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		75171AD52BAA45A0C4A2207E /* MotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityListView.swift; sourceTree = "<group>"; };
+		7C45715C100CCC41E6D7837E /* LiveMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveMotionActivityListView.swift; sourceTree = "<group>"; };
 		7DF2A2E7A8554B937A77675F /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantStartLocationApp.swift; sourceTree = "<group>"; };
 		8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
@@ -74,6 +77,7 @@
 		BD13A584825DAB91B60CD092 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		C4265C695B3D3FCAF7294813 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		D1BF42960E46892C2915F62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E87CA1C895354D04B8033CF9 /* HistoricalMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalMotionActivityListView.swift; sourceTree = "<group>"; };
 		EC84DD785019854A366C3B45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EE705A7A0AF5A9C780685B5B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FE51EBF3B74A513AD41194F2 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
@@ -180,10 +184,12 @@
 			isa = PBXGroup;
 			children = (
 				1AAA35A7FC5CA714786D61FB /* CLAUDE.md */,
+				E87CA1C895354D04B8033CF9 /* HistoricalMotionActivityListView.swift */,
 				3A4827235F752896C0936D92 /* Info.plist */,
+				7C45715C100CCC41E6D7837E /* LiveMotionActivityListView.swift */,
 				9ED2A24D32A655C7D1FE5C91 /* MotionActivity.swift */,
 				B56884514DD5574AF0E79F52 /* MotionActivityApp.swift */,
-				75171AD52BAA45A0C4A2207E /* MotionActivityListView.swift */,
+				07F5422266AA1794A50424F9 /* MotionActivityFormatters.swift */,
 				FE51EBF3B74A513AD41194F2 /* RootStore.swift */,
 				4E13B17C8C3FED78E865937A /* RootView.swift */,
 			);
@@ -346,9 +352,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96F644EDF87BFF09D15A8635 /* HistoricalMotionActivityListView.swift in Sources */,
+				2B838D27DFA29B434C7FDC0B /* LiveMotionActivityListView.swift in Sources */,
 				E8BC9500A36C03E1CD85ADD6 /* MotionActivity.swift in Sources */,
 				BCD3E69ED74B4A4569328CC5 /* MotionActivityApp.swift in Sources */,
-				CDC3E08329E003984E17FF23 /* MotionActivityListView.swift in Sources */,
+				4155086E41B9FA8C47FF5831 /* MotionActivityFormatters.swift in Sources */,
 				F1773641D91D0599C16D1678 /* RootStore.swift in Sources */,
 				4B78F4BEB098A523D5E9F6A4 /* RootView.swift in Sources */,
 			);

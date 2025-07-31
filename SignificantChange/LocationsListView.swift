@@ -42,7 +42,7 @@ struct LocationsListView: View {
                             .font(.system(.caption2, design: .monospaced))
                             .lineLimit(1)
                             .contextMenu(
-                                menuItems: { Text(location.timestamp.formatted()) },
+                                menuItems: { Text(location.timestamp, format: .dateTime.month(.twoDigits).day(.twoDigits).hour().minute().second()) },
                                 preview: {
                                     let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
                                     let mapRegion: MapCameraPosition = .region(.init(center: coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000))

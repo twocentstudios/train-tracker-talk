@@ -5,8 +5,13 @@ struct LiveMotionActivityListView: View {
     let activities: [MotionActivity]
     let isUpdating: Bool
 
+    @State private var showOnlyHighConfidence = false
+
     private var sortedActivities: [MotionActivity] {
-        activities.sorted { $0.startDate > $1.startDate }
+        let filtered = showOnlyHighConfidence
+            ? activities.filter { $0.confidence == .high }
+            : activities
+        return filtered.sorted { $0.startDate > $1.startDate }
     }
 
     var body: some View {
@@ -42,7 +47,12 @@ struct LiveMotionActivityListView: View {
                     }
                 }
             }
+
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Toggle("High Only", isOn: $showOnlyHighConfidence)
+                    .toggleStyle(.button)
+                    .controlSize(.small)
+            }
         }
     }
-
 }

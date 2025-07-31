@@ -5,6 +5,7 @@ This is a repo for the Train Tracker conference talk for iOSDC. The repo showcas
 ## Targets
 
 - `SignificantChange` - collects data to understand CoreLocation significant location change API.
+- `SignificantStartLocation` - uses CoreLocation significant location change data to trigger collection of additional location data in the background.
 
 ## Workflow
 
@@ -14,6 +15,10 @@ This is a repo for the Train Tracker conference talk for iOSDC. The repo showcas
 - ALWAYS use the iPhone 16 Pro simulator on iOS 18.5 with UUID AE8D703E-E213-443C-8CBC-742F8807CCC3 (if it is unavailable, then alert me).
 - ALWAYS run `xcodegen` when creating, moving, or deleting Swift files. The xcodeproj is generated from `project.yml`.
 - NEVER write comments that are not timeless (e.g. `// I just updated this line`)
+
+## Code guidelines
+
+- Use the latest iOS 18 compatible SwiftUI APIs and techniques. Do research when necessary.
 
 ## Package Documentation
 

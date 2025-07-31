@@ -6,7 +6,6 @@ import SwiftUI
 struct RootView: View {
     let store: RootStore
 
-
     var body: some View {
         ZStack {
             if store.authorizationStatus != .authorizedAlways {
@@ -17,22 +16,10 @@ struct RootView: View {
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                TabView {
-                    Tab("List", systemImage: "list.bullet") {
-                        NavigationStack {
-                            LocationsListView()
-                                .toolbarTitleDisplayMode(.inline)
-                                .navigationTitle("Locations")
-                        }
-                    }
-
-                    Tab("Map", systemImage: "map") {
-                        NavigationStack {
-                            LocationsMapView()
-                                .toolbarVisibility(.hidden, for: .navigationBar)
-                                .navigationTitle("Map")
-                        }
-                    }
+                NavigationStack {
+                    LocationsListView()
+                        .toolbarTitleDisplayMode(.inline)
+                        .navigationTitle("Sessions")
                 }
             }
         }

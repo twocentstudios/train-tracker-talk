@@ -70,23 +70,17 @@ struct SessionRowView: View {
 }
 
 struct SessionDetailView: View {
-    let session: Session
+    @State private var currentSession: Session
     @Environment(\.dismiss) private var dismiss
     @Dependency(\.defaultDatabase) private var database
 
-    @ObservationIgnored
-    @FetchAll var locations: [Location]
-
+    @State private var locations: [Location] = []
     @State private var notes: String
+    @State private var canNavigateUp = false
+    @State private var canNavigateDown = false
 
     init(session: Session) {
-        self.session = session
-        _locations = FetchAll(
-            Location
-                .where { $0.sessionID.eq(session.id) }
-                .order { $0.timestamp.asc() },
-            animation: .default
-        )
+        _currentSession = State(initialValue: session)
         _notes = State(initialValue: session.notes ?? "")
     }
 
@@ -130,20 +124,114 @@ struct SessionDetailView: View {
                         saveNotes()
                     }
                     .buttonStyle(.borderedProminent)
-                    .disabled(notes == (session.notes ?? ""))
+                    .disabled(notes == (currentSession.notes ?? ""))
                 }
                 .padding()
                 .background(.regularMaterial)
             }
-            .navigationTitle(session.date.formatted(.dateTime.month(.abbreviated).day().hour().minute()))
+            .navigationTitle(currentSession.date.formatted(.dateTime.month(.abbreviated).day().hour().minute()))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    HStack {
+                        Button(action: {
+                            Task { await navigateToNextSession() }
+                        }) {
+                            Image(systemName: "chevron.up")
+                        }
+                        .disabled(!canNavigateUp)
+
+                        Button(action: {
+                            Task { await navigateToPreviousSession() }
+                        }) {
+                            Image(systemName: "chevron.down")
+                        }
+                        .disabled(!canNavigateDown)
+                    }
+                }
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
                         dismiss()
                     }
                 }
             }
+            .task(id: currentSession.id) {
+                await loadLocations()
+                await updateNavigationButtonStates()
+            }
+        }
+    }
+
+    private func loadLocations() async {
+        let sessionID = currentSession.id
+        do {
+            let loadedLocations = try await database.read { db in
+                try Location
+                    .where { $0.sessionID.eq(sessionID) }
+                    .order { $0.timestamp.asc() }
+                    .fetchAll(db)
+            }
+            locations = loadedLocations
+        } catch {
+            print("Error loading locations: \(error)")
+        }
+    }
+
+    private func navigateToNextSession() async {
+        let currentDate = currentSession.date
+        do {
+            if let nextSession = try await database.read({ db in
+                try Session
+                    .where { $0.date.gt(currentDate) }
+                    .order { $0.date.asc() }
+                    .limit(1)
+                    .fetchOne(db)
+            }) {
+                currentSession = nextSession
+                notes = nextSession.notes ?? ""
+            }
+        } catch {
+            print("Error navigating to next session: \(error)")
+        }
+    }
+
+    private func navigateToPreviousSession() async {
+        let currentDate = currentSession.date
+        do {
+            if let previousSession = try await database.read({ db in
+                try Session
+                    .where { $0.date.lt(currentDate) }
+                    .order { $0.date.desc() }
+                    .limit(1)
+                    .fetchOne(db)
+            }) {
+                currentSession = previousSession
+                notes = previousSession.notes ?? ""
+            }
+        } catch {
+            print("Error navigating to previous session: \(error)")
+        }
+    }
+
+    private func updateNavigationButtonStates() async {
+        let currentDate = currentSession.date
+        do {
+            let (hasNext, hasPrevious) = try await database.read { db in
+                let nextCount = try Session
+                    .where { $0.date.gt(currentDate) }
+                    .limit(1)
+                    .fetchCount(db)
+                let prevCount = try Session
+                    .where { $0.date.lt(currentDate) }
+                    .limit(1)
+                    .fetchCount(db)
+                return (nextCount > 0, prevCount > 0)
+            }
+            canNavigateUp = hasNext
+            canNavigateDown = hasPrevious
+        } catch {
+            print("Error updating navigation button states: \(error)")
         }
     }
 
@@ -151,7 +239,7 @@ struct SessionDetailView: View {
         withErrorReporting {
             try database.write { db in
                 try Session
-                    .where { $0.id.eq(session.id) }
+                    .where { $0.id.eq(currentSession.id) }
                     .update { $0.notes = notes.isEmpty ? nil : notes }
                     .execute(db)
             }

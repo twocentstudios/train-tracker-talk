@@ -66,7 +66,6 @@ struct SessionRowView: View {
             .frame(minHeight: 36)
             .contentShape(Rectangle())
         }
-//        .buttonStyle(.plain)
     }
 }
 

@@ -58,29 +58,29 @@ import Observation
 
     func fetchHistoricalActivities() {
         guard isMotionAvailable, isAuthorized, !hasLoadedHistorical, !isLoadingHistorical else { return }
-        
+
         isLoadingHistorical = true
         historicalError = nil
         hasLoadedHistorical = true
-        
+
         let endDate = Date()
         let startDate = endDate.addingTimeInterval(-30 * 24 * 60 * 60) // 30 days to get maximum available
-        
+
         activityManager.queryActivityStarting(
             from: startDate,
             to: endDate,
             to: OperationQueue.main
         ) { [weak self] cmActivities, error in
             guard let self else { return }
-            
-            self.isLoadingHistorical = false
-            
-            if let error = error {
-                self.historicalError = "Failed to load historical data: \(error.localizedDescription)"
-            } else if let cmActivities = cmActivities {
-                self.historicalActivities = cmActivities.map(MotionActivity.init)
+
+            isLoadingHistorical = false
+
+            if let error {
+                historicalError = "Failed to load historical data: \(error.localizedDescription)"
+            } else if let cmActivities {
+                historicalActivities = cmActivities.map(MotionActivity.init)
             } else {
-                self.historicalError = "No historical data available"
+                historicalError = "No historical data available"
             }
         }
     }

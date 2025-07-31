@@ -61,6 +61,21 @@ struct RootView: View {
                             }
                         }
                     }
+
+                    Tab("Timeline", systemImage: "timeline.selection") {
+                        NavigationStack {
+                            TimelineMotionActivityListView(
+                                activities: store.historicalActivities,
+                                isLoading: store.isLoadingHistorical,
+                                error: store.historicalError
+                            )
+                            .navigationTitle("Activity Timeline")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .onAppear {
+                                store.fetchHistoricalActivities()
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -1,10 +1,40 @@
 import CoreMotion
 import Foundation
 
+enum MotionActivityConfidence: String, Codable, CaseIterable {
+    case low
+    case medium
+    case high
+
+    init(from cmConfidence: CMMotionActivityConfidence) {
+        switch cmConfidence {
+        case .low:
+            self = .low
+        case .medium:
+            self = .medium
+        case .high:
+            self = .high
+        @unknown default:
+            self = .low
+        }
+    }
+
+    var cmConfidence: CMMotionActivityConfidence {
+        switch self {
+        case .low:
+            .low
+        case .medium:
+            .medium
+        case .high:
+            .high
+        }
+    }
+}
+
 struct MotionActivity: Hashable, Identifiable {
     let id: UUID
     let startDate: Date
-    let confidence: CMMotionActivityConfidence
+    let confidence: MotionActivityConfidence
     let stationary: Bool
     let walking: Bool
     let running: Bool
@@ -15,7 +45,7 @@ struct MotionActivity: Hashable, Identifiable {
     init(
         id: UUID = UUID(),
         startDate: Date,
-        confidence: CMMotionActivityConfidence,
+        confidence: MotionActivityConfidence,
         stationary: Bool,
         walking: Bool,
         running: Bool,
@@ -39,7 +69,7 @@ extension MotionActivity {
     init(from cmActivity: CMMotionActivity) {
         self.init(
             startDate: cmActivity.startDate,
-            confidence: cmActivity.confidence,
+            confidence: MotionActivityConfidence(from: cmActivity.confidence),
             stationary: cmActivity.stationary,
             walking: cmActivity.walking,
             running: cmActivity.running,

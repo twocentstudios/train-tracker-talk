@@ -3,12 +3,11 @@ import Foundation
 import SwiftUI
 
 enum MotionActivityFormatters {
-    static func confidenceText(_ confidence: CMMotionActivityConfidence) -> String {
+    static func confidenceText(_ confidence: MotionActivityConfidence) -> String {
         switch confidence {
         case .low: "Low"
         case .medium: "Medium"
         case .high: "High"
-        @unknown default: "Unknown"
         }
     }
 

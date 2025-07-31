@@ -42,7 +42,7 @@ struct RootView: View {
                     Tab("Live", systemImage: "dot.radiowaves.left.and.right") {
                         NavigationStack {
                             LiveMotionActivityListView(activities: store.liveActivities, isUpdating: store.isUpdating)
-                                .navigationTitle("Live Activity")
+                                .navigationTitle("Live MotionActivity")
                                 .navigationBarTitleDisplayMode(.inline)
                         }
                     }
@@ -54,7 +54,7 @@ struct RootView: View {
                                 isLoading: store.isLoadingHistorical,
                                 error: store.historicalError
                             )
-                            .navigationTitle("Historical Activity")
+                            .navigationTitle("Historical MotionActivity")
                             .navigationBarTitleDisplayMode(.inline)
                             .onAppear {
                                 store.fetchHistoricalActivities()

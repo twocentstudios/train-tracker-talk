@@ -14,7 +14,7 @@ struct TimelineMotionActivityListView: View {
     }
 
     var body: some View {
-        Group {
+        ZStack {
             if isLoading {
                 VStack(spacing: 16) {
                     ProgressView()

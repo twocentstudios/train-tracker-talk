@@ -70,5 +70,16 @@ struct HistoricalMotionActivityListView: View {
                 .listStyle(.plain)
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ShareLink(
+                    item: ExportableMotionActivityData(activities: activities),
+                    preview: SharePreview("Motion Activity Export")
+                ) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .disabled(activities.isEmpty)
+            }
+        }
     }
 }

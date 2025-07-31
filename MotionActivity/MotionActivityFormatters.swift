@@ -32,7 +32,7 @@ enum MotionActivityFormatters {
         }
         return result
     }
-    
+
     static func colorForActivityType(_ type: String) -> Color {
         switch type {
         case "Stationary": .red

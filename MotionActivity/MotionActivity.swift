@@ -1,5 +1,7 @@
 import CoreMotion
 import Foundation
+import SwiftUI
+import UniformTypeIdentifiers
 
 enum MotionActivityConfidence: String, Codable, CaseIterable {
     case low
@@ -31,7 +33,7 @@ enum MotionActivityConfidence: String, Codable, CaseIterable {
     }
 }
 
-struct MotionActivity: Hashable, Identifiable {
+struct MotionActivity: Hashable, Identifiable, Codable {
     let id: UUID
     let startDate: Date
     let confidence: MotionActivityConfidence
@@ -77,5 +79,30 @@ extension MotionActivity {
             cycling: cmActivity.cycling,
             unknown: cmActivity.unknown
         )
+    }
+}
+
+struct ExportableMotionActivityData: Codable {
+    let activities: [MotionActivity]
+
+    init(activities: [MotionActivity]) {
+        self.activities = activities.sorted { $0.startDate < $1.startDate }
+    }
+}
+
+extension ExportableMotionActivityData: Transferable {
+    static var transferRepresentation: some TransferRepresentation {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        return CodableRepresentation(contentType: .json, encoder: encoder, decoder: decoder)
+            .suggestedFileName { (_: ExportableMotionActivityData) in
+                let timestamp = Date().formatted(.dateTime.year().month(.twoDigits).day(.twoDigits).hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).locale(.init(identifier: "en_US_POSIX")))
+                return "motion-activity-export-\(timestamp).json"
+            }
     }
 }

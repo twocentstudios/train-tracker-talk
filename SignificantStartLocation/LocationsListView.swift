@@ -157,7 +157,7 @@ struct LocationRowView: View {
     var body: some View {
         HStack(spacing: 8) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(location.timestamp, format: .dateTime.hour().minute().second(.twoDigits).secondFraction(.fractional(3)))
+                Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
                     .font(.system(.caption, design: .monospaced))
 
                 let latitude = location.latitude.formatted(.number.precision(.fractionLength(7)))

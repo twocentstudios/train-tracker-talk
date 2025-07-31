@@ -6,7 +6,8 @@ struct TimelineMotionActivityListView: View {
     let isLoading: Bool
     let error: String?
 
-    private static let minGroupSize = 5
+    private static let minGroupSize = 2
+    private static let maxTimeGapSeconds: TimeInterval = 180
 
     private var activityGroups: [MotionActivityGroup] {
         createActivityGroups(from: activities)
@@ -79,17 +80,30 @@ struct TimelineMotionActivityListView: View {
 
     private func createActivityGroups(from activities: [MotionActivity]) -> [MotionActivityGroup] {
         let highConfidenceActivities = activities.filter { $0.confidence == .high }
-        let singleTypeActivities = filterSingleActivityTypes(highConfidenceActivities)
+        let nonStationaryOnlyActivities = filterStationaryOnlyActivities(highConfidenceActivities)
+        let singleTypeActivities = filterSingleActivityTypes(nonStationaryOnlyActivities)
         let sortedActivities = singleTypeActivities.sorted { $0.startDate < $1.startDate }
         let groups = groupConsecutiveActivities(sortedActivities)
         let filteredGroups = filterGroupsBySize(groups, minSize: Self.minGroupSize)
         return filteredGroups.sorted { $0.startDate > $1.startDate }
     }
 
+    private func filterStationaryOnlyActivities(_ activities: [MotionActivity]) -> [MotionActivity] {
+        activities.filter { activity in
+            // Filter out activities that are ONLY stationary
+            !(activity.stationary &&
+                !activity.walking &&
+                !activity.running &&
+                !activity.automotive &&
+                !activity.cycling &&
+                !activity.unknown)
+        }
+    }
+
     private func filterSingleActivityTypes(_ activities: [MotionActivity]) -> [MotionActivity] {
         activities.filter { activity in
+            // Ignore stationary when counting active types
             let activeTypes = [
-                activity.stationary,
                 activity.walking,
                 activity.running,
                 activity.automotive,
@@ -110,7 +124,11 @@ struct TimelineMotionActivityListView: View {
             let current = activities[i]
             let previous = activities[i - 1]
 
-            if primaryActivityType(current) == primaryActivityType(previous) {
+            let timeGap = current.startDate.timeIntervalSince(previous.startDate)
+            let sameActivityType = primaryActivityType(current) == primaryActivityType(previous)
+            let withinTimeThreshold = timeGap <= Self.maxTimeGapSeconds
+
+            if sameActivityType, withinTimeThreshold {
                 currentGroup.append(current)
             } else {
                 if let group = createGroup(from: currentGroup) {
@@ -132,12 +150,13 @@ struct TimelineMotionActivityListView: View {
     }
 
     private func primaryActivityType(_ activity: MotionActivity) -> String {
-        if activity.stationary { return "Stationary" }
+        // Prioritize non-stationary activities
         if activity.walking { return "Walking" }
         if activity.running { return "Running" }
         if activity.automotive { return "Automotive" }
         if activity.cycling { return "Cycling" }
         if activity.unknown { return "Unknown" }
+        if activity.stationary { return "Stationary" }
         return "None"
     }
 

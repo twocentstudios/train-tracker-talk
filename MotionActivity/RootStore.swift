@@ -9,7 +9,7 @@ import Observation
     private let queue = OperationQueue()
 
     init() {
-        self.isMotionAvailable = CMMotionActivityManager.isActivityAvailable()
+        isMotionAvailable = CMMotionActivityManager.isActivityAvailable()
         queue.qualityOfService = .utility
     }
 
@@ -27,11 +27,11 @@ import Observation
 
     private func startLiveUpdates() {
         activityManager.startActivityUpdates(to: queue) { [weak self] cmActivity in
-            guard let self, let cmActivity = cmActivity else { return }
-            
+            guard let self, let cmActivity else { return }
+
             Task { @MainActor in
                 let newActivity = MotionActivity(from: cmActivity)
-                
+
                 if let existingIndex = self.activities.firstIndex(where: { $0.startDate == newActivity.startDate }) {
                     self.activities[existingIndex] = newActivity
                 } else {

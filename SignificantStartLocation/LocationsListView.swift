@@ -1,3 +1,4 @@
+import Dependencies
 import MapKit
 import SharingGRDB
 import SwiftUI
@@ -39,47 +40,45 @@ struct SessionRowView: View {
     var body: some View {
         Button(action: onTap) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(session.date, format: .dateTime.month(.abbreviated).day().hour().minute())
-                        .font(.headline)
-                        .foregroundStyle(.primary)
-
-                    if let notes = session.notes, !notes.isEmpty {
-                        Text(notes)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                    }
-
-                    if session.isFromColdLaunch {
-                        Text("Cold Launch")
-                            .font(.caption2)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(.blue.opacity(0.2))
-                            .foregroundStyle(.blue)
-                            .cornerRadius(4)
-                    }
+                Text(session.date, format: .dateTime.month(.abbreviated).day().hour().minute())
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                if let notes = session.notes, !notes.isEmpty {
+                    Text(notes)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
                 }
 
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(.secondary)
-                    .imageScale(.small)
+                if session.isFromColdLaunch {
+                    Spacer()
+                    Image(systemName: "snowflake")
+                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.blue)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 4)
+                        .background(.blue.opacity(0.2))
+                        .cornerRadius(4)
+                        .imageScale(.small)
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(minHeight: 36)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+//        .buttonStyle(.plain)
     }
 }
 
 struct SessionDetailView: View {
     let session: Session
     @Environment(\.dismiss) private var dismiss
+    @Dependency(\.defaultDatabase) private var database
 
     @ObservationIgnored
     @FetchAll var locations: [Location]
+
+    @State private var notes: String
 
     init(session: Session) {
         self.session = session
@@ -89,6 +88,7 @@ struct SessionDetailView: View {
                 .order { $0.timestamp.asc() },
             animation: .default
         )
+        _notes = State(initialValue: session.notes ?? "")
     }
 
     var body: some View {
@@ -122,6 +122,19 @@ struct SessionDetailView: View {
                     }
                 }
                 .frame(maxHeight: .infinity)
+
+                HStack {
+                    TextField("Notes", text: $notes)
+                        .textFieldStyle(.roundedBorder)
+
+                    Button("Save") {
+                        saveNotes()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(notes == (session.notes ?? ""))
+                }
+                .padding()
+                .background(.regularMaterial)
             }
             .navigationTitle(session.date.formatted(.dateTime.month(.abbreviated).day().hour().minute()))
             .navigationBarTitleDisplayMode(.inline)
@@ -131,6 +144,17 @@ struct SessionDetailView: View {
                         dismiss()
                     }
                 }
+            }
+        }
+    }
+
+    private func saveNotes() {
+        withErrorReporting {
+            try database.write { db in
+                try Session
+                    .where { $0.id.eq(session.id) }
+                    .update { $0.notes = notes.isEmpty ? nil : notes }
+                    .execute(db)
             }
         }
     }
@@ -144,12 +168,12 @@ struct LocationRowView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(location.timestamp, format: .dateTime.hour().minute().second(.twoDigits).secondFraction(.fractional(3)))
                     .font(.system(.caption, design: .monospaced))
-                    .foregroundStyle(.secondary)
 
                 let latitude = location.latitude.formatted(.number.precision(.fractionLength(7)))
                 let longitude = location.longitude.formatted(.number.precision(.fractionLength(7)))
                 Text(verbatim: "(\(latitude), \(longitude))")
                     .font(.system(.caption2, design: .monospaced))
+                    .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
 

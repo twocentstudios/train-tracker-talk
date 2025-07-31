@@ -5,12 +5,22 @@ import Observation
     private(set) var isMotionAvailable: Bool
     private(set) var activities: [MotionActivity] = []
     private(set) var isUpdating = false
+    private(set) var authorizationStatus: CMAuthorizationStatus
     private let activityManager = CMMotionActivityManager()
-    private let queue = OperationQueue()
 
     init() {
         isMotionAvailable = CMMotionActivityManager.isActivityAvailable()
-        queue.qualityOfService = .utility
+        authorizationStatus = CMMotionActivityManager.authorizationStatus()
+    }
+
+    var isAuthorized: Bool {
+        authorizationStatus == .authorized
+    }
+
+    func startIfAuthorized() {
+        guard isMotionAvailable, isAuthorized, !isUpdating else { return }
+        isUpdating = true
+        startLiveUpdates()
     }
 
     func requestMotionPermission() {
@@ -26,17 +36,18 @@ import Observation
     }
 
     private func startLiveUpdates() {
-        activityManager.startActivityUpdates(to: queue) { [weak self] cmActivity in
+        activityManager.startActivityUpdates(to: OperationQueue.main) { [weak self] cmActivity in
             guard let self, let cmActivity else { return }
+            if authorizationStatus != .authorized {
+                authorizationStatus = CMMotionActivityManager.authorizationStatus()
+            }
 
-            Task { @MainActor in
-                let newActivity = MotionActivity(from: cmActivity)
+            let newActivity = MotionActivity(from: cmActivity)
 
-                if let existingIndex = self.activities.firstIndex(where: { $0.startDate == newActivity.startDate }) {
-                    self.activities[existingIndex] = newActivity
-                } else {
-                    self.activities.append(newActivity)
-                }
+            if let existingIndex = activities.firstIndex(where: { $0.startDate == newActivity.startDate }) {
+                activities[existingIndex] = newActivity
+            } else {
+                activities.append(newActivity)
             }
         }
     }

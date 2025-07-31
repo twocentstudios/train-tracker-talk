@@ -19,7 +19,7 @@ struct RootView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if store.activities.isEmpty {
+            } else if !store.isAuthorized || store.activities.isEmpty {
                 VStack(spacing: 16) {
                     Image(systemName: "figure.walk.motion")
                         .font(.largeTitle)
@@ -58,6 +58,9 @@ struct RootView: View {
                         }
                 }
             }
+        }
+        .task {
+            store.startIfAuthorized()
         }
         .tint(.blue)
     }

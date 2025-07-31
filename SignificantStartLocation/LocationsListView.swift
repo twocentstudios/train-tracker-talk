@@ -1,85 +1,136 @@
-import Dependencies
 import MapKit
 import SharingGRDB
 import SwiftUI
 
-@Selection
-struct LocationSessionRow {
-    let location: Location
-    let session: Session
-}
-
-struct SectionGroup: Identifiable {
-    var id: UUID { session.id }
-    let session: Session
-    let locations: [Location]
-}
-
 struct LocationsListView: View {
     @ObservationIgnored
     @FetchAll(
-        Location
-            .order { $0.timestamp.desc() }
-            .join(Session.all) { $0.sessionID.eq($1.id) }
-            .select {
-                LocationSessionRow.Columns(
-                    location: $0,
-                    session: $1
-                )
-            },
+        Session.all.order { $0.date.desc() },
         animation: .default
     )
-    var locationRows: [LocationSessionRow]
+    var sessions: [Session]
 
-    @State private var selectedSectionGroup: SectionGroup?
-
-    private var sectionGroups: [SectionGroup] {
-        let grouped = Dictionary(grouping: locationRows) { $0.session.id }
-        return grouped.compactMapValues { rows in
-            guard let firstRow = rows.first else { return nil }
-            return SectionGroup(
-                session: firstRow.session,
-                locations: rows.map(\.location).sorted { $0.timestamp > $1.timestamp }
-            )
-        }
-        .values
-        .sorted { $0.session.date > $1.session.date }
-    }
+    @State private var selectedSession: Session?
 
     var body: some View {
         List {
-            ForEach(sectionGroups, id: \.session.id) { sectionGroup in
-                Section {
-                    ForEach(sectionGroup.locations) { location in
-                        LocationRowView(location: location)
-                    }
-                } header: {
-                    let headerText = sectionGroup.session.date.formatted(.dateTime.month(.twoDigits).day(.twoDigits).hour(.twoDigits(amPM: .omitted)).minute(.twoDigits)) +
-                        (sectionGroup.session.notes.map { " - \($0)" } ?? "")
-
-                    Button {
-                        selectedSectionGroup = sectionGroup
-                    } label: {
-                        HStack(spacing: 4) {
-                            Text(headerText)
-                                .font(.headline)
-                                .foregroundStyle(.primary)
-                                .contentShape(Rectangle())
-                            Image(systemName: "chevron.right")
-                                .imageScale(.small)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+            ForEach(sessions) { session in
+                SessionRowView(session: session) {
+                    selectedSession = session
                 }
             }
         }
         .listStyle(.plain)
-        .sheet(item: $selectedSectionGroup) { sectionGroup in
-            SectionMapView(sectionGroup: sectionGroup)
+        .sheet(item: $selectedSession) { session in
+            SessionDetailView(session: session)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 ExportDatabaseView()
+            }
+        }
+    }
+}
+
+struct SessionRowView: View {
+    let session: Session
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(session.date, format: .dateTime.month(.abbreviated).day().hour().minute())
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+
+                    if let notes = session.notes, !notes.isEmpty {
+                        Text(notes)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+
+                    if session.isFromColdLaunch {
+                        Text("Cold Launch")
+                            .font(.caption2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(.blue.opacity(0.2))
+                            .foregroundStyle(.blue)
+                            .cornerRadius(4)
+                    }
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.secondary)
+                    .imageScale(.small)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct SessionDetailView: View {
+    let session: Session
+    @Environment(\.dismiss) private var dismiss
+
+    @ObservationIgnored
+    @FetchAll var locations: [Location]
+
+    init(session: Session) {
+        self.session = session
+        _locations = FetchAll(
+            Location
+                .where { $0.sessionID.eq(session.id) }
+                .order { $0.timestamp.asc() },
+            animation: .default
+        )
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                Map(initialPosition: .automatic) {
+                    if locations.count > 1 {
+                        let coordinates = locations.map { location in
+                            CLLocationCoordinate2D(
+                                latitude: location.latitude,
+                                longitude: location.longitude
+                            )
+                        }
+                        MapPolyline(coordinates: coordinates)
+                            .stroke(.blue, lineWidth: 3)
+                    }
+
+                    ForEach(locations) { location in
+                        Annotation("", coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)) {
+                            Circle()
+                                .fill(.red)
+                                .frame(width: 8, height: 8)
+                        }
+                    }
+                }
+                .frame(maxHeight: .infinity)
+
+                List {
+                    ForEach(locations) { location in
+                        LocationRowView(location: location)
+                    }
+                }
+                .frame(maxHeight: .infinity)
+            }
+            .navigationTitle(session.date.formatted(.dateTime.month(.abbreviated).day().hour().minute()))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
             }
         }
     }
@@ -116,70 +167,5 @@ struct LocationRowView: View {
             }
         }
         .padding(.vertical, 2)
-    }
-}
-
-struct SectionMapView: View {
-    let sectionGroup: SectionGroup
-    @Environment(\.dismiss) private var dismiss
-    @Dependency(\.defaultDatabase) private var database
-    @State private var notes: String
-
-    init(sectionGroup: SectionGroup) {
-        self.sectionGroup = sectionGroup
-        _notes = State(initialValue: sectionGroup.session.notes ?? "")
-    }
-
-    var body: some View {
-        NavigationStack {
-            let coordinates = sectionGroup.locations.map { location in
-                CLLocationCoordinate2D(
-                    latitude: location.latitude,
-                    longitude: location.longitude
-                )
-            }
-
-            VStack(spacing: 0) {
-                Map(initialPosition: .automatic) {
-                    if coordinates.count > 1 {
-                        MapPolyline(coordinates: coordinates)
-                            .stroke(.blue, lineWidth: 3)
-                    }
-                }
-
-                HStack {
-                    TextField("Notes", text: $notes)
-                        .textFieldStyle(.roundedBorder)
-
-                    Button("Save") {
-                        saveNotes()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(notes == (sectionGroup.session.notes ?? ""))
-                }
-                .padding()
-                .background(.regularMaterial)
-            }
-            .navigationTitle(sectionGroup.session.date.formatted(.dateTime.month(.twoDigits).day(.twoDigits).hour(.twoDigits(amPM: .omitted)).minute(.twoDigits)))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-
-    private func saveNotes() {
-        withErrorReporting {
-            try database.write { db in
-                try Session
-                    .where { $0.id.eq(sectionGroup.session.id) }
-                    .update { $0.notes = notes.isEmpty ? nil : notes }
-                    .execute(db)
-            }
-        }
     }
 }

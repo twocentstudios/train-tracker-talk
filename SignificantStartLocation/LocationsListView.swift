@@ -98,14 +98,6 @@ struct SessionDetailView: View {
                         MapPolyline(coordinates: coordinates)
                             .stroke(.blue, lineWidth: 3)
                     }
-
-                    ForEach(locations) { location in
-                        Annotation("", coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)) {
-                            Circle()
-                                .fill(.red)
-                                .frame(width: 8, height: 8)
-                        }
-                    }
                 }
                 .frame(maxHeight: .infinity)
 

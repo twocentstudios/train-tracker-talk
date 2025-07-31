@@ -240,7 +240,8 @@ Significant-change behavior...
 
 ^ TODO: 
 ^ tab 1: show last live value with log
-^ tab 2: show full history as log and graph
+^ tab 2: show full history as log
+^ tab 3: show full history as grouped timeline
 
 ---
 
@@ -304,6 +305,7 @@ Qualified Tracking
 # Prototype #4: GPS data collection
 
 ^ TODO: start tracking automatically, create session, write location data to db, stop when user taps button
+^ TODO: I'm not sure if this prototype makes sense
 
 ---
 

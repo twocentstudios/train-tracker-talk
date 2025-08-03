@@ -141,7 +141,9 @@ func createShareDatabase(database: any DatabaseReader, since startDate: Date?) t
     // If a startDate is provided, remove old records from the copied database
     if let startDate {
         try shareDB.write { db in
-            try db.execute(sql: "DELETE FROM locations WHERE timestamp < ?", arguments: [startDate])
+            try Location.delete()
+                .where { $0.timestamp < startDate }
+                .execute(db)
         }
         try shareDB.vacuum()
     }

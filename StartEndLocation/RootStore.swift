@@ -183,10 +183,11 @@ import SharingGRDB
             // Update session end date
             withErrorReporting {
                 try database.write { db in
-                    try db.execute(
-                        sql: "UPDATE sessions SET endDate = ? WHERE id = ?",
-                        arguments: [date(), sessionID]
-                    )
+                    try Session.update {
+                        $0.endDate = date()
+                    }
+                    .where { $0.id == sessionID }
+                    .execute(db)
                 }
             }
         case .waitingForSignificantChange:
@@ -279,10 +280,11 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                     // No timeout - close session immediately
                     withErrorReporting {
                         try self.database.write { db in
-                            try db.execute(
-                                sql: "UPDATE sessions SET endDate = ? WHERE id = ?",
-                                arguments: [date(), sessionID]
-                            )
+                            try Session.update {
+                                $0.endDate = date()
+                            }
+                            .where { $0.id == sessionID }
+                            .execute(db)
                         }
                     }
                 }
@@ -315,10 +317,11 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                 // Update session to mark as on train
                 withErrorReporting {
                     try database.write { db in
-                        try db.execute(
-                            sql: "UPDATE sessions SET isOnTrain = 1 WHERE id = ?",
-                            arguments: [sessionID]
-                        )
+                        try Session.update {
+                            $0.isOnTrain = true
+                        }
+                        .where { $0.id == sessionID }
+                        .execute(db)
                     }
                 }
 

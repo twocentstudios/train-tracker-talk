@@ -3,19 +3,25 @@ import SharingGRDB
 
 @Table struct Session: Hashable, Identifiable {
     let id: UUID
-    var date: Date
+    var startDate: Date
+    var endDate: Date?
     var notes: String?
     var isFromColdLaunch: Bool
+    var isOnTrain: Bool
 
     init(
         id: UUID,
-        date: Date,
+        startDate: Date,
+        endDate: Date? = nil,
         notes: String? = nil,
-        isFromColdLaunch: Bool = false
+        isFromColdLaunch: Bool = false,
+        isOnTrain: Bool = false
     ) {
         self.id = id
-        self.date = date
+        self.startDate = startDate
+        self.endDate = endDate
         self.notes = notes
         self.isFromColdLaunch = isFromColdLaunch
+        self.isOnTrain = isOnTrain
     }
 }

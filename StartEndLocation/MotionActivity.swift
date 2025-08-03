@@ -1,9 +1,10 @@
 import CoreMotion
 import Foundation
+import SharingGRDB
 import SwiftUI
 import UniformTypeIdentifiers
 
-enum MotionActivityConfidence: String, Codable, CaseIterable {
+enum MotionActivityConfidence: String, Codable, CaseIterable, QueryBindable {
     case low
     case medium
     case high
@@ -33,7 +34,7 @@ enum MotionActivityConfidence: String, Codable, CaseIterable {
     }
 }
 
-struct MotionActivity: Hashable, Identifiable, Codable {
+@Table struct MotionActivity: Hashable, Identifiable, Codable {
     let id: UUID
     let startDate: Date
     let confidence: MotionActivityConfidence
@@ -43,6 +44,7 @@ struct MotionActivity: Hashable, Identifiable, Codable {
     let automotive: Bool
     let cycling: Bool
     let unknown: Bool
+    var sessionID: Session.ID?
 
     init(
         id: UUID = UUID(),
@@ -53,7 +55,8 @@ struct MotionActivity: Hashable, Identifiable, Codable {
         running: Bool,
         automotive: Bool,
         cycling: Bool,
-        unknown: Bool
+        unknown: Bool,
+        sessionID: Session.ID? = nil
     ) {
         self.id = id
         self.startDate = startDate
@@ -64,11 +67,12 @@ struct MotionActivity: Hashable, Identifiable, Codable {
         self.automotive = automotive
         self.cycling = cycling
         self.unknown = unknown
+        self.sessionID = sessionID
     }
 }
 
 extension MotionActivity {
-    init(from cmActivity: CMMotionActivity) {
+    init(from cmActivity: CMMotionActivity, sessionID: Session.ID? = nil) {
         self.init(
             startDate: cmActivity.startDate,
             confidence: MotionActivityConfidence(from: cmActivity.confidence),
@@ -77,7 +81,8 @@ extension MotionActivity {
             running: cmActivity.running,
             automotive: cmActivity.automotive,
             cycling: cmActivity.cycling,
-            unknown: cmActivity.unknown
+            unknown: cmActivity.unknown,
+            sessionID: sessionID
         )
     }
 }

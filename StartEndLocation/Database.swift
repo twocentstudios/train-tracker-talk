@@ -43,14 +43,20 @@ func appDatabase() throws -> any DatabaseWriter {
         try db.execute(sql: """
         CREATE TABLE sessions (
             id TEXT PRIMARY KEY NOT NULL,
-            date TEXT NOT NULL,
+            startDate TEXT NOT NULL,
+            endDate TEXT,
             notes TEXT,
-            isFromColdLaunch INTEGER NOT NULL DEFAULT 0
+            isFromColdLaunch INTEGER NOT NULL DEFAULT 0,
+            isOnTrain INTEGER NOT NULL DEFAULT 0
         ) STRICT
         """)
 
         try db.execute(sql: """
-        CREATE INDEX idx_session_date ON sessions(date)
+        CREATE INDEX idx_session_startDate ON sessions(startDate)
+        """)
+
+        try db.execute(sql: """
+        CREATE INDEX idx_session_endDate ON sessions(endDate)
         """)
     }
 
@@ -78,6 +84,33 @@ func appDatabase() throws -> any DatabaseWriter {
 
         try db.execute(sql: """
         CREATE INDEX idx_location_sessionID ON locations(sessionID)
+        """)
+    }
+
+    migrator.registerMigration("Create `motionActivities` table") { db in
+        try db.execute(sql: """
+        CREATE TABLE motionActivities (
+            id TEXT PRIMARY KEY NOT NULL,
+            startDate TEXT NOT NULL,
+            confidence TEXT NOT NULL,
+            stationary INTEGER NOT NULL,
+            walking INTEGER NOT NULL,
+            running INTEGER NOT NULL,
+            automotive INTEGER NOT NULL,
+            cycling INTEGER NOT NULL,
+            unknown INTEGER NOT NULL,
+            sessionID TEXT,
+
+            FOREIGN KEY(sessionID) REFERENCES sessions(id) ON DELETE CASCADE
+        ) STRICT
+        """)
+
+        try db.execute(sql: """
+        CREATE INDEX idx_motionActivity_startDate ON motionActivities(startDate)
+        """)
+
+        try db.execute(sql: """
+        CREATE INDEX idx_motionActivity_sessionID ON motionActivities(sessionID)
         """)
     }
 

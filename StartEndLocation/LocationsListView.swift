@@ -6,7 +6,7 @@ import SwiftUI
 struct LocationsListView: View {
     @ObservationIgnored
     @FetchAll(
-        Session.all.order { $0.date.desc() },
+        Session.all.order { $0.startDate.desc() },
         animation: .default
     )
     var sessions: [Session]
@@ -40,7 +40,7 @@ struct SessionRowView: View {
     var body: some View {
         Button(action: onTap) {
             HStack {
-                Text(session.date, format: .dateTime.month(.abbreviated).day().hour().minute())
+                Text(session.startDate, format: .dateTime.month(.abbreviated).day().hour().minute())
                     .font(.headline)
                     .foregroundStyle(.primary)
                 if let notes = session.notes, !notes.isEmpty {
@@ -127,7 +127,7 @@ struct SessionDetailView: View {
                 .padding()
                 .background(.regularMaterial)
             }
-            .navigationTitle(session.date.formatted(.dateTime.month(.abbreviated).day().hour().minute()))
+            .navigationTitle(session.startDate.formatted(.dateTime.month(.abbreviated).day().hour().minute()))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

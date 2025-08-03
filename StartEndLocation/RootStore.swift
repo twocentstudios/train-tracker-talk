@@ -1,12 +1,14 @@
 import CoreLocation
 import CoreMotion
+import GRDB
 import Observation
 import SharingGRDB
 
 @MainActor @Observable final class RootStore: NSObject {
     private enum LocationMonitoringState {
         case waitingForSignificantChange
-        case collectingLiveUpdates(sessionID: UUID, startTime: Date)
+        case evaluatingSession(sessionID: UUID, startTime: Date, timeoutDuration: TimeInterval, speedCount: Int)
+        case collectingLiveUpdates(sessionID: UUID, startTime: Date, speedCount: Int, lastHighSpeedTime: Date?)
     }
 
     @ObservationIgnored private let manager: CLLocationManager
@@ -17,10 +19,9 @@ import SharingGRDB
     private(set) var motionAuthorizationStatus: CMAuthorizationStatus
     private(set) var isMotionAvailable: Bool
     private(set) var isMonitoringSignificantLocationChanges: Bool
-    private var hasHandledFirstLocationFromColdLaunch = false
     private var locationMonitoringState: LocationMonitoringState = .waitingForSignificantChange
-    private var sessionTask: Task<Void, Never>?
-    private var lastSessionEndTime: Date?
+    private var motionActivityTask: Task<Void, Never>?
+    private var evaluationTimeoutTask: Task<Void, Never>?
 
     override init() {
         manager = CLLocationManager()
@@ -85,33 +86,127 @@ import SharingGRDB
     }
 
     private func startLiveLocationUpdates(for sessionID: UUID) {
-        guard sessionTask == nil else {
-            assertionFailure("sessionTask is already active")
-            return
-        }
-
         @Dependency(\.date) var date
         let startTime = date()
-        locationMonitoringState = .collectingLiveUpdates(sessionID: sessionID, startTime: startTime)
-        lastSessionEndTime = nil
+        locationMonitoringState = .collectingLiveUpdates(sessionID: sessionID, startTime: startTime, speedCount: 0, lastHighSpeedTime: nil)
 
         manager.startUpdatingLocation()
-
-        sessionTask = Task { @MainActor [weak self] in
-            do {
-                try await Task.sleep(for: .seconds(180))
-                self?.stopLiveLocationUpdates()
-            } catch {}
-        }
     }
 
     private func stopLiveLocationUpdates() {
-        @Dependency(\.date) var date
         manager.stopUpdatingLocation()
-        sessionTask?.cancel()
-        sessionTask = nil
-        lastSessionEndTime = date()
+        stopMotionActivityMonitoring()
+        evaluationTimeoutTask?.cancel()
+        evaluationTimeoutTask = nil
         locationMonitoringState = .waitingForSignificantChange
+    }
+
+    private func checkMotionActivityHistory(for date: Date) async -> TimeInterval? {
+        @Dependency(\.date) var currentDate
+        let endDate = date
+        let startDate = endDate.addingTimeInterval(-300) // 5 minutes
+
+        return await withCheckedContinuation { continuation in
+            activityManager.queryActivityStarting(
+                from: startDate,
+                to: endDate,
+                to: OperationQueue.main
+            ) { activities, error in
+                guard let activities, error == nil else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // Filter for high confidence only
+                let highConfidenceActivities = activities.filter { $0.confidence == .high }
+
+                // Check in order: automotive, walking, cycling, stationary
+                for activity in highConfidenceActivities.reversed() {
+                    if activity.automotive {
+                        continuation.resume(returning: 300) // 5 minutes
+                        return
+                    } else if activity.walking {
+                        continuation.resume(returning: 60) // 1 minute
+                        return
+                    } else if activity.cycling {
+                        continuation.resume(returning: 60) // 1 minute
+                        return
+                    }
+                }
+
+                // Check if only stationary or no data
+                let hasOnlyStationary = highConfidenceActivities.allSatisfy(\.stationary)
+                continuation.resume(returning: hasOnlyStationary || highConfidenceActivities.isEmpty ? nil : 60)
+            }
+        }
+    }
+
+    private func startMotionActivityMonitoring(for sessionID: UUID) {
+        guard isMotionAvailable, isMotionAuthorized else { return }
+
+        motionActivityTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            activityManager.startActivityUpdates(to: OperationQueue.main) { [weak self] activity in
+                guard let self, let activity else { return }
+
+                let motionActivity = MotionActivity(from: activity, sessionID: sessionID)
+
+                withErrorReporting {
+                    try self.database.write { db in
+                        try MotionActivity.insert { motionActivity }.execute(db)
+                    }
+                }
+
+                // Check for stop condition: walking with high confidence
+                if activity.walking, activity.confidence == .high {
+                    Task { @MainActor [weak self] in
+                        self?.handleSessionEnd()
+                    }
+                }
+            }
+        }
+    }
+
+    private func stopMotionActivityMonitoring() {
+        activityManager.stopActivityUpdates()
+        motionActivityTask?.cancel()
+        motionActivityTask = nil
+    }
+
+    private func handleSessionEnd() {
+        @Dependency(\.date) var date
+
+        switch locationMonitoringState {
+        case let .evaluatingSession(sessionID, _, _, _),
+             let .collectingLiveUpdates(sessionID, _, _, _):
+            // Update session end date
+            withErrorReporting {
+                try database.write { db in
+                    try db.execute(
+                        sql: "UPDATE sessions SET endDate = ? WHERE id = ?",
+                        arguments: [date(), sessionID]
+                    )
+                }
+            }
+        case .waitingForSignificantChange:
+            break
+        }
+
+        stopLiveLocationUpdates()
+    }
+
+    private func writeMotionActivityHistory(activities: [CMMotionActivity], for sessionID: UUID) {
+        @Dependency(\.uuid) var uuid
+
+        withErrorReporting {
+            try database.write { db in
+                for cmActivity in activities {
+                    let motionActivity = MotionActivity(from: cmActivity, sessionID: sessionID)
+                    try MotionActivity.insert { motionActivity }.execute(db)
+                }
+            }
+        }
     }
 }
 
@@ -121,20 +216,14 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
         @Dependency(\.uuid) var uuid
         @Dependency(\.date) var date
 
-        // Assert if called within 10 seconds of session ending
-        if let lastEndTime = lastSessionEndTime, date().timeIntervalSince(lastEndTime) < 10.0 {
-            assertionFailure("didUpdateLocations called within 10 seconds of session ending - cannot determine if this is from significant location change or final locations from startUpdatingLocation")
-        }
-
         switch locationMonitoringState {
         case .waitingForSignificantChange:
             // This is a significant location change - create new session
             let sessionID = uuid()
-            let isFromColdLaunch = !hasHandledFirstLocationFromColdLaunch
 
             withErrorReporting {
                 try database.write { db in
-                    let session = Session(id: sessionID, date: date(), isFromColdLaunch: isFromColdLaunch)
+                    let session = Session(id: sessionID, startDate: date(), isFromColdLaunch: false)
                     try Session.insert { session }.execute(db)
 
                     for clLocation in locations {
@@ -144,22 +233,137 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                 }
             }
 
-            if !hasHandledFirstLocationFromColdLaunch {
-                hasHandledFirstLocationFromColdLaunch = true
+            // Check motion activity history and transition to evaluating state
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+
+                // Check motion history for timeout
+                let timeout = await checkMotionActivityHistory(for: date())
+
+                // Query and write historical motion activities
+                let endDate = date()
+                let startDate = endDate.addingTimeInterval(-300) // 5 minutes
+                activityManager.queryActivityStarting(
+                    from: startDate,
+                    to: endDate,
+                    to: OperationQueue.main
+                ) { [weak self] activities, _ in
+                    if let activities {
+                        self?.writeMotionActivityHistory(activities: activities, for: sessionID)
+                    }
+                }
+
+                if let timeout {
+                    // Transition to evaluating state with timeout
+                    locationMonitoringState = .evaluatingSession(
+                        sessionID: sessionID,
+                        startTime: date(),
+                        timeoutDuration: timeout,
+                        speedCount: 0
+                    )
+
+                    // Start location updates
+                    manager.startUpdatingLocation()
+
+                    // Start motion activity monitoring
+                    startMotionActivityMonitoring(for: sessionID)
+
+                    // Set timeout
+                    evaluationTimeoutTask = Task { @MainActor [weak self] in
+                        do {
+                            try await Task.sleep(for: .seconds(timeout))
+                            self?.handleSessionEnd()
+                        } catch {}
+                    }
+                } else {
+                    // No timeout - close session immediately
+                    handleSessionEnd()
+                }
             }
 
-            // Start collecting live updates for 3 minutes
-            startLiveLocationUpdates(for: sessionID)
+        case let .evaluatingSession(sessionID, startTime, timeoutDuration, speedCount):
+            // Track locations and check for speed threshold
+            var updatedSpeedCount = speedCount
 
-        case let .collectingLiveUpdates(sessionID, _):
-            // This is from live location updates - use current session
             withErrorReporting {
                 try database.write { db in
                     for clLocation in locations {
                         let location = Location(from: clLocation, id: uuid(), sessionID: sessionID)
                         try Location.insert { location }.execute(db)
+
+                        // Check speed threshold
+                        if clLocation.speed >= 6.0 {
+                            updatedSpeedCount += 1
+                        }
                     }
                 }
+            }
+
+            // Check if we should transition to collecting state
+            if updatedSpeedCount >= 3 {
+                // Cancel timeout
+                evaluationTimeoutTask?.cancel()
+                evaluationTimeoutTask = nil
+
+                // Update session to mark as on train
+                withErrorReporting {
+                    try database.write { db in
+                        try db.execute(
+                            sql: "UPDATE sessions SET isOnTrain = 1 WHERE id = ?",
+                            arguments: [sessionID]
+                        )
+                    }
+                }
+
+                // Transition to collecting state
+                let lastHighSpeed = locations.last { $0.speed >= 6.0 }?.timestamp
+                locationMonitoringState = .collectingLiveUpdates(
+                    sessionID: sessionID,
+                    startTime: startTime,
+                    speedCount: 0,
+                    lastHighSpeedTime: lastHighSpeed
+                )
+            } else {
+                // Update state with new speed count
+                locationMonitoringState = .evaluatingSession(
+                    sessionID: sessionID,
+                    startTime: startTime,
+                    timeoutDuration: timeoutDuration,
+                    speedCount: updatedSpeedCount
+                )
+            }
+
+        case let .collectingLiveUpdates(sessionID, startTime, speedCount, lastHighSpeedTime):
+            // Continue collecting and check for stop conditions
+            var updatedLastHighSpeedTime = lastHighSpeedTime
+
+            withErrorReporting {
+                try database.write { db in
+                    for clLocation in locations {
+                        let location = Location(from: clLocation, id: uuid(), sessionID: sessionID)
+                        try Location.insert { location }.execute(db)
+
+                        // Update last high speed time
+                        if clLocation.speed >= 6.0 {
+                            updatedLastHighSpeedTime = clLocation.timestamp
+                        }
+                    }
+                }
+            }
+
+            // Check 5-minute timeout condition
+            if let lastHighSpeed = updatedLastHighSpeedTime,
+               date().timeIntervalSince(lastHighSpeed) > 300
+            {
+                handleSessionEnd()
+            } else {
+                // Update state
+                locationMonitoringState = .collectingLiveUpdates(
+                    sessionID: sessionID,
+                    startTime: startTime,
+                    speedCount: speedCount,
+                    lastHighSpeedTime: updatedLastHighSpeedTime
+                )
             }
         }
     }

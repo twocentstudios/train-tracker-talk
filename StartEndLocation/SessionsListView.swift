@@ -3,7 +3,7 @@ import MapKit
 import SharingGRDB
 import SwiftUI
 
-struct LocationsListView: View {
+struct SessionsListView: View {
     @ObservationIgnored
     @FetchAll(
         Session.all.order { $0.startDate.desc() },
@@ -103,7 +103,6 @@ struct SessionRowView: View {
     }
 }
 
-
 struct LocationRowView: View {
     let location: Location
 
@@ -138,4 +137,3 @@ struct LocationRowView: View {
         .padding(.vertical, 2)
     }
 }
-

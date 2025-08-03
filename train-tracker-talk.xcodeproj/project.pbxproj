@@ -11,6 +11,7 @@
 		08388A815761079232E4A7A5 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997C9461B3362018AE665CE9 /* SessionDetailView.swift */; };
 		0BD24F885FC96153684E2F1F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF8C1C445D58EB6666F7CE8C /* SharingGRDB */; };
 		1EAFD3CE313896296E746E9D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DE96769FB2682C96E7AEE19 /* Preview Assets.xcassets */; };
+		2338EB38594F35BFA52F6424 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78E17CDAB6D7D006BC6145F /* SessionsListView.swift */; };
 		246095C43F68186137D99F59 /* TimelineMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AD4E5F8A1D8913D88A7A8F /* TimelineMotionActivityListView.swift */; };
 		24FD563F397813FD77676C51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BF42960E46892C2915F62E /* AppDelegate.swift */; };
 		28C5D2523F7540914194926E /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA85299D526CCD40F8FA7F /* RootStore.swift */; };
@@ -49,7 +50,6 @@
 		BCD3E69ED74B4A4569328CC5 /* MotionActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56884514DD5574AF0E79F52 /* MotionActivityApp.swift */; };
 		C03D5E3539F35B5D5C4F77DB /* MotionActivityGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D01E4D3CB69187EA2A47BA /* MotionActivityGroup.swift */; };
 		CC03F24C2FAFD8292FD1FF1B /* SignificantStartLocationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */; };
-		CC8CF164994EDAE5A7DC6C2C /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CE40000A62424A3DB41C95 /* LocationsListView.swift */; };
 		D2F42FAE0691BB13515544BB /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */; };
 		DC5FB667C17AB9F677415726 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 7CBCFCEE905CD52DBBABE955 /* SharingGRDB */; };
 		E162EC30045FE1AD0C6B7FB5 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5E8C97371DBEF2370B5B0550 /* SharingGRDB */; };
@@ -97,7 +97,6 @@
 		8E0B1AF77B1C360C708EF95C /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
 		918EA5E82B17F515ABC46999 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		91A980B6C9D8758336F7EFD2 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
-		91CE40000A62424A3DB41C95 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
 		94D01E4D3CB69187EA2A47BA /* MotionActivityGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityGroup.swift; sourceTree = "<group>"; };
 		95304CDAE4CA09B57E2D0FF6 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
 		997C9461B3362018AE665CE9 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
@@ -114,6 +113,7 @@
 		BD13A584825DAB91B60CD092 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		C4265C695B3D3FCAF7294813 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		D1BF42960E46892C2915F62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E78E17CDAB6D7D006BC6145F /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		E87CA1C895354D04B8033CF9 /* HistoricalMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalMotionActivityListView.swift; sourceTree = "<group>"; };
 		EC84DD785019854A366C3B45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EE705A7A0AF5A9C780685B5B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -175,12 +175,12 @@
 				95304CDAE4CA09B57E2D0FF6 /* ExportDatabaseView.swift */,
 				82BBD0FD4A65EEF752CC1778 /* Info.plist */,
 				9E12E8055F2BD4273C80AA7F /* Location.swift */,
-				91CE40000A62424A3DB41C95 /* LocationsListView.swift */,
 				B1DBB7CB13429163383ED787 /* MotionActivity.swift */,
 				0BAA85299D526CCD40F8FA7F /* RootStore.swift */,
 				918EA5E82B17F515ABC46999 /* RootView.swift */,
 				1B8A4B00357F402F88EA6A4D /* Session.swift */,
 				997C9461B3362018AE665CE9 /* SessionDetailView.swift */,
+				E78E17CDAB6D7D006BC6145F /* SessionsListView.swift */,
 				44C7A324E0E2ED1C631BB4FD /* StartEndLocationApp.swift */,
 				7355C6E994570F3FC243F247 /* Preview Content */,
 			);
@@ -505,12 +505,12 @@
 				A5CFA620F518D84E19DC63E2 /* Database.swift in Sources */,
 				88774950FFC0BCE756A06405 /* ExportDatabaseView.swift in Sources */,
 				AB611A5BA653BAA2B0BF096A /* Location.swift in Sources */,
-				CC8CF164994EDAE5A7DC6C2C /* LocationsListView.swift in Sources */,
 				36DB86A69EB4736D4A8CF7E2 /* MotionActivity.swift in Sources */,
 				28C5D2523F7540914194926E /* RootStore.swift in Sources */,
 				93E953E899EC8D5555D9F677 /* RootView.swift in Sources */,
 				3ECCFB828971F3FF6D0AAE23 /* Session.swift in Sources */,
 				08388A815761079232E4A7A5 /* SessionDetailView.swift in Sources */,
+				2338EB38594F35BFA52F6424 /* SessionsListView.swift in Sources */,
 				716DE7557C82DD9149668CB4 /* StartEndLocationApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

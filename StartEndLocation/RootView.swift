@@ -24,7 +24,7 @@ struct RootView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 NavigationStack {
-                    LocationsListView()
+                    SessionsListView()
                         .toolbarTitleDisplayMode(.inline)
                         .navigationTitle("Sessions")
                 }

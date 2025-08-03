@@ -120,23 +120,20 @@ import SharingGRDB
                 // Filter for high confidence only
                 let highConfidenceActivities = activities.filter { $0.confidence == .high }
 
-                // Check in order: automotive, walking, cycling, stationary
-                for activity in highConfidenceActivities.reversed() {
-                    if activity.automotive {
-                        continuation.resume(returning: 300) // 5 minutes
-                        return
-                    } else if activity.walking {
-                        continuation.resume(returning: 60) // 1 minute
-                        return
-                    } else if activity.cycling {
-                        continuation.resume(returning: 60) // 1 minute
-                        return
-                    }
-                }
+                // Count activities by type
+                let automotiveCount = highConfidenceActivities.filter(\.automotive).count
+                let walkingCount = highConfidenceActivities.filter(\.walking).count
+                let cyclingCount = highConfidenceActivities.filter(\.cycling).count
 
-                // Check if only stationary or no data
-                let hasOnlyStationary = highConfidenceActivities.allSatisfy(\.stationary)
-                continuation.resume(returning: hasOnlyStationary || highConfidenceActivities.isEmpty ? nil : 60)
+                // Check in priority order: automotive, walking/cycling, stationary/none
+                if automotiveCount > 0 {
+                    continuation.resume(returning: 300) // 5 minutes
+                } else if walkingCount > 0 || cyclingCount > 0 {
+                    continuation.resume(returning: 60) // 1 minute
+                } else {
+                    // Only stationary, no data, or no movement activities
+                    continuation.resume(returning: nil)
+                }
             }
         }
     }

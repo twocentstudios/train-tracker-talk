@@ -15,6 +15,7 @@ fileGroups:
   - SignificantChange/CLAUDE.md
   - SignificantStartLocation/CLAUDE.md
   - MotionActivity/CLAUDE.md
+  - StartEndLocation/CLAUDE.md
 
 packages:
   SharingGRDB:
@@ -100,11 +101,11 @@ targets:
         NSLocationAlwaysAndWhenInUseUsageDescription: "Document signficant locations in the background"
         NSLocationWhenInUseUsageDescription: "Document signficant locations"
 
-  MotionActivity:
+  StartEndLocation:
     type: application
     platform: iOS
     sources:
-      - path: MotionActivity
+      - path: StartEndLocation
         excludes:
           - "CLAUDE.md"
     dependencies:
@@ -113,13 +114,16 @@ targets:
       DEVELOPMENT_TEAM: YK25EF78NT
       TARGETED_DEVICE_FAMILY: "1"
     info:
-      path: MotionActivity/Info.plist
+      path: StartEndLocation/Info.plist
       properties:
-        CFBundleDisplayName: 03 MotionActivity
+        CFBundleDisplayName: 04 StartEndLoc
         CFBundleShortVersionString: "1.0"
         CFBundleVersion: "1"
         LSRequiresIPhoneOS: true
         UILaunchStoryboardName: LaunchScreen
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSMotionUsageDescription: "Access motion data to track activity while riding trains"
+        UIBackgroundModes:
+          - location
+        NSLocationAlwaysAndWhenInUseUsageDescription: "Document signficant locations in the background"
+        NSLocationWhenInUseUsageDescription: "Document signficant locations"

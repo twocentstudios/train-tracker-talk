@@ -333,8 +333,8 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                     speedCount: 0,
                     lastHighSpeedTime: lastHighSpeed
                 )
-            } else {
-                // Update state with new speed count
+            } else if updatedSpeedCount != speedCount {
+                // Update state only if speed count changed
                 locationMonitoringState = .evaluatingSession(
                     sessionID: sessionID,
                     startTime: startTime,
@@ -366,8 +366,8 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                date().timeIntervalSince(lastHighSpeed) > 300
             {
                 handleSessionEnd()
-            } else {
-                // Update state
+            } else if updatedLastHighSpeedTime != lastHighSpeedTime {
+                // Update state only if last high speed time changed
                 locationMonitoringState = .collectingLiveUpdates(
                     sessionID: sessionID,
                     startTime: startTime,

@@ -127,3 +127,4 @@ targets:
           - location
         NSLocationAlwaysAndWhenInUseUsageDescription: "Document signficant locations in the background"
         NSLocationWhenInUseUsageDescription: "Document signficant locations"
+        NSMotionUsageDescription: "Access motion data to track activity while riding trains"

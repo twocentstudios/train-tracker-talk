@@ -1,4 +1,5 @@
 import CoreLocation
+import CoreMotion
 import Observation
 import SharingGRDB
 
@@ -9,9 +10,12 @@ import SharingGRDB
     }
 
     @ObservationIgnored private let manager: CLLocationManager
+    @ObservationIgnored private let activityManager: CMMotionActivityManager
     @ObservationIgnored @Dependency(\.defaultDatabase) private var database
 
     private(set) var authorizationStatus: CLAuthorizationStatus
+    private(set) var motionAuthorizationStatus: CMAuthorizationStatus
+    private(set) var isMotionAvailable: Bool
     private(set) var isMonitoringSignificantLocationChanges: Bool
     private var hasHandledFirstLocationFromColdLaunch = false
     private var locationMonitoringState: LocationMonitoringState = .waitingForSignificantChange
@@ -26,12 +30,20 @@ import SharingGRDB
         authorizationStatus = manager.authorizationStatus
         isMonitoringSignificantLocationChanges = false
 
+        activityManager = CMMotionActivityManager()
+        motionAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
+        isMotionAvailable = CMMotionActivityManager.isActivityAvailable()
+
         super.init()
 
         manager.delegate = self
     }
 
-    func requestAuthorization() {
+    var isMotionAuthorized: Bool {
+        motionAuthorizationStatus == .authorized
+    }
+
+    func requestLocationAuthorization() {
         switch manager.authorizationStatus {
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
@@ -39,6 +51,21 @@ import SharingGRDB
             manager.requestAlwaysAuthorization()
         default:
             return
+        }
+    }
+
+    func requestMotionAuthorization() {
+        guard isMotionAvailable, motionAuthorizationStatus != .authorized else { return }
+
+        let startDate = Date().addingTimeInterval(-1)
+        let endDate = Date()
+
+        activityManager.queryActivityStarting(
+            from: startDate,
+            to: endDate,
+            to: OperationQueue.main
+        ) { [weak self] _, _ in
+            self?.motionAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
         }
     }
 

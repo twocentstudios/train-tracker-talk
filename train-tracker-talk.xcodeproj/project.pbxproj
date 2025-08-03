@@ -15,6 +15,7 @@
 		28C5D2523F7540914194926E /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA85299D526CCD40F8FA7F /* RootStore.swift */; };
 		2B838D27DFA29B434C7FDC0B /* LiveMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C45715C100CCC41E6D7837E /* LiveMotionActivityListView.swift */; };
 		365993E605D8CBCE5EE46C76 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DB8414A61BDACE26E37CF6 /* Database.swift */; };
+		36DB86A69EB4736D4A8CF7E2 /* MotionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DBB7CB13429163383ED787 /* MotionActivity.swift */; };
 		37C31ED4C008EEC1DB8DC26A /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D248DB47E5D3E0016341B09 /* LocationsListView.swift */; };
 		3A68E1EF527846AEFA9F0872 /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A980B6C9D8758336F7EFD2 /* LocationsListView.swift */; };
 		3EA748AB832D8076E5FCCAB8 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9B3D31D2A5F5734B67586A /* Location.swift */; };
@@ -103,6 +104,7 @@
 		9ED2A24D32A655C7D1FE5C91 /* MotionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivity.swift; sourceTree = "<group>"; };
 		A62DBF78BE6AC7AFB437F226 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		ABA0F7F3304FEDC073F6D5B8 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		B1DBB7CB13429163383ED787 /* MotionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivity.swift; sourceTree = "<group>"; };
 		B56884514DD5574AF0E79F52 /* MotionActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityApp.swift; sourceTree = "<group>"; };
 		B73FE975540A245E41FAFE34 /* SignificantChange.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantChange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B95AE31087A9034BB2203463 /* MotionActivity.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MotionActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,6 +174,7 @@
 				82BBD0FD4A65EEF752CC1778 /* Info.plist */,
 				9E12E8055F2BD4273C80AA7F /* Location.swift */,
 				91CE40000A62424A3DB41C95 /* LocationsListView.swift */,
+				B1DBB7CB13429163383ED787 /* MotionActivity.swift */,
 				0BAA85299D526CCD40F8FA7F /* RootStore.swift */,
 				918EA5E82B17F515ABC46999 /* RootView.swift */,
 				1B8A4B00357F402F88EA6A4D /* Session.swift */,
@@ -500,6 +503,7 @@
 				88774950FFC0BCE756A06405 /* ExportDatabaseView.swift in Sources */,
 				AB611A5BA653BAA2B0BF096A /* Location.swift in Sources */,
 				CC8CF164994EDAE5A7DC6C2C /* LocationsListView.swift in Sources */,
+				36DB86A69EB4736D4A8CF7E2 /* MotionActivity.swift in Sources */,
 				28C5D2523F7540914194926E /* RootStore.swift in Sources */,
 				93E953E899EC8D5555D9F677 /* RootView.swift in Sources */,
 				3ECCFB828971F3FF6D0AAE23 /* Session.swift in Sources */,

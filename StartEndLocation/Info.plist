@@ -26,6 +26,8 @@
 	<string>Document signficant locations in the background</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Document signficant locations</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Access motion data to track activity while riding trains</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

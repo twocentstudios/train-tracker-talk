@@ -277,7 +277,14 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                     }
                 } else {
                     // No timeout - close session immediately
-                    handleSessionEnd()
+                    withErrorReporting {
+                        try self.database.write { db in
+                            try db.execute(
+                                sql: "UPDATE sessions SET endDate = ? WHERE id = ?",
+                                arguments: [date(), sessionID]
+                            )
+                        }
+                    }
                 }
             }
 

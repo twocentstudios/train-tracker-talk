@@ -19,6 +19,7 @@ import SharingGRDB
     private(set) var motionAuthorizationStatus: CMAuthorizationStatus
     private(set) var isMotionAvailable: Bool
     private(set) var isMonitoringSignificantLocationChanges: Bool
+    private var hasHandledFirstLocationFromColdLaunch = false
     private var locationMonitoringState: LocationMonitoringState = .waitingForSignificantChange
     private var motionActivityTask: Task<Void, Never>?
     private var evaluationTimeoutTask: Task<Void, Never>?
@@ -216,10 +217,11 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
         case .waitingForSignificantChange:
             // This is a significant location change - create new session
             let sessionID = uuid()
+            let isFromColdLaunch = !hasHandledFirstLocationFromColdLaunch
 
             withErrorReporting {
                 try database.write { db in
-                    let session = Session(id: sessionID, startDate: date(), isFromColdLaunch: false)
+                    let session = Session(id: sessionID, startDate: date(), isFromColdLaunch: isFromColdLaunch)
                     try Session.insert { session }.execute(db)
 
                     for clLocation in locations {
@@ -227,6 +229,10 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                         try Location.insert { location }.execute(db)
                     }
                 }
+            }
+
+            if !hasHandledFirstLocationFromColdLaunch {
+                hasHandledFirstLocationFromColdLaunch = true
             }
 
             // Check motion activity history and transition to evaluating state

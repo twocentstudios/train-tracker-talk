@@ -157,9 +157,7 @@ import SharingGRDB
 
                 // Check for stop condition: walking with high confidence
                 if activity.walking, activity.confidence == .high {
-                    Task { @MainActor [weak self] in
-                        self?.handleSessionEnd()
-                    }
+                    handleSessionEnd()
                 }
             }
         }

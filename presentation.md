@@ -142,7 +142,7 @@ Significant-change behavior...
 - while walking
 - on local train
 - on express train
-- in car
+- in automobile
 - on bike
 - at home
 

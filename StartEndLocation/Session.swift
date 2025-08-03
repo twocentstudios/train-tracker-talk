@@ -25,3 +25,27 @@ import SharingGRDB
         self.isOnTrain = isOnTrain
     }
 }
+
+extension Session {
+    var isComplete: Bool {
+        endDate != nil
+    }
+
+    var duration: TimeInterval? {
+        guard let endDate else { return nil }
+        return endDate.timeIntervalSince(startDate)
+    }
+
+    var durationFormatted: String {
+        guard let duration else { return "Active" }
+
+        let minutes = Int(duration) / 60
+        let seconds = Int(duration) % 60
+
+        if minutes > 0 {
+            return "\(minutes)m \(seconds)s"
+        } else {
+            return "\(seconds)s"
+        }
+    }
+}

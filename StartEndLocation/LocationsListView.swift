@@ -40,116 +40,69 @@ struct SessionRowView: View {
     var body: some View {
         Button(action: onTap) {
             HStack {
-                Text(session.startDate, format: .dateTime.month(.abbreviated).day().hour().minute())
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                if let notes = session.notes, !notes.isEmpty {
-                    Text(notes)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                // Status indicator
+                Circle()
+                    .fill(session.isComplete ? Color.green : Color.orange)
+                    .frame(width: 8, height: 8)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text(session.startDate, format: .dateTime.month(.abbreviated).day().hour().minute())
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+
+                        Text(session.durationFormatted)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(.secondary.opacity(0.2))
+                            .cornerRadius(4)
+                    }
+
+                    if let notes = session.notes, !notes.isEmpty {
+                        Text(notes)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
                 }
 
-                if session.isFromColdLaunch {
-                    Spacer()
-                    Image(systemName: "snowflake")
-                        .foregroundStyle(.secondary)
-                        .foregroundStyle(.blue)
-                        .padding(.horizontal, 4)
-                        .padding(.vertical, 4)
-                        .background(.blue.opacity(0.2))
-                        .cornerRadius(4)
-                        .imageScale(.small)
+                Spacer()
+
+                HStack(spacing: 8) {
+                    // Train indicator
+                    if session.isOnTrain {
+                        Image(systemName: "tram.fill")
+                            .foregroundStyle(.primary)
+                            .foregroundStyle(.purple)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 4)
+                            .background(.purple.opacity(0.2))
+                            .cornerRadius(4)
+                            .imageScale(.small)
+                    }
+
+                    // Cold launch indicator
+                    if session.isFromColdLaunch {
+                        Image(systemName: "snowflake")
+                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.blue)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 4)
+                            .background(.blue.opacity(0.2))
+                            .cornerRadius(4)
+                            .imageScale(.small)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(minHeight: 36)
+            .frame(minHeight: 44)
             .contentShape(Rectangle())
         }
     }
 }
 
-struct SessionDetailView: View {
-    let session: Session
-    @Environment(\.dismiss) private var dismiss
-    @Dependency(\.defaultDatabase) private var database
-
-    @ObservationIgnored
-    @FetchAll var locations: [Location]
-
-    @State private var notes: String
-
-    init(session: Session) {
-        self.session = session
-        _locations = FetchAll(
-            Location
-                .where { $0.sessionID.eq(session.id) }
-                .order { $0.timestamp.asc() },
-            animation: .default
-        )
-        _notes = State(initialValue: session.notes ?? "")
-    }
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                Map(initialPosition: .automatic) {
-                    if locations.count > 1 {
-                        let coordinates = locations.map { location in
-                            CLLocationCoordinate2D(
-                                latitude: location.latitude,
-                                longitude: location.longitude
-                            )
-                        }
-                        MapPolyline(coordinates: coordinates)
-                            .stroke(.blue, lineWidth: 3)
-                    }
-                }
-                .frame(maxHeight: .infinity)
-
-                List {
-                    ForEach(locations) { location in
-                        LocationRowView(location: location)
-                    }
-                }
-                .frame(maxHeight: .infinity)
-
-                HStack {
-                    TextField("Notes", text: $notes)
-                        .textFieldStyle(.roundedBorder)
-
-                    Button("Save") {
-                        saveNotes()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(notes == (session.notes ?? ""))
-                }
-                .padding()
-                .background(.regularMaterial)
-            }
-            .navigationTitle(session.startDate.formatted(.dateTime.month(.abbreviated).day().hour().minute()))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-
-    private func saveNotes() {
-        withErrorReporting {
-            try database.write { db in
-                try Session
-                    .where { $0.id.eq(session.id) }
-                    .update { $0.notes = notes.isEmpty ? nil : notes }
-                    .execute(db)
-            }
-        }
-    }
-}
 
 struct LocationRowView: View {
     let location: Location
@@ -179,8 +132,10 @@ struct LocationRowView: View {
                 let speed = (location.speed ?? -1).formatted(.number.precision(.significantDigits(2)))
                 Text("Speed: \(speed)")
                     .font(.system(.caption2, design: .monospaced))
+                    .foregroundStyle(location.speed ?? 0 >= 6.0 ? .red : .primary)
             }
         }
         .padding(.vertical, 2)
     }
 }
+

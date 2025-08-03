@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		06EFF948623BB35D22D1DC6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DFECA1069660FAA648050B0 /* Assets.xcassets */; };
+		08388A815761079232E4A7A5 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997C9461B3362018AE665CE9 /* SessionDetailView.swift */; };
 		0BD24F885FC96153684E2F1F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF8C1C445D58EB6666F7CE8C /* SharingGRDB */; };
 		1EAFD3CE313896296E746E9D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DE96769FB2682C96E7AEE19 /* Preview Assets.xcassets */; };
 		246095C43F68186137D99F59 /* TimelineMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AD4E5F8A1D8913D88A7A8F /* TimelineMotionActivityListView.swift */; };
@@ -99,6 +100,7 @@
 		91CE40000A62424A3DB41C95 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
 		94D01E4D3CB69187EA2A47BA /* MotionActivityGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityGroup.swift; sourceTree = "<group>"; };
 		95304CDAE4CA09B57E2D0FF6 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
+		997C9461B3362018AE665CE9 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		9D248DB47E5D3E0016341B09 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
 		9E12E8055F2BD4273C80AA7F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		9ED2A24D32A655C7D1FE5C91 /* MotionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivity.swift; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				0BAA85299D526CCD40F8FA7F /* RootStore.swift */,
 				918EA5E82B17F515ABC46999 /* RootView.swift */,
 				1B8A4B00357F402F88EA6A4D /* Session.swift */,
+				997C9461B3362018AE665CE9 /* SessionDetailView.swift */,
 				44C7A324E0E2ED1C631BB4FD /* StartEndLocationApp.swift */,
 				7355C6E994570F3FC243F247 /* Preview Content */,
 			);
@@ -507,6 +510,7 @@
 				28C5D2523F7540914194926E /* RootStore.swift in Sources */,
 				93E953E899EC8D5555D9F677 /* RootView.swift in Sources */,
 				3ECCFB828971F3FF6D0AAE23 /* Session.swift in Sources */,
+				08388A815761079232E4A7A5 /* SessionDetailView.swift in Sources */,
 				716DE7557C82DD9149668CB4 /* StartEndLocationApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

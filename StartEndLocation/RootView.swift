@@ -8,16 +8,16 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            if store.authorizationStatus != .authorizedAlways {
-                Button("Request Location Authorization") {
-                    store.requestLocationAuthorization()
+            if !store.isMotionAuthorized {
+                Button("Request Motion Authorization") {
+                    store.requestMotionAuthorization()
                 }
                 .buttonStyle(.borderedProminent)
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if !store.isMotionAuthorized {
-                Button("Request Motion Authorization") {
-                    store.requestMotionAuthorization()
+            } else if store.authorizationStatus != .authorizedAlways {
+                Button("Request Location Authorization") {
+                    store.requestLocationAuthorization()
                 }
                 .buttonStyle(.borderedProminent)
                 .padding()

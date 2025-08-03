@@ -1,23 +1,49 @@
 import Dependencies
 import MapKit
 import SharingGRDB
+import StructuredQueriesCore
 import SwiftUI
 
 struct SessionsListView: View {
-    @ObservationIgnored
-    @FetchAll(
-        Session.all.order { $0.startDate.desc() },
-        animation: .default
-    )
-    var sessions: [Session]
-
+    @State private var showOnlyTrainSessions = false
     @State private var selectedSession: Session?
+
+    @ObservationIgnored @FetchAll var sessionRows: [Row]
+
+    init() {
+        _sessionRows = FetchAll(sessionsQuery)
+    }
+
+    private var sessionsQuery: some StructuredQueriesCore.Statement<Row> {
+        Session.all
+            .where {
+                if showOnlyTrainSessions {
+                    $0.isOnTrain == true
+                }
+            }
+            .order { $0.startDate.desc() }
+            .select {
+                Row.Columns(session: $0)
+            }
+    }
+
+    @Selection
+    struct Row: Identifiable {
+        var id: Session.ID { session.id }
+        let session: Session
+    }
+
+    private func updateQuery() async {
+        await withErrorReporting {
+            try await $sessionRows.load(sessionsQuery, animation: .default)
+        }
+    }
 
     var body: some View {
         List {
-            ForEach(sessions) { session in
-                SessionRowView(session: session) {
-                    selectedSession = session
+            ForEach(sessionRows) { row in
+                SessionRowView(session: row.session) {
+                    selectedSession = row.session
                 }
             }
         }
@@ -26,6 +52,17 @@ struct SessionsListView: View {
             SessionDetailView(session: session)
         }
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    Task {
+                        showOnlyTrainSessions.toggle()
+                        await updateQuery()
+                    }
+                }) {
+                    Label(showOnlyTrainSessions ? "Trains" : "All", systemImage: showOnlyTrainSessions ? "tram.circle" : "list.bullet.circle")
+                }
+            }
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 ExportDatabaseView()
             }

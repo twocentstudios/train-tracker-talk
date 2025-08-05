@@ -68,7 +68,7 @@ struct MillisecondDatePicker: View {
                 }
             }
 
-            Text("Current: \(date.groundTruthFormatted)")
+            Text("Current: \(date, format: .groundTruth)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

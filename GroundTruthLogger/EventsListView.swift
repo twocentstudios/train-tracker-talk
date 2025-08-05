@@ -8,11 +8,8 @@ struct EventsListView: View {
     @FetchAll(Event.order { $0.timestamp.desc() }, animation: .default)
     var events
 
-    @State private var currentTime = Date()
     @State private var editingEvent: Event?
     @State private var selectedCategory: EventCategory?
-
-    private let timer = Timer.publish(every: 0.001, on: .main, in: .common).autoconnect()
 
     var body: some View {
         NavigationStack {
@@ -34,11 +31,10 @@ struct EventsListView: View {
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 16) {
-                    Text(currentTime.groundTruthFormatted)
-                        .font(.system(size: 24, weight: .medium, design: .monospaced))
-                        .onReceive(timer) { _ in
-                            currentTime = Date()
-                        }
+                    TimelineView(.animation(minimumInterval: 0.1, paused: false)) { context in
+                        Text(context.date, format: .groundTruth)
+                            .font(.system(size: 24, weight: .medium, design: .monospaced))
+                    }
 
                     Picker("Category", selection: $selectedCategory) {
                         Image(systemName: "minus.circle").tag(nil as EventCategory?)
@@ -77,7 +73,7 @@ struct EventRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(event.timestamp.groundTruthFormatted)
+                Text(event.timestamp, format: .groundTruth)
                     .font(.system(.caption, design: .monospaced))
 
                 if let category = event.category {

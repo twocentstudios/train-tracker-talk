@@ -38,7 +38,7 @@ enum EventCategory: String, CaseIterable, Codable, QueryBindable, Hashable {
             "location.fill"
         }
     }
-    
+
     var color: Color {
         switch self {
         case .automotiveMotionActivity:
@@ -74,16 +74,13 @@ enum EventCategory: String, CaseIterable, Codable, QueryBindable, Hashable {
     }
 }
 
-extension Date {
-    static let groundTruthFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone.current
-        return formatter
-    }()
-
-    var groundTruthFormatted: String {
-        Self.groundTruthFormatter.string(from: self)
+extension FormatStyle where Self == Date.VerbatimFormatStyle {
+    static var groundTruth: Date.VerbatimFormatStyle {
+        Date.VerbatimFormatStyle(
+            format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits).\(secondFraction: .fractional(3))",
+            locale: Locale(identifier: "en_US_POSIX"),
+            timeZone: .current,
+            calendar: .current
+        )
     }
 }

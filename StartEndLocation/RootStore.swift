@@ -59,15 +59,9 @@ import SharingGRDB
     func requestMotionAuthorization() {
         guard isMotionAvailable, motionAuthorizationStatus != .authorized else { return }
 
-        let startDate = Date().addingTimeInterval(-1)
-        let endDate = Date()
-
-        activityManager.queryActivityStarting(
-            from: startDate,
-            to: endDate,
-            to: OperationQueue.main
-        ) { [weak self] _, _ in
-            self?.motionAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            motionAuthorizationStatus = await activityManager.requestAuthorization()
         }
     }
 
@@ -102,25 +96,6 @@ import SharingGRDB
         locationMonitoringState = .waitingForSignificantChange
     }
 
-    private func queryMotionActivityHistory(from startDate: Date, to endDate: Date) async throws -> [CMMotionActivity] {
-        let activityManager = self.activityManager
-        return try await withCheckedThrowingContinuation { continuation in
-            activityManager.queryActivityStarting(
-                from: startDate,
-                to: endDate,
-                to: OperationQueue()
-            ) { activities, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else if let activities {
-                    continuation.resume(returning: activities)
-                } else {
-                    continuation.resume(returning: [])
-                }
-            }
-        }
-    }
-
     private func calculateTimeout(from activities: [CMMotionActivity]) -> TimeInterval? {
         // Filter for high confidence only
         let highConfidenceActivities = activities.filter { $0.confidence == .high }
@@ -147,9 +122,7 @@ import SharingGRDB
         motionActivityTask = Task { @MainActor [weak self] in
             guard let self else { return }
 
-            activityManager.startActivityUpdates(to: OperationQueue.main) { [weak self] activity in
-                guard let self, let activity else { return }
-
+            for await activity in activityManager.activityUpdates() {
                 let motionActivity = MotionActivity(from: activity, sessionID: sessionID)
 
                 withErrorReporting {
@@ -161,13 +134,13 @@ import SharingGRDB
                 // Check for stop condition: walking with high confidence
                 if activity.walking, activity.confidence == .high {
                     handleSessionEnd()
+                    break
                 }
             }
         }
     }
 
     private func stopMotionActivityMonitoring() {
-        activityManager.stopActivityUpdates()
         motionActivityTask?.cancel()
         motionActivityTask = nil
     }
@@ -244,38 +217,38 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                 // Query historical motion activities
                 let endDate = date()
                 let startDate = endDate.addingTimeInterval(-1200) // 20 minutes
-                
+
                 do {
-                    let activities = try await queryMotionActivityHistory(from: startDate, to: endDate)
-                    
+                    let activities = try await activityManager.activities(from: startDate, to: endDate)
+
                     // Write activities to database
                     writeMotionActivityHistory(activities: activities, for: sessionID)
-                    
+
                     // Calculate timeout from activities
                     let timeout = calculateTimeout(from: activities)
-                    
+
                     if let timeout {
-                    // Transition to evaluating state with timeout
-                    locationMonitoringState = .evaluatingSession(
-                        sessionID: sessionID,
-                        startTime: date(),
-                        timeoutDuration: timeout,
-                        speedCount: 0
-                    )
+                        // Transition to evaluating state with timeout
+                        locationMonitoringState = .evaluatingSession(
+                            sessionID: sessionID,
+                            startTime: date(),
+                            timeoutDuration: timeout,
+                            speedCount: 0
+                        )
 
-                    // Start location updates
-                    manager.startUpdatingLocation()
+                        // Start location updates
+                        manager.startUpdatingLocation()
 
-                    // Start motion activity monitoring
-                    startMotionActivityMonitoring(for: sessionID)
+                        // Start motion activity monitoring
+                        startMotionActivityMonitoring(for: sessionID)
 
-                    // Set timeout
-                    evaluationTimeoutTask = Task { @MainActor [weak self] in
-                        do {
-                            try await Task.sleep(for: .seconds(timeout))
-                            self?.handleSessionEnd()
-                        } catch {}
-                    }
+                        // Set timeout
+                        evaluationTimeoutTask = Task { @MainActor [weak self] in
+                            do {
+                                try await Task.sleep(for: .seconds(timeout))
+                                self?.handleSessionEnd()
+                            } catch {}
+                        }
                     } else {
                         // No timeout - close session immediately
                         withErrorReporting {

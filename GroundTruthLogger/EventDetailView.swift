@@ -25,7 +25,7 @@ struct EventDetailView: View {
                             Text(category.displayName).tag(category as EventCategory?)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(.menu)
                 }
                 
                 Section("Notes") {

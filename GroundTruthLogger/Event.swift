@@ -1,7 +1,7 @@
 import Foundation
 import SharingGRDB
 
-enum EventCategory: String, CaseIterable, Codable, QueryBindable {
+enum EventCategory: String, CaseIterable, Codable, QueryBindable, Hashable {
     case automotiveMotionActivity
     case walkingMotionActivity
     case trainDeparture

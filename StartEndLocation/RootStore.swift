@@ -96,16 +96,16 @@ import SharingGRDB
         locationMonitoringState = .waitingForSignificantChange
     }
 
-    private func calculateTimeout(from activities: [CMMotionActivity]) -> TimeInterval? {
-        // Filter for high confidence only
-        let highConfidenceActivities = activities.filter { $0.confidence == .high }
+    private func calculateTimeout(from activities: [CMMotionActivity]?) -> TimeInterval? {
+        guard let activities else {
+            return 60 // 1-minute timeout when activities is nil (timeout case)
+        }
 
-        // Count activities by type
+        let highConfidenceActivities = activities.filter { $0.confidence == .high }
         let automotiveCount = highConfidenceActivities.filter(\.automotive).count
         let walkingCount = highConfidenceActivities.filter(\.walking).count
         let cyclingCount = highConfidenceActivities.filter(\.cycling).count
 
-        // Check in priority order: automotive, walking/cycling, stationary/none
         if automotiveCount > 0 {
             return 300 // 5 minutes
         } else if walkingCount > 0 || cyclingCount > 0 {
@@ -219,12 +219,10 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                 let startDate = endDate.addingTimeInterval(-1200) // 20 minutes
 
                 do {
-                    let activities = try await activityManager.activities(from: startDate, to: endDate)
+                    let activities = try await activityManager.activities(from: startDate, to: endDate, timeout: 5)
 
-                    // Write activities to database
-                    writeMotionActivityHistory(activities: activities, for: sessionID)
+                    writeMotionActivityHistory(activities: activities ?? [], for: sessionID)
 
-                    // Calculate timeout from activities
                     let timeout = calculateTimeout(from: activities)
 
                     if let timeout {
@@ -262,7 +260,7 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                         }
                     }
                 } catch {
-                    // CoreMotion query failed - close session immediately
+                    // CoreMotion errors - close session immediately
                     print("CoreMotion query failed: \(error)")
                     withErrorReporting {
                         try self.database.write { db in

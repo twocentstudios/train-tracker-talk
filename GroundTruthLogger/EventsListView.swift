@@ -31,7 +31,7 @@ struct EventsListView: View {
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 16) {
-                    TimelineView(.animation(minimumInterval: 0.1, paused: false)) { context in
+                    TimelineView(.animation(minimumInterval: 0.066, paused: false)) { context in
                         Text(context.date, format: .groundTruth)
                             .font(.system(size: 24, weight: .medium, design: .monospaced))
                     }

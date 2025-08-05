@@ -1,6 +1,6 @@
 # GroundTruthLogger
 
-This target is for the GroundTruthLogger prototype app.
+This target is for the GroundTruthLogger prototype app - a manual event logging tool for creating ground truth data during train journeys.
 
 ## Build Commands
 

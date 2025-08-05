@@ -107,35 +107,46 @@ import SharingGRDB
         let endDate = date
         let startDate = endDate.addingTimeInterval(-1200) // 20 minutes
 
-        return await withCheckedContinuation { continuation in
-            activityManager.queryActivityStarting(
-                from: startDate,
-                to: endDate,
-                to: OperationQueue.main
-            ) { activities, error in
-                guard let activities, error == nil else {
-                    continuation.resume(returning: nil)
-                    return
-                }
+        return await withTaskGroup(of: TimeInterval?.self) { group in
+            group.addTask { @MainActor in
+                await withCheckedContinuation { continuation in
+                    self.activityManager.queryActivityStarting(
+                        from: startDate,
+                        to: endDate,
+                        to: OperationQueue.main
+                    ) { activities, error in
+                        guard let activities, error == nil else {
+                            continuation.resume(returning: nil)
+                            return
+                        }
 
-                // Filter for high confidence only
-                let highConfidenceActivities = activities.filter { $0.confidence == .high }
+                        // Filter for high confidence only
+                        let highConfidenceActivities = activities.filter { $0.confidence == .high }
 
-                // Count activities by type
-                let automotiveCount = highConfidenceActivities.filter(\.automotive).count
-                let walkingCount = highConfidenceActivities.filter(\.walking).count
-                let cyclingCount = highConfidenceActivities.filter(\.cycling).count
+                        // Count activities by type
+                        let automotiveCount = highConfidenceActivities.filter(\.automotive).count
+                        let walkingCount = highConfidenceActivities.filter(\.walking).count
+                        let cyclingCount = highConfidenceActivities.filter(\.cycling).count
 
-                // Check in priority order: automotive, walking/cycling, stationary/none
-                if automotiveCount > 0 {
-                    continuation.resume(returning: 300) // 5 minutes
-                } else if walkingCount > 0 || cyclingCount > 0 {
-                    continuation.resume(returning: 60) // 1 minute
-                } else {
-                    // Only stationary, no data, or no movement activities
-                    continuation.resume(returning: nil)
+                        // Check in priority order: automotive, walking/cycling, stationary/none
+                        if automotiveCount > 0 {
+                            continuation.resume(returning: 300) // 5 minutes
+                        } else if walkingCount > 0 || cyclingCount > 0 {
+                            continuation.resume(returning: 60) // 1 minute
+                        } else {
+                            // Only stationary, no data, or no movement activities
+                            continuation.resume(returning: nil)
+                        }
+                    }
                 }
             }
+
+            group.addTask {
+                try? await Task.sleep(for: .seconds(10)) // 10 second timeout
+                return nil
+            }
+
+            return await group.next() ?? nil
         }
     }
 

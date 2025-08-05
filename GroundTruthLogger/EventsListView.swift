@@ -73,10 +73,10 @@ struct EventRow: View {
                     HStack(spacing: 4) {
                         Image(systemName: category.systemImage)
                             .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(category.color)
                         Text(category.displayName)
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(category.color)
                     }
                 }
 

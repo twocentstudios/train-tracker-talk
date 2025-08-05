@@ -1,5 +1,6 @@
 import Foundation
 import SharingGRDB
+import SwiftUI
 
 enum EventCategory: String, CaseIterable, Codable, QueryBindable, Hashable {
     case automotiveMotionActivity
@@ -35,6 +36,21 @@ enum EventCategory: String, CaseIterable, Codable, QueryBindable, Hashable {
             "arrow.down.right"
         case .significantLocation:
             "location.fill"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .automotiveMotionActivity:
+            .blue
+        case .walkingMotionActivity:
+            .green
+        case .trainDeparture:
+            .orange
+        case .trainArrival:
+            .purple
+        case .significantLocation:
+            .red
         }
     }
 }

@@ -105,7 +105,7 @@ import SharingGRDB
     private func checkMotionActivityHistory(for date: Date) async -> TimeInterval? {
         @Dependency(\.date) var currentDate
         let endDate = date
-        let startDate = endDate.addingTimeInterval(-300) // 5 minutes
+        let startDate = endDate.addingTimeInterval(-1200) // 20 minutes
 
         return await withCheckedContinuation { continuation in
             activityManager.queryActivityStarting(
@@ -244,7 +244,7 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
 
                 // Query and write historical motion activities
                 let endDate = date()
-                let startDate = endDate.addingTimeInterval(-300) // 5 minutes
+                let startDate = endDate.addingTimeInterval(-1200) // 20 minutes
                 activityManager.queryActivityStarting(
                     from: startDate,
                     to: endDate,

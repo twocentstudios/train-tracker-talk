@@ -20,6 +20,13 @@ struct EventsListView: View {
                         .onTapGesture {
                             editingEvent = event
                         }
+                        .contextMenu {
+                            Button {
+                                store.createEventAfter(event)
+                            } label: {
+                                Label("New Event After", systemImage: "plus.circle")
+                            }
+                        }
                 }
                 .onDelete { indexSet in
                     for index in indexSet {

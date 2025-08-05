@@ -22,6 +22,21 @@ import SharingGRDB
         }
     }
 
+    func createEventAfter(_ existingEvent: Event, category: EventCategory? = nil, notes: String = "") {
+        let event = Event(
+            id: uuid(),
+            timestamp: existingEvent.timestamp.addingTimeInterval(1),
+            category: category,
+            notes: notes
+        )
+
+        withErrorReporting {
+            try database.write { db in
+                try Event.insert { event }.execute(db)
+            }
+        }
+    }
+
     func deleteEvent(_ event: Event) {
         withErrorReporting {
             try database.write { db in

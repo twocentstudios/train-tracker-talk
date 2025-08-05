@@ -10,12 +10,29 @@ struct EventsListView: View {
 
     @State private var currentTime = Date()
     @State private var editingEvent: Event?
+    @State private var selectedCategory: EventCategory?
 
     private let timer = Timer.publish(every: 0.001, on: .main, in: .common).autoconnect()
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
+            List {
+                ForEach(events) { event in
+                    EventRow(event: event)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            editingEvent = event
+                        }
+                }
+                .onDelete { indexSet in
+                    for index in indexSet {
+                        store.deleteEvent(events[index])
+                    }
+                }
+            }
+            .navigationTitle("Ground Truth Logger")
+            .navigationBarTitleDisplayMode(.inline)
+            .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 16) {
                     Text(currentTime.groundTruthFormatted)
                         .font(.system(size: 24, weight: .medium, design: .monospaced))
@@ -23,36 +40,29 @@ struct EventsListView: View {
                             currentTime = Date()
                         }
 
+                    Picker("Category", selection: $selectedCategory) {
+                        Image(systemName: "minus.circle").tag(nil as EventCategory?)
+                        ForEach(EventCategory.allCases, id: \.self) { category in
+                            Image(systemName: category.systemImage)
+                                .tag(category as EventCategory?)
+                        }
+                    }
+                    .colorMultiply(selectedCategory?.color ?? .secondary)
+                    .pickerStyle(.segmented)
+
                     Button {
-                        store.createEvent()
+                        store.createEvent(category: selectedCategory)
                     } label: {
                         Text("Create Event")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
+                    .tint(Color(.accent))
                 }
                 .padding()
-                .background(Color(.systemGray6))
-
-                List {
-                    ForEach(events) { event in
-                        EventRow(event: event)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                editingEvent = event
-                            }
-                    }
-                    .onDelete { indexSet in
-                        for index in indexSet {
-                            store.deleteEvent(events[index])
-                        }
-                    }
-                }
-                .listStyle(.plain)
+                .background(.regularMaterial, in: Rectangle())
             }
-            .navigationTitle("Ground Truth Logger")
-            .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(item: $editingEvent) { event in
             EventDetailView(event: event, store: store)

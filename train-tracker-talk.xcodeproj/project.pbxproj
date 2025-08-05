@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -21,6 +21,7 @@
 		365993E605D8CBCE5EE46C76 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DB8414A61BDACE26E37CF6 /* Database.swift */; };
 		36DB86A69EB4736D4A8CF7E2 /* MotionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DBB7CB13429163383ED787 /* MotionActivity.swift */; };
 		37C31ED4C008EEC1DB8DC26A /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D248DB47E5D3E0016341B09 /* LocationsListView.swift */; };
+		37DC38E8E8159DD34F18623F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE4784F5E815A6AA6F94253F /* Assets.xcassets */; };
 		3A68E1EF527846AEFA9F0872 /* LocationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A980B6C9D8758336F7EFD2 /* LocationsListView.swift */; };
 		3EA748AB832D8076E5FCCAB8 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9B3D31D2A5F5734B67586A /* Location.swift */; };
 		3ECCFB828971F3FF6D0AAE23 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A4B00357F402F88EA6A4D /* Session.swift */; };
@@ -79,7 +80,6 @@
 		1B8A4B00357F402F88EA6A4D /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		2697D8AD74FFA20C9B22A119 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		2DC8E53696E3F00122162025 /* SignificantStartLocation.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantStartLocation.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		34ED044F2E41EB220029D3AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		38AD4E5F8A1D8913D88A7A8F /* TimelineMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineMotionActivityListView.swift; sourceTree = "<group>"; };
 		38AEAE8A0D8067E23297CED8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantChangeApp.swift; sourceTree = "<group>"; };
@@ -139,6 +139,7 @@
 		E78E17CDAB6D7D006BC6145F /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		E87CA1C895354D04B8033CF9 /* HistoricalMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalMotionActivityListView.swift; sourceTree = "<group>"; };
 		EC84DD785019854A366C3B45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EE4784F5E815A6AA6F94253F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EE705A7A0AF5A9C780685B5B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF2093617E9C15E5C8706DF3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		FE51EBF3B74A513AD41194F2 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
@@ -274,8 +275,8 @@
 		54E94B9A17FDC577649DD809 /* GroundTruthLogger */ = {
 			isa = PBXGroup;
 			children = (
-				34ED044F2E41EB220029D3AA /* Assets.xcassets */,
 				E15FDB78AA038C798F63F980 /* AppDelegate.swift */,
+				EE4784F5E815A6AA6F94253F /* Assets.xcassets */,
 				E5F8570288E1435D45C04D9C /* CLAUDE.md */,
 				186323FFC9E83FEC9DAD0E0C /* Database.swift */,
 				80370E60F14373EB2796C251 /* Event.swift */,
@@ -374,6 +375,7 @@
 			buildConfigurationList = F2EC744DDD6695F63F2F4D43 /* Build configuration list for PBXNativeTarget "GroundTruthLogger" */;
 			buildPhases = (
 				4518B46786990FC0592AE9FC /* Sources */,
+				8CE38CA9A6DBD4FACBB8EA5C /* Resources */,
 				6E87F2C110FEA45D841A7EAC /* Frameworks */,
 			);
 			buildRules = (
@@ -487,6 +489,7 @@
 			packageReferences = (
 				C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */,
 			);
+			preferredProjectObjectVersion = 54;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -500,6 +503,14 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8CE38CA9A6DBD4FACBB8EA5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				37DC38E8E8159DD34F18623F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		98EE95CB17AF7F78B53310F8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;

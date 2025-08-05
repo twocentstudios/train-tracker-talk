@@ -78,7 +78,7 @@ struct HistoricalMotionActivityListView: View {
                 }
                 .disabled(isLoading)
             }
-            
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 ShareLink(
                     item: ExportableMotionActivityData(activities: activities),

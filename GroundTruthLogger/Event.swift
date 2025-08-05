@@ -7,19 +7,19 @@ enum EventCategory: String, CaseIterable, Codable, QueryBindable, Hashable {
     case trainDeparture
     case trainArrival
     case significantLocation
-    
+
     var displayName: String {
         switch self {
         case .automotiveMotionActivity:
-            return "Automotive"
+            "Automotive"
         case .walkingMotionActivity:
-            return "Walking"
+            "Walking"
         case .trainDeparture:
-            return "Train Departure"
+            "Train Departure"
         case .trainArrival:
-            return "Train Arrival"
+            "Train Arrival"
         case .significantLocation:
-            return "Significant Location"
+            "Significant Location"
         }
     }
 }
@@ -29,7 +29,7 @@ enum EventCategory: String, CaseIterable, Codable, QueryBindable, Hashable {
     var timestamp: Date
     var category: EventCategory?
     var notes: String
-    
+
     init(
         id: UUID = UUID(),
         timestamp: Date = Date(),
@@ -51,7 +51,7 @@ extension Date {
         formatter.timeZone = TimeZone.current
         return formatter
     }()
-    
+
     var groundTruthFormatted: String {
         Self.groundTruthFormatter.string(from: self)
     }

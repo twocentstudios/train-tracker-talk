@@ -61,7 +61,7 @@ struct EventsListView: View {
                     Button {
                         store.createEvent(category: selectedCategory)
                     } label: {
-                        Text("Create Event")
+                        Label("Create Event", systemImage: "plus.circle.fill")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)

@@ -63,6 +63,7 @@ struct EventsListView: View {
                 .padding()
                 .background(.regularMaterial, in: Rectangle())
             }
+            .listStyle(.plain)
         }
         .sheet(item: $editingEvent) { event in
             EventDetailView(event: event, store: store)

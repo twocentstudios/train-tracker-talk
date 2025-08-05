@@ -29,6 +29,11 @@ struct EventsListView: View {
             }
             .navigationTitle("Ground Truth Logger")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ExportDatabaseView()
+                }
+            }
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 16) {
                     TimelineView(.animation(minimumInterval: 0.066, paused: false)) { context in

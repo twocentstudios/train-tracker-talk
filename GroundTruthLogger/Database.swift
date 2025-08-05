@@ -57,3 +57,41 @@ func appDatabase() throws -> any DatabaseWriter {
     try migrator.migrate(database)
     return database
 }
+
+func createShareDatabase(database: any DatabaseReader, since startDate: Date?) throws -> URL {
+    let fileName = UUID().uuidString.prefix(6) + "_" + Date().formatted(.iso8601)
+    let url = URL.temporaryDirectory
+        .appending(component: fileName)
+        .appendingPathExtension("sqlite")
+
+    // Create an empty database at the target URL
+    var configuration = Configuration()
+    configuration.foreignKeysEnabled = true
+    configuration.prepareDatabase { db in
+        #if DEBUG && false
+            db.trace(options: .profile) {
+                print($0.expandedDescription)
+            }
+        #endif
+    }
+    let shareDB = try DatabaseQueue(path: url.path, configuration: configuration)
+
+    try database.backup(to: shareDB)
+
+    // If a startDate is provided, remove old records from the copied database
+    if let startDate {
+        try shareDB.write { db in
+            try Event.delete()
+                .where { $0.timestamp < startDate }
+                .execute(db)
+        }
+        try shareDB.vacuum()
+    }
+    try shareDB.writeWithoutTransaction { db in
+        try db.execute(sql: "PRAGMA journal_mode=DELETE;")
+    }
+
+    try shareDB.close()
+
+    return url
+}

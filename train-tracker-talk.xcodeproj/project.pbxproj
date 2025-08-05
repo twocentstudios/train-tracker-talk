@@ -68,6 +68,7 @@
 		E88C160E2D53969A8C9D12B1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6453C5D66E81B33E300C0F0B /* Preview Assets.xcassets */; };
 		E8BC9500A36C03E1CD85ADD6 /* MotionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED2A24D32A655C7D1FE5C91 /* MotionActivity.swift */; };
 		F1773641D91D0599C16D1678 /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE51EBF3B74A513AD41194F2 /* RootStore.swift */; };
+		FF26BE446DF2C507B443BAB9 /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF8463872AEE31643326F14 /* ExportDatabaseView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -131,6 +132,7 @@
 		BCE612CF9CB26794302BA1C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BD13A584825DAB91B60CD092 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		BD6C9EA8F14181CFC46B7FB9 /* GroundTruthLogger.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GroundTruthLogger.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDF8463872AEE31643326F14 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
 		C4265C695B3D3FCAF7294813 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		D1BF42960E46892C2915F62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D2952707513CA49ECF8D7804 /* MillisecondDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MillisecondDatePicker.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 				80370E60F14373EB2796C251 /* Event.swift */,
 				AFF3ABD6CD7F411EFD09E3D8 /* EventDetailView.swift */,
 				60D7BF639775FC80E5FF03A1 /* EventsListView.swift */,
+				BDF8463872AEE31643326F14 /* ExportDatabaseView.swift */,
 				7EBB3DDDC52E6AB06A04C854 /* GroundTruthLoggerApp.swift */,
 				BCE612CF9CB26794302BA1C7 /* Info.plist */,
 				D2952707513CA49ECF8D7804 /* MillisecondDatePicker.swift */,
@@ -591,6 +594,7 @@
 				93198D04D1F021F4AC43AB38 /* Event.swift in Sources */,
 				DB0BFB308DB5716C5ADB80DC /* EventDetailView.swift in Sources */,
 				C04BC2C8CB16C9B69FCA520C /* EventsListView.swift in Sources */,
+				FF26BE446DF2C507B443BAB9 /* ExportDatabaseView.swift in Sources */,
 				5D944246B50B7DB0A38BE890 /* GroundTruthLoggerApp.swift in Sources */,
 				A92E9E40D48A30B37AD9B554 /* MillisecondDatePicker.swift in Sources */,
 				A94C915BBEFDA0FCD92E7F4A /* RootStore.swift in Sources */,

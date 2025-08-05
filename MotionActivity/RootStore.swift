@@ -10,7 +10,6 @@ import Observation
     private(set) var historicalError: String?
     private(set) var authorizationStatus: CMAuthorizationStatus
     private let activityManager = CMMotionActivityManager()
-    private var hasLoadedHistorical = false
 
     init() {
         isMotionAvailable = CMMotionActivityManager.isActivityAvailable()
@@ -57,11 +56,10 @@ import Observation
     }
 
     func fetchHistoricalActivities() {
-        guard isMotionAvailable, isAuthorized, !hasLoadedHistorical, !isLoadingHistorical else { return }
+        guard isMotionAvailable, isAuthorized, !isLoadingHistorical else { return }
 
         isLoadingHistorical = true
         historicalError = nil
-        hasLoadedHistorical = true
 
         let endDate = Date()
         let startDate = endDate.addingTimeInterval(-30 * 24 * 60 * 60) // 30 days to get maximum available

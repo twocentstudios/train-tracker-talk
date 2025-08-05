@@ -52,7 +52,8 @@ struct RootView: View {
                             HistoricalMotionActivityListView(
                                 activities: store.historicalActivities,
                                 isLoading: store.isLoadingHistorical,
-                                error: store.historicalError
+                                error: store.historicalError,
+                                onRefresh: { store.fetchHistoricalActivities() }
                             )
                             .navigationTitle("Historical MotionActivity")
                             .navigationBarTitleDisplayMode(.inline)

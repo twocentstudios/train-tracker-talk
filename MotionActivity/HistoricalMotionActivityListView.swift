@@ -5,6 +5,7 @@ struct HistoricalMotionActivityListView: View {
     let activities: [MotionActivity]
     let isLoading: Bool
     let error: String?
+    let onRefresh: () -> Void
 
     private var sortedActivities: [MotionActivity] {
         activities.sorted { $0.startDate > $1.startDate }
@@ -71,6 +72,13 @@ struct HistoricalMotionActivityListView: View {
             }
         }
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: onRefresh) {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .disabled(isLoading)
+            }
+            
             ToolbarItem(placement: .navigationBarTrailing) {
                 ShareLink(
                     item: ExportableMotionActivityData(activities: activities),

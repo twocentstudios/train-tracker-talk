@@ -22,6 +22,21 @@ enum EventCategory: String, CaseIterable, Codable, QueryBindable, Hashable {
             "Significant Location"
         }
     }
+
+    var systemImage: String {
+        switch self {
+        case .automotiveMotionActivity:
+            "car.fill"
+        case .walkingMotionActivity:
+            "figure.walk"
+        case .trainDeparture:
+            "arrow.up.right"
+        case .trainArrival:
+            "arrow.down.right"
+        case .significantLocation:
+            "location.fill"
+        }
+    }
 }
 
 @Table struct Event: Hashable, Identifiable {

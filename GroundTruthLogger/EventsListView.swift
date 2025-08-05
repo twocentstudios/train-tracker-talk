@@ -70,9 +70,14 @@ struct EventRow: View {
                     .font(.system(.caption, design: .monospaced))
 
                 if let category = event.category {
-                    Text(category.displayName)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    HStack(spacing: 4) {
+                        Image(systemName: category.systemImage)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        Text(category.displayName)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Spacer()

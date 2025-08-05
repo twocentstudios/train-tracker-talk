@@ -14,15 +14,11 @@ struct EventDetailView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Timestamp") {
-                    MillisecondDatePicker(date: $event.timestamp)
-                }
-
                 Section("Category") {
                     Picker("Category", selection: $event.category) {
-                        Text("None").tag(nil as EventCategory?)
+                        Label("None", systemImage: "minus.circle").tag(nil as EventCategory?)
                         ForEach(EventCategory.allCases, id: \.self) { category in
-                            Text(category.displayName).tag(category as EventCategory?)
+                            Label(category.displayName, systemImage: category.systemImage).tag(category as EventCategory?)
                         }
                     }
                     .pickerStyle(.menu)
@@ -30,7 +26,11 @@ struct EventDetailView: View {
 
                 Section("Notes") {
                     TextEditor(text: $event.notes)
-                        .frame(minHeight: 100)
+                        .frame(minHeight: 44)
+                }
+
+                Section("Timestamp") {
+                    MillisecondDatePicker(date: $event.timestamp)
                 }
             }
             .navigationTitle("Edit Event")

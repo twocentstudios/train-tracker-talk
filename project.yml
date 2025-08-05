@@ -16,6 +16,7 @@ fileGroups:
   - SignificantStartLocation/CLAUDE.md
   - MotionActivity/CLAUDE.md
   - StartEndLocation/CLAUDE.md
+  - GroundTruthLogger/CLAUDE.md
 
 packages:
   SharingGRDB:
@@ -23,6 +24,29 @@ packages:
     from: 0.1.0
 
 targets:
+  GroundTruthLogger:
+    type: application
+    platform: iOS
+    sources:
+      - path: GroundTruthLogger
+        excludes:
+          - "CLAUDE.md"
+    dependencies:
+      - package: SharingGRDB
+    settings:
+      DEVELOPMENT_TEAM: YK25EF78NT
+      TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: GroundTruthLogger/Info.plist
+      properties:
+        CFBundleDisplayName: 00 GroundTruthLogger
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        LSRequiresIPhoneOS: true
+        UILaunchStoryboardName: LaunchScreen
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
   SignificantChange:
     type: application
     platform: iOS

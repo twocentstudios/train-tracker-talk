@@ -51,6 +51,7 @@
 		C03D5E3539F35B5D5C4F77DB /* MotionActivityGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D01E4D3CB69187EA2A47BA /* MotionActivityGroup.swift */; };
 		CC03F24C2FAFD8292FD1FF1B /* SignificantStartLocationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */; };
 		D2F42FAE0691BB13515544BB /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */; };
+		D549C4DABA2A3C757C39822C /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B776F4763A99FC2B90CFFBC4 /* SharingGRDB */; };
 		DC5FB667C17AB9F677415726 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 7CBCFCEE905CD52DBBABE955 /* SharingGRDB */; };
 		E162EC30045FE1AD0C6B7FB5 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5E8C97371DBEF2370B5B0550 /* SharingGRDB */; };
 		E8776F18A720BCB905A319CB /* SignificantChangeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */; };
@@ -110,9 +111,12 @@
 		B73FE975540A245E41FAFE34 /* SignificantChange.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantChange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B95AE31087A9034BB2203463 /* MotionActivity.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MotionActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC1EE7DCAFE8F03B3BE6C175 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		BCE612CF9CB26794302BA1C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BD13A584825DAB91B60CD092 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		BD6C9EA8F14181CFC46B7FB9 /* GroundTruthLogger.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GroundTruthLogger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4265C695B3D3FCAF7294813 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		D1BF42960E46892C2915F62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E5F8570288E1435D45C04D9C /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		E78E17CDAB6D7D006BC6145F /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		E87CA1C895354D04B8033CF9 /* HistoricalMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalMotionActivityListView.swift; sourceTree = "<group>"; };
 		EC84DD785019854A366C3B45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -143,6 +147,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E162EC30045FE1AD0C6B7FB5 /* SharingGRDB in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6E87F2C110FEA45D841A7EAC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D549C4DABA2A3C757C39822C /* SharingGRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +223,7 @@
 			isa = PBXGroup;
 			children = (
 				BD13A584825DAB91B60CD092 /* CLAUDE.md */,
+				54E94B9A17FDC577649DD809 /* GroundTruthLogger */,
 				E8113F1C80F295DF7579DE7F /* MotionActivity */,
 				2ED4A01FB25DE796DA863A47 /* SignificantChange */,
 				3B4016F608ACB7792BDE4CE6 /* SignificantStartLocation */,
@@ -239,9 +252,19 @@
 			path = SignificantStartLocation;
 			sourceTree = "<group>";
 		};
+		54E94B9A17FDC577649DD809 /* GroundTruthLogger */ = {
+			isa = PBXGroup;
+			children = (
+				E5F8570288E1435D45C04D9C /* CLAUDE.md */,
+				BCE612CF9CB26794302BA1C7 /* Info.plist */,
+			);
+			path = GroundTruthLogger;
+			sourceTree = "<group>";
+		};
 		6E7DF4051BD1174630658B0A /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				BD6C9EA8F14181CFC46B7FB9 /* GroundTruthLogger.app */,
 				B95AE31087A9034BB2203463 /* MotionActivity.app */,
 				B73FE975540A245E41FAFE34 /* SignificantChange.app */,
 				2DC8E53696E3F00122162025 /* SignificantStartLocation.app */,
@@ -317,6 +340,25 @@
 			productReference = 70888B79264661F034F57388 /* StartEndLocation.app */;
 			productType = "com.apple.product-type.application";
 		};
+		4152D0C38075C2282BE5361E /* GroundTruthLogger */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F2EC744DDD6695F63F2F4D43 /* Build configuration list for PBXNativeTarget "GroundTruthLogger" */;
+			buildPhases = (
+				4518B46786990FC0592AE9FC /* Sources */,
+				6E87F2C110FEA45D841A7EAC /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GroundTruthLogger;
+			packageProductDependencies = (
+				B776F4763A99FC2B90CFFBC4 /* SharingGRDB */,
+			);
+			productName = GroundTruthLogger;
+			productReference = BD6C9EA8F14181CFC46B7FB9 /* GroundTruthLogger.app */;
+			productType = "com.apple.product-type.application";
+		};
 		4A9ABFBEE0679A7C42D9D8A0 /* SignificantStartLocation */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EE3CC435B02A1CE1D05D2F5F /* Build configuration list for PBXNativeTarget "SignificantStartLocation" */;
@@ -389,6 +431,9 @@
 					084A01CEBFF5588F92488741 = {
 						DevelopmentTeam = YK25EF78NT;
 					};
+					4152D0C38075C2282BE5361E = {
+						DevelopmentTeam = YK25EF78NT;
+					};
 					4A9ABFBEE0679A7C42D9D8A0 = {
 						DevelopmentTeam = YK25EF78NT;
 					};
@@ -417,6 +462,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				4152D0C38075C2282BE5361E /* GroundTruthLogger */,
 				9501D029290422CFE3C43A31 /* MotionActivity */,
 				927024F8DD398C84AE4D215E /* SignificantChange */,
 				4A9ABFBEE0679A7C42D9D8A0 /* SignificantStartLocation */,
@@ -497,6 +543,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4518B46786990FC0592AE9FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		782AAFBAD1F59D9F0A4F934A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -534,6 +587,23 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		0F94CDA2B21F0C4B67968733 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = GroundTruthLogger/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.GroundTruthLogger";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 		30519FB5EF5CC489C5FE0ADE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -546,6 +616,23 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.SignificantStartLocation";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		36B69A76D975F742D931CD46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = GroundTruthLogger/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.GroundTruthLogger";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -830,6 +917,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		F2EC744DDD6695F63F2F4D43 /* Build configuration list for PBXNativeTarget "GroundTruthLogger" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0F94CDA2B21F0C4B67968733 /* Debug */,
+				36B69A76D975F742D931CD46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		F3A8282DBA83D6A26A7B4AF0 /* Build configuration list for PBXNativeTarget "MotionActivity" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -864,6 +960,11 @@
 			productName = SharingGRDB;
 		};
 		ADFBA59BD17E6946420D0029 /* SharingGRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;
+			productName = SharingGRDB;
+		};
+		B776F4763A99FC2B90CFFBC4 /* SharingGRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;
 			productName = SharingGRDB;

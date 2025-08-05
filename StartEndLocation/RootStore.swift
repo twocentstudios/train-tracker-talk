@@ -102,51 +102,42 @@ import SharingGRDB
         locationMonitoringState = .waitingForSignificantChange
     }
 
-    private func checkMotionActivityHistory(for date: Date) async -> TimeInterval? {
-        @Dependency(\.date) var currentDate
-        let endDate = date
-        let startDate = endDate.addingTimeInterval(-1200) // 20 minutes
-
-        return await withTaskGroup(of: TimeInterval?.self) { group in
-            group.addTask { @MainActor in
-                await withCheckedContinuation { continuation in
-                    self.activityManager.queryActivityStarting(
-                        from: startDate,
-                        to: endDate,
-                        to: OperationQueue.main
-                    ) { activities, error in
-                        guard let activities, error == nil else {
-                            continuation.resume(returning: nil)
-                            return
-                        }
-
-                        // Filter for high confidence only
-                        let highConfidenceActivities = activities.filter { $0.confidence == .high }
-
-                        // Count activities by type
-                        let automotiveCount = highConfidenceActivities.filter(\.automotive).count
-                        let walkingCount = highConfidenceActivities.filter(\.walking).count
-                        let cyclingCount = highConfidenceActivities.filter(\.cycling).count
-
-                        // Check in priority order: automotive, walking/cycling, stationary/none
-                        if automotiveCount > 0 {
-                            continuation.resume(returning: 300) // 5 minutes
-                        } else if walkingCount > 0 || cyclingCount > 0 {
-                            continuation.resume(returning: 60) // 1 minute
-                        } else {
-                            // Only stationary, no data, or no movement activities
-                            continuation.resume(returning: nil)
-                        }
-                    }
+    private func queryMotionActivityHistory(from startDate: Date, to endDate: Date) async throws -> [CMMotionActivity] {
+        let activityManager = self.activityManager
+        return try await withCheckedThrowingContinuation { continuation in
+            activityManager.queryActivityStarting(
+                from: startDate,
+                to: endDate,
+                to: OperationQueue()
+            ) { activities, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else if let activities {
+                    continuation.resume(returning: activities)
+                } else {
+                    continuation.resume(returning: [])
                 }
             }
+        }
+    }
 
-            group.addTask {
-                try? await Task.sleep(for: .seconds(10)) // 10 second timeout
-                return nil
-            }
+    private func calculateTimeout(from activities: [CMMotionActivity]) -> TimeInterval? {
+        // Filter for high confidence only
+        let highConfidenceActivities = activities.filter { $0.confidence == .high }
 
-            return await group.next() ?? nil
+        // Count activities by type
+        let automotiveCount = highConfidenceActivities.filter(\.automotive).count
+        let walkingCount = highConfidenceActivities.filter(\.walking).count
+        let cyclingCount = highConfidenceActivities.filter(\.cycling).count
+
+        // Check in priority order: automotive, walking/cycling, stationary/none
+        if automotiveCount > 0 {
+            return 300 // 5 minutes
+        } else if walkingCount > 0 || cyclingCount > 0 {
+            return 60 // 1 minute
+        } else {
+            // Only stationary, no data, or no movement activities
+            return nil
         }
     }
 
@@ -250,23 +241,20 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
             Task { @MainActor [weak self] in
                 guard let self else { return }
 
-                // Check motion history for timeout
-                let timeout = await checkMotionActivityHistory(for: date())
-
-                // Query and write historical motion activities
+                // Query historical motion activities
                 let endDate = date()
                 let startDate = endDate.addingTimeInterval(-1200) // 20 minutes
-                activityManager.queryActivityStarting(
-                    from: startDate,
-                    to: endDate,
-                    to: OperationQueue.main
-                ) { [weak self] activities, _ in
-                    if let activities {
-                        self?.writeMotionActivityHistory(activities: activities, for: sessionID)
-                    }
-                }
-
-                if let timeout {
+                
+                do {
+                    let activities = try await queryMotionActivityHistory(from: startDate, to: endDate)
+                    
+                    // Write activities to database
+                    writeMotionActivityHistory(activities: activities, for: sessionID)
+                    
+                    // Calculate timeout from activities
+                    let timeout = calculateTimeout(from: activities)
+                    
+                    if let timeout {
                     // Transition to evaluating state with timeout
                     locationMonitoringState = .evaluatingSession(
                         sessionID: sessionID,
@@ -288,8 +276,21 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                             self?.handleSessionEnd()
                         } catch {}
                     }
-                } else {
-                    // No timeout - close session immediately
+                    } else {
+                        // No timeout - close session immediately
+                        withErrorReporting {
+                            try self.database.write { db in
+                                try Session.update {
+                                    $0.endDate = date()
+                                }
+                                .where { $0.id == sessionID }
+                                .execute(db)
+                            }
+                        }
+                    }
+                } catch {
+                    // CoreMotion query failed - close session immediately
+                    print("CoreMotion query failed: \(error)")
                     withErrorReporting {
                         try self.database.write { db in
                             try Session.update {

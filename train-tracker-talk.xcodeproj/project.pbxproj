@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,7 @@
 		06EFF948623BB35D22D1DC6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DFECA1069660FAA648050B0 /* Assets.xcassets */; };
 		08388A815761079232E4A7A5 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997C9461B3362018AE665CE9 /* SessionDetailView.swift */; };
 		0BD24F885FC96153684E2F1F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF8C1C445D58EB6666F7CE8C /* SharingGRDB */; };
+		1D1594F2E517BDE09160D217 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436EAA9DBE2008F076886B24 /* App.swift */; };
 		1EAFD3CE313896296E746E9D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DE96769FB2682C96E7AEE19 /* Preview Assets.xcassets */; };
 		2338EB38594F35BFA52F6424 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78E17CDAB6D7D006BC6145F /* SessionsListView.swift */; };
 		246095C43F68186137D99F59 /* TimelineMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AD4E5F8A1D8913D88A7A8F /* TimelineMotionActivityListView.swift */; };
@@ -32,6 +33,7 @@
 		43C3F7C88E8B85E7483E8107 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4D12C1D4B47F063B4B17B2 /* RootView.swift */; };
 		4B78F4BEB098A523D5E9F6A4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E13B17C8C3FED78E865937A /* RootView.swift */; };
 		5054E20E33A88546D41C82CD /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA0F7F3304FEDC073F6D5B8 /* Location.swift */; };
+		54BF39CEB1B04F2BB6EB4C8F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = DD0E48B0332783F82F0CB992 /* SharingGRDB */; };
 		5C2B830B1FA9B051520E4D1C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41091A4E98BE7AB371DFE5BA /* Assets.xcassets */; };
 		5D944246B50B7DB0A38BE890 /* GroundTruthLoggerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBB3DDDC52E6AB06A04C854 /* GroundTruthLoggerApp.swift */; };
 		6219471F49867A780C3B7B9E /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D53BD5A16BF0E9944384945 /* RootStore.swift */; };
@@ -79,9 +81,12 @@
 		0D53BD5A16BF0E9944384945 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 		186323FFC9E83FEC9DAD0E0C /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		1AAA35A7FC5CA714786D61FB /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		1B70E24361A202D0D2805F2A /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		1B8A4B00357F402F88EA6A4D /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		2697D8AD74FFA20C9B22A119 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		2DC8E53696E3F00122162025 /* SignificantStartLocation.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantStartLocation.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2FE2439A37D9380005852A0C /* SessionViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SessionViewer.entitlements; sourceTree = "<group>"; };
+		34ED04522E44587F0029D3AA /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		38AD4E5F8A1D8913D88A7A8F /* TimelineMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineMotionActivityListView.swift; sourceTree = "<group>"; };
 		38AEAE8A0D8067E23297CED8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantChangeApp.swift; sourceTree = "<group>"; };
@@ -92,6 +97,7 @@
 		4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		41091A4E98BE7AB371DFE5BA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		41878853E68AF83728BABB0B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		436EAA9DBE2008F076886B24 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		44C7A324E0E2ED1C631BB4FD /* StartEndLocationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartEndLocationApp.swift; sourceTree = "<group>"; };
 		4E13B17C8C3FED78E865937A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		52439038A1A2A4A6F06F4BC6 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
@@ -109,6 +115,7 @@
 		7DF2A2E7A8554B937A77675F /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		7EBB3DDDC52E6AB06A04C854 /* GroundTruthLoggerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroundTruthLoggerApp.swift; sourceTree = "<group>"; };
 		80370E60F14373EB2796C251 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		80DD8A32B87D0B6DBA8ACF89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		82BBD0FD4A65EEF752CC1778 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantStartLocationApp.swift; sourceTree = "<group>"; };
 		8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
@@ -122,6 +129,7 @@
 		997C9461B3362018AE665CE9 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		9D248DB47E5D3E0016341B09 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
 		9E12E8055F2BD4273C80AA7F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		9E55954D222024158C160D23 /* SessionViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SessionViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ED2A24D32A655C7D1FE5C91 /* MotionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivity.swift; sourceTree = "<group>"; };
 		A62DBF78BE6AC7AFB437F226 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		ABA0F7F3304FEDC073F6D5B8 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
@@ -190,6 +198,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F9EA144CD1D6399CA8338590 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54BF39CEB1B04F2BB6EB4C8F /* SharingGRDB in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -199,6 +215,18 @@
 				4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		1B2D05691C4022D45F215846 /* SessionViewer */ = {
+			isa = PBXGroup;
+			children = (
+				436EAA9DBE2008F076886B24 /* App.swift */,
+				1B70E24361A202D0D2805F2A /* CLAUDE.md */,
+				80DD8A32B87D0B6DBA8ACF89 /* Info.plist */,
+				2FE2439A37D9380005852A0C /* SessionViewer.entitlements */,
+				34ED04522E44587F0029D3AA /* Media.xcassets */,
+			);
+			path = SessionViewer;
 			sourceTree = "<group>";
 		};
 		2499685C72695E3A63189DE2 /* StartEndLocation */ = {
@@ -250,6 +278,7 @@
 				BD13A584825DAB91B60CD092 /* CLAUDE.md */,
 				54E94B9A17FDC577649DD809 /* GroundTruthLogger */,
 				E8113F1C80F295DF7579DE7F /* MotionActivity */,
+				1B2D05691C4022D45F215846 /* SessionViewer */,
 				2ED4A01FB25DE796DA863A47 /* SignificantChange */,
 				3B4016F608ACB7792BDE4CE6 /* SignificantStartLocation */,
 				2499685C72695E3A63189DE2 /* StartEndLocation */,
@@ -302,6 +331,7 @@
 			children = (
 				BD6C9EA8F14181CFC46B7FB9 /* GroundTruthLogger.app */,
 				B95AE31087A9034BB2203463 /* MotionActivity.app */,
+				9E55954D222024158C160D23 /* SessionViewer.app */,
 				B73FE975540A245E41FAFE34 /* SignificantChange.app */,
 				2DC8E53696E3F00122162025 /* SignificantStartLocation.app */,
 				70888B79264661F034F57388 /* StartEndLocation.app */,
@@ -416,6 +446,25 @@
 			productReference = 2DC8E53696E3F00122162025 /* SignificantStartLocation.app */;
 			productType = "com.apple.product-type.application";
 		};
+		503DE91E78003C21D966EE94 /* SessionViewer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 86696E2E8A030528C87BAE8A /* Build configuration list for PBXNativeTarget "SessionViewer" */;
+			buildPhases = (
+				EA566816A444B3DBD56D1712 /* Sources */,
+				F9EA144CD1D6399CA8338590 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SessionViewer;
+			packageProductDependencies = (
+				DD0E48B0332783F82F0CB992 /* SharingGRDB */,
+			);
+			productName = SessionViewer;
+			productReference = 9E55954D222024158C160D23 /* SessionViewer.app */;
+			productType = "com.apple.product-type.application";
+		};
 		927024F8DD398C84AE4D215E /* SignificantChange */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9C98A8FBDCDCF237FDC7725E /* Build configuration list for PBXNativeTarget "SignificantChange" */;
@@ -474,6 +523,9 @@
 					4A9ABFBEE0679A7C42D9D8A0 = {
 						DevelopmentTeam = YK25EF78NT;
 					};
+					503DE91E78003C21D966EE94 = {
+						DevelopmentTeam = YK25EF78NT;
+					};
 					927024F8DD398C84AE4D215E = {
 						DevelopmentTeam = YK25EF78NT;
 					};
@@ -495,12 +547,12 @@
 			packageReferences = (
 				C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */,
 			);
-			preferredProjectObjectVersion = 54;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				4152D0C38075C2282BE5361E /* GroundTruthLogger */,
 				9501D029290422CFE3C43A31 /* MotionActivity */,
+				503DE91E78003C21D966EE94 /* SessionViewer */,
 				927024F8DD398C84AE4D215E /* SignificantChange */,
 				4A9ABFBEE0679A7C42D9D8A0 /* SignificantStartLocation */,
 				084A01CEBFF5588F92488741 /* StartEndLocation */,
@@ -640,6 +692,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EA566816A444B3DBD56D1712 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D1594F2E517BDE09160D217 /* App.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -657,6 +717,23 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.GroundTruthLogger";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		1FD45F2005113CAFCBAED187 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SessionViewer/SessionViewer.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = SessionViewer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.SessionViewer";
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -768,7 +845,6 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -842,7 +918,6 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -900,6 +975,23 @@
 			};
 			name = Release;
 		};
+		EE7297532BD9784509058C4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SessionViewer/SessionViewer.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = SessionViewer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twocentstudios.train-tracker-talk.SessionViewer";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		F4A5390273E4C430C297FE74 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -937,6 +1029,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		86696E2E8A030528C87BAE8A /* Build configuration list for PBXNativeTarget "SessionViewer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FD45F2005113CAFCBAED187 /* Debug */,
+				EE7297532BD9784509058C4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		9C98A8FBDCDCF237FDC7725E /* Build configuration list for PBXNativeTarget "SignificantChange" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1026,6 +1127,11 @@
 			productName = SharingGRDB;
 		};
 		CF8C1C445D58EB6666F7CE8C /* SharingGRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;
+			productName = SharingGRDB;
+		};
+		DD0E48B0332783F82F0CB992 /* SharingGRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;
 			productName = SharingGRDB;

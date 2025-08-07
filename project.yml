@@ -17,6 +17,7 @@ fileGroups:
   - MotionActivity/CLAUDE.md
   - StartEndLocation/CLAUDE.md
   - GroundTruthLogger/CLAUDE.md
+  - SessionViewer/CLAUDE.md
 
 packages:
   SharingGRDB:
@@ -152,3 +153,18 @@ targets:
         NSLocationAlwaysAndWhenInUseUsageDescription: "Document signficant locations in the background"
         NSLocationWhenInUseUsageDescription: "Document signficant locations"
         NSMotionUsageDescription: "Access motion data to track activity while riding trains"
+
+  SessionViewer:
+    type: application
+    platform: macOS
+    sources:
+      - path: SessionViewer
+        excludes:
+          - "CLAUDE.md"
+    dependencies:
+      - package: SharingGRDB
+    settings:
+      DEVELOPMENT_TEAM: YK25EF78NT
+      CODE_SIGN_ENTITLEMENTS: SessionViewer/SessionViewer.entitlements
+    info:
+      path: SessionViewer/Info.plist

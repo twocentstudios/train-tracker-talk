@@ -155,7 +155,7 @@ struct LocationListView: View {
                 List(locations) { location in
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(location.timestamp, format: .dateTime.hour().minute().second())
+                            Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
                                 .font(.headline)
 
                             Spacer()
@@ -192,10 +192,7 @@ struct SessionInfo {
     let isOnTrain: Bool
 
     var displayName: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return "Session - \(formatter.string(from: startDate))"
+        return "Session - \(startDate.formatted(.dateTime.month().day().year().hour().minute()))"
     }
 }
 

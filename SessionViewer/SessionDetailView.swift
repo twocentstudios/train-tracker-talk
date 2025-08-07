@@ -6,7 +6,7 @@ import SwiftUI
 private let iso8601Formatter = ISO8601DateFormatter()
 
 struct SessionDetailView: View {
-    let databaseURL: URL
+    let database: any DatabaseReader
     let sessionID: String
 
     @State private var locations: [LocationData] = []
@@ -58,8 +58,7 @@ struct SessionDetailView: View {
         error = nil
 
         do {
-            let dbQueue = try DatabaseQueue(path: databaseURL.path)
-            let result = try await dbQueue.read { db -> (SessionInfo?, [LocationData]) in
+            let result = try await database.read { db -> (SessionInfo?, [LocationData]) in
                 let sessionInfo = try SessionInfo.fetchOne(db, sessionID: sessionID)
                 let locations = try LocationData.fetchAll(db, sessionID: sessionID)
                 return (sessionInfo, locations)
@@ -192,7 +191,7 @@ struct SessionInfo {
     let isOnTrain: Bool
 
     var displayName: String {
-        return "Session - \(startDate.formatted(.dateTime.month().day().year().hour().minute()))"
+        "Session - \(startDate.formatted(.dateTime.month().day().year().hour().minute()))"
     }
 }
 

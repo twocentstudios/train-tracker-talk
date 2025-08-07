@@ -1,4 +1,6 @@
 import Foundation
+import GRDB
+import OSLog
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -35,4 +37,25 @@ extension UTType {
     static var sqlite: UTType {
         UTType(filenameExtension: "sqlite") ?? .database
     }
+}
+
+private let logger = Logger(subsystem: "com.twocentstudios.train-tracker-talk.SessionViewer", category: "Database")
+
+func appDatabase(path: String) throws -> any DatabaseReader {
+    var configuration = Configuration()
+    configuration.foreignKeysEnabled = true
+    configuration.readonly = true
+
+    #if DEBUG
+        configuration.prepareDatabase { db in
+            db.trace(options: .profile) {
+                logger.debug("\($0.expandedDescription)")
+            }
+        }
+    #endif
+
+    logger.info("Opening read-only database at \(path)")
+    let database = try DatabaseQueue(path: path, configuration: configuration)
+
+    return database
 }

@@ -5,7 +5,7 @@ import SwiftUI
 private let iso8601Formatter = ISO8601DateFormatter()
 
 struct SessionsListView: View {
-    let databaseURL: URL
+    let database: any DatabaseReader
     @Binding var selectedSessionID: String?
     @State private var sessions: [SessionSummary] = []
     @State private var isLoading = true
@@ -94,8 +94,7 @@ struct SessionsListView: View {
         error = nil
 
         do {
-            let dbQueue = try DatabaseQueue(path: databaseURL.path)
-            let loadedSessions = try await dbQueue.read { db in
+            let loadedSessions = try await database.read { db in
                 try SessionSummary.fetchAll(db)
             }
 

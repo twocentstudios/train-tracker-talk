@@ -8,13 +8,3 @@ struct SessionViewerApp: App {
         }
     }
 }
-
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Text("SessionViewer")
-                .font(.largeTitle)
-                .padding()
-        }
-    }
-}

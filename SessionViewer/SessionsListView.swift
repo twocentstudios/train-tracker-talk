@@ -93,15 +93,11 @@ struct SessionsListView: View {
                 try Session.order { $0.startDate.desc() }.fetchAll(db)
             }
 
-            await MainActor.run {
-                sessions = loadedSessions
-                isLoading = false
-            }
+            sessions = loadedSessions
+            isLoading = false
         } catch {
-            await MainActor.run {
-                self.error = error
-                isLoading = false
-            }
+            self.error = error
+            isLoading = false
         }
     }
 }

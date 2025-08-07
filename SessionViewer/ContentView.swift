@@ -58,13 +58,9 @@ struct ContentView: View {
     private func openDatabase() async {
         do {
             let database = try appDatabase(path: document.fileURL.path)
-            await MainActor.run {
-                sessionsDatabase = database
-            }
+            sessionsDatabase = database
         } catch {
-            await MainActor.run {
-                databaseError = error
-            }
+            databaseError = error
         }
     }
 }

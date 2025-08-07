@@ -65,16 +65,12 @@ struct SessionDetailView: View {
                 return (session, locations)
             }
 
-            await MainActor.run {
-                session = result.0
-                locations = result.1
-                isLoading = false
-            }
+            session = result.0
+            locations = result.1
+            isLoading = false
         } catch {
-            await MainActor.run {
-                self.error = error
-                isLoading = false
-            }
+            self.error = error
+            isLoading = false
         }
     }
 }

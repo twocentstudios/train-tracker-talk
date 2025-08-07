@@ -11,6 +11,7 @@ struct SessionsListView: View {
     @State private var sessions: [Session] = []
     @State private var isLoading = true
     @State private var error: Error?
+    @State private var showOnlyTrainSessions = false
 
     var body: some View {
         Group {
@@ -79,7 +80,18 @@ struct SessionsListView: View {
             }
         }
         .navigationTitle("Sessions")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Toggle(isOn: $showOnlyTrainSessions) {
+                    Label("Train Only", systemImage: "train.side.front.car")
+                }
+                .toggleStyle(.button)
+            }
+        }
         .task {
+            await loadSessions()
+        }
+        .task(id: showOnlyTrainSessions) {
             await loadSessions()
         }
     }
@@ -89,8 +101,15 @@ struct SessionsListView: View {
         error = nil
 
         do {
-            let loadedSessions = try await database.read { db in
-                try Session.order { $0.startDate.desc() }.fetchAll(db)
+            let loadedSessions = try await database.read { [showOnlyTrainSessions] db in
+                try Session
+                    .where {
+                        if showOnlyTrainSessions {
+                            $0.isOnTrain == true
+                        }
+                    }
+                    .order { $0.startDate.desc() }
+                    .fetchAll(db)
             }
 
             sessions = loadedSessions

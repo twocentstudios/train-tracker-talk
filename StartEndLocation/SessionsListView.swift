@@ -49,7 +49,7 @@ struct SessionsListView: View {
         }
         .listStyle(.plain)
         .sheet(item: $selectedSession) { session in
-            SessionDetailView(session: session)
+            SessionDetailView(sessionID: session.id)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

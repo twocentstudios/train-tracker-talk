@@ -168,3 +168,9 @@ targets:
       CODE_SIGN_ENTITLEMENTS: SessionViewer/SessionViewer.entitlements
     info:
       path: SessionViewer/Info.plist
+      properties:
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: SQLite Database
+            LSItemContentTypes:
+              - public.database
+            CFBundleTypeRole: Viewer

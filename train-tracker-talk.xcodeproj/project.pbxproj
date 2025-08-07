@@ -17,6 +17,7 @@
 		2338EB38594F35BFA52F6424 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78E17CDAB6D7D006BC6145F /* SessionsListView.swift */; };
 		246095C43F68186137D99F59 /* TimelineMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AD4E5F8A1D8913D88A7A8F /* TimelineMotionActivityListView.swift */; };
 		24FD563F397813FD77676C51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BF42960E46892C2915F62E /* AppDelegate.swift */; };
+		27FD4072033A6F35B7F24B3D /* SessionDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5982E42046A67A09CC518D /* SessionDatabase.swift */; };
 		28C5D2523F7540914194926E /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA85299D526CCD40F8FA7F /* RootStore.swift */; };
 		2B838D27DFA29B434C7FDC0B /* LiveMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C45715C100CCC41E6D7837E /* LiveMotionActivityListView.swift */; };
 		365993E605D8CBCE5EE46C76 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DB8414A61BDACE26E37CF6 /* Database.swift */; };
@@ -118,6 +119,7 @@
 		7A4D12C1D4B47F063B4B17B2 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		7C45715C100CCC41E6D7837E /* LiveMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveMotionActivityListView.swift; sourceTree = "<group>"; };
 		7DF2A2E7A8554B937A77675F /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		7E5982E42046A67A09CC518D /* SessionDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDatabase.swift; sourceTree = "<group>"; };
 		7EBB3DDDC52E6AB06A04C854 /* GroundTruthLoggerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroundTruthLoggerApp.swift; sourceTree = "<group>"; };
 		80370E60F14373EB2796C251 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		80DD8A32B87D0B6DBA8ACF89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				362F803740CAC7771300288E /* ContentView.swift */,
 				80DD8A32B87D0B6DBA8ACF89 /* Info.plist */,
 				666CA49FD4D0BDC2C4E4E02A /* Media.xcassets */,
+				7E5982E42046A67A09CC518D /* SessionDatabase.swift */,
 				F6C8F19549FCB66EE08B89EB /* SessionDetailView.swift */,
 				814B9B7C3E7F8C36023BC931 /* SessionsListView.swift */,
 				2FE2439A37D9380005852A0C /* SessionViewer.entitlements */,
@@ -718,6 +721,7 @@
 			files = (
 				1D1594F2E517BDE09160D217 /* App.swift in Sources */,
 				6AD2A4015FDA2B6B27673479 /* ContentView.swift in Sources */,
+				27FD4072033A6F35B7F24B3D /* SessionDatabase.swift in Sources */,
 				D9DAA8A9361ECB743B0BD5BA /* SessionDetailView.swift in Sources */,
 				F3162DD15E2D43BA880984A0 /* SessionsListView.swift in Sources */,
 			);

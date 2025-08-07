@@ -29,9 +29,11 @@
 		3ECCFB828971F3FF6D0AAE23 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A4B00357F402F88EA6A4D /* Session.swift */; };
 		3F5E9F2380B2CB12934E625B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */; };
 		402FBF98A15C4C7B2CBEAAED /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A2E7A8554B937A77675F /* Session.swift */; };
+		40DC02E111557E5090FB9B57 /* railway.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 28B3907FCF345029F8021400 /* railway.sqlite */; };
 		4155086E41B9FA8C47FF5831 /* MotionActivityFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F5422266AA1794A50424F9 /* MotionActivityFormatters.swift */; };
 		43685311A4EC64051EF0B5E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */; };
 		43C3F7C88E8B85E7483E8107 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4D12C1D4B47F063B4B17B2 /* RootView.swift */; };
+		45EC915B1E0E4F5471D6227F /* RailwayDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3842EC37FB5803B2EC0805 /* RailwayDatabase.swift */; };
 		4B78F4BEB098A523D5E9F6A4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E13B17C8C3FED78E865937A /* RootView.swift */; };
 		5054E20E33A88546D41C82CD /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA0F7F3304FEDC073F6D5B8 /* Location.swift */; };
 		54BF39CEB1B04F2BB6EB4C8F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = DD0E48B0332783F82F0CB992 /* SharingGRDB */; };
@@ -50,6 +52,7 @@
 		93198D04D1F021F4AC43AB38 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80370E60F14373EB2796C251 /* Event.swift */; };
 		93E953E899EC8D5555D9F677 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918EA5E82B17F515ABC46999 /* RootView.swift */; };
 		96F644EDF87BFF09D15A8635 /* HistoricalMotionActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87CA1C895354D04B8033CF9 /* HistoricalMotionActivityListView.swift */; };
+		98EE2C6741E785D223FA0530 /* Tagged+SwiftStructuredQueries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE8B77794FF5699C9968AD2 /* Tagged+SwiftStructuredQueries.swift */; };
 		98EF7200FF76029631954BCF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41878853E68AF83728BABB0B /* AppDelegate.swift */; };
 		A5CFA620F518D84E19DC63E2 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1EE7DCAFE8F03B3BE6C175 /* Database.swift */; };
 		A6920835C11A449BB487CF41 /* LocationsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7004D086012A90FFE8BCF8FD /* LocationsMapView.swift */; };
@@ -58,6 +61,7 @@
 		AB611A5BA653BAA2B0BF096A /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E12E8055F2BD4273C80AA7F /* Location.swift */; };
 		AED4450655CB8E583ABA5ED9 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52439038A1A2A4A6F06F4BC6 /* Database.swift */; };
 		B9C545FB7C2FA199923BACA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE705A7A0AF5A9C780685B5B /* Assets.xcassets */; };
+		B9F8A2CB680D26DEB41CEE89 /* RailwayModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E5D6FE59B306F30286543F /* RailwayModels.swift */; };
 		BB3441317176C5ECE5ED1C22 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF2093617E9C15E5C8706DF3 /* Preview Assets.xcassets */; };
 		BCD3E69ED74B4A4569328CC5 /* MotionActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56884514DD5574AF0E79F52 /* MotionActivityApp.swift */; };
 		BDA68B63A63E3C70B59F7080 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 666CA49FD4D0BDC2C4E4E02A /* Media.xcassets */; };
@@ -65,6 +69,7 @@
 		C04BC2C8CB16C9B69FCA520C /* EventsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D7BF639775FC80E5FF03A1 /* EventsListView.swift */; };
 		C42BE923B94A20FD8A6E290D /* CMMotionActivityManager+AsyncExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B132F05E0D8C1984C57CC7E /* CMMotionActivityManager+AsyncExtensions.swift */; };
 		C4B0803B41A23BEC7A170107 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E12E8055F2BD4273C80AA7F /* Location.swift */; };
+		C5971FAAE28BD00FB578C320 /* Tagged in Frameworks */ = {isa = PBXBuildFile; productRef = 103AE06A988EF5B4CB51F0C6 /* Tagged */; };
 		CC03F24C2FAFD8292FD1FF1B /* SignificantStartLocationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A796B0664625F07BA22732 /* SignificantStartLocationApp.swift */; };
 		D2F42FAE0691BB13515544BB /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1D37513B7DAA32C7725DB1 /* ExportDatabaseView.swift */; };
 		D549C4DABA2A3C757C39822C /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B776F4763A99FC2B90CFFBC4 /* SharingGRDB */; };
@@ -91,6 +96,7 @@
 		1B70E24361A202D0D2805F2A /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		1B8A4B00357F402F88EA6A4D /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		2697D8AD74FFA20C9B22A119 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		28B3907FCF345029F8021400 /* railway.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = railway.sqlite; sourceTree = "<group>"; };
 		2DC8E53696E3F00122162025 /* SignificantStartLocation.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantStartLocation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FE2439A37D9380005852A0C /* SessionViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SessionViewer.entitlements; sourceTree = "<group>"; };
 		362F803740CAC7771300288E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -109,6 +115,7 @@
 		4E13B17C8C3FED78E865937A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		52439038A1A2A4A6F06F4BC6 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		5BA0681B1A09621E436687D8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		5CE8B77794FF5699C9968AD2 /* Tagged+SwiftStructuredQueries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tagged+SwiftStructuredQueries.swift"; sourceTree = "<group>"; };
 		60D7BF639775FC80E5FF03A1 /* EventsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListView.swift; sourceTree = "<group>"; };
 		60DB8414A61BDACE26E37CF6 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		6453C5D66E81B33E300C0F0B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -160,11 +167,13 @@
 		E5F8570288E1435D45C04D9C /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		E78E17CDAB6D7D006BC6145F /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		E87CA1C895354D04B8033CF9 /* HistoricalMotionActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalMotionActivityListView.swift; sourceTree = "<group>"; };
+		E9E5D6FE59B306F30286543F /* RailwayModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RailwayModels.swift; sourceTree = "<group>"; };
 		EC84DD785019854A366C3B45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EE4784F5E815A6AA6F94253F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EE705A7A0AF5A9C780685B5B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF2093617E9C15E5C8706DF3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F6C8F19549FCB66EE08B89EB /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
+		FA3842EC37FB5803B2EC0805 /* RailwayDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RailwayDatabase.swift; sourceTree = "<group>"; };
 		FE51EBF3B74A513AD41194F2 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -214,6 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				54BF39CEB1B04F2BB6EB4C8F /* SharingGRDB in Frameworks */,
+				C5971FAAE28BD00FB578C320 /* Tagged in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,10 +246,13 @@
 				362F803740CAC7771300288E /* ContentView.swift */,
 				80DD8A32B87D0B6DBA8ACF89 /* Info.plist */,
 				666CA49FD4D0BDC2C4E4E02A /* Media.xcassets */,
+				FA3842EC37FB5803B2EC0805 /* RailwayDatabase.swift */,
+				E9E5D6FE59B306F30286543F /* RailwayModels.swift */,
 				7E5982E42046A67A09CC518D /* SessionDatabase.swift */,
 				F6C8F19549FCB66EE08B89EB /* SessionDetailView.swift */,
 				814B9B7C3E7F8C36023BC931 /* SessionsListView.swift */,
 				2FE2439A37D9380005852A0C /* SessionViewer.entitlements */,
+				5CE8B77794FF5699C9968AD2 /* Tagged+SwiftStructuredQueries.swift */,
 			);
 			path = SessionViewer;
 			sourceTree = "<group>";
@@ -291,6 +304,7 @@
 			isa = PBXGroup;
 			children = (
 				BD13A584825DAB91B60CD092 /* CLAUDE.md */,
+				825CEC5DC8A6338879BF1A35 /* data */,
 				54E94B9A17FDC577649DD809 /* GroundTruthLogger */,
 				E8113F1C80F295DF7579DE7F /* MotionActivity */,
 				1B2D05691C4022D45F215846 /* SessionViewer */,
@@ -368,6 +382,14 @@
 				6453C5D66E81B33E300C0F0B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		825CEC5DC8A6338879BF1A35 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				28B3907FCF345029F8021400 /* railway.sqlite */,
+			);
+			path = data;
 			sourceTree = "<group>";
 		};
 		E8113F1C80F295DF7579DE7F /* MotionActivity */ = {
@@ -476,6 +498,7 @@
 			name = SessionViewer;
 			packageProductDependencies = (
 				DD0E48B0332783F82F0CB992 /* SharingGRDB */,
+				103AE06A988EF5B4CB51F0C6 /* Tagged */,
 			);
 			productName = SessionViewer;
 			productReference = 9E55954D222024158C160D23 /* SessionViewer.app */;
@@ -562,6 +585,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */,
+				F9100BBF1D0B402CDE39B7B3 /* XCRemoteSwiftPackageReference "swift-tagged" */,
 			);
 			preferredProjectObjectVersion = 54;
 			projectDirPath = "";
@@ -618,6 +642,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDA68B63A63E3C70B59F7080 /* Media.xcassets in Resources */,
+				40DC02E111557E5090FB9B57 /* railway.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,10 +749,13 @@
 				1D1594F2E517BDE09160D217 /* App.swift in Sources */,
 				6AD2A4015FDA2B6B27673479 /* ContentView.swift in Sources */,
 				C4B0803B41A23BEC7A170107 /* Location.swift in Sources */,
+				45EC915B1E0E4F5471D6227F /* RailwayDatabase.swift in Sources */,
+				B9F8A2CB680D26DEB41CEE89 /* RailwayModels.swift in Sources */,
 				D7D0FDA39BF9C39847796ACB /* Session.swift in Sources */,
 				27FD4072033A6F35B7F24B3D /* SessionDatabase.swift in Sources */,
 				D9DAA8A9361ECB743B0BD5BA /* SessionDetailView.swift in Sources */,
 				F3162DD15E2D43BA880984A0 /* SessionsListView.swift in Sources */,
+				98EE2C6741E785D223FA0530 /* Tagged+SwiftStructuredQueries.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1134,9 +1162,22 @@
 				minimumVersion = 0.1.0;
 			};
 		};
+		F9100BBF1D0B402CDE39B7B3 /* XCRemoteSwiftPackageReference "swift-tagged" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-tagged";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		103AE06A988EF5B4CB51F0C6 /* Tagged */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F9100BBF1D0B402CDE39B7B3 /* XCRemoteSwiftPackageReference "swift-tagged" */;
+			productName = Tagged;
+		};
 		5E8C97371DBEF2370B5B0550 /* SharingGRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */;

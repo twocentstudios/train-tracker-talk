@@ -41,7 +41,7 @@ extension UTType {
 
 private let logger = Logger(subsystem: "com.twocentstudios.train-tracker-talk.SessionViewer", category: "Database")
 
-func appDatabase(path: String) throws -> any DatabaseReader {
+func openAppDatabase(path: String) throws -> any DatabaseReader {
     var configuration = Configuration()
     configuration.foreignKeysEnabled = true
     configuration.readonly = true

@@ -5,7 +5,9 @@ struct ContentView: View {
     var document: SessionDatabase
     @State private var selectedSessionID: UUID?
     @State private var sessionsDatabase: (any DatabaseReader)?
+    @State private var railwayDatabase: (any DatabaseReader)?
     @State private var databaseError: Error?
+    @State private var railwayDatabaseError: Error?
 
     var body: some View {
         Group {
@@ -15,7 +17,7 @@ struct ContentView: View {
                         .font(.largeTitle)
                         .foregroundStyle(.orange)
 
-                    Text("Failed to open database")
+                    Text("Failed to open session database")
                         .font(.headline)
 
                     Text(databaseError.localizedDescription)
@@ -24,7 +26,22 @@ struct ContentView: View {
                         .multilineTextAlignment(.center)
                 }
                 .padding()
-            } else if let sessionsDatabase {
+            } else if let railwayDatabaseError {
+                VStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.largeTitle)
+                        .foregroundStyle(.orange)
+
+                    Text("Failed to open railway database")
+                        .font(.headline)
+
+                    Text(railwayDatabaseError.localizedDescription)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
+            } else if let sessionsDatabase, let _ = railwayDatabase {
                 NavigationSplitView {
                     SessionsListView(
                         database: sessionsDatabase,
@@ -44,7 +61,7 @@ struct ContentView: View {
             } else {
                 VStack {
                     ProgressView()
-                    Text("Opening database...")
+                    Text("Opening databases...")
                         .foregroundStyle(.secondary)
                 }
             }
@@ -57,10 +74,18 @@ struct ContentView: View {
 
     private func openDatabase() async {
         do {
-            let database = try appDatabase(path: document.fileURL.path)
+            let database = try openAppDatabase(path: document.fileURL.path)
             sessionsDatabase = database
         } catch {
             databaseError = error
+            return
+        }
+
+        do {
+            let database = try openRailwayDatabase()
+            railwayDatabase = database
+        } catch {
+            railwayDatabaseError = error
         }
     }
 }

@@ -18,11 +18,15 @@ fileGroups:
   - StartEndLocation/CLAUDE.md
   - GroundTruthLogger/CLAUDE.md
   - SessionViewer/CLAUDE.md
+  - data/railway.sqlite
 
 packages:
   SharingGRDB:
     url: https://github.com/pointfreeco/sharing-grdb
     from: 0.1.0
+  Tagged:
+    url: https://github.com/pointfreeco/swift-tagged
+    from: 0.10.0
 
 targets:
   GroundTruthLogger:
@@ -163,8 +167,11 @@ targets:
           - "CLAUDE.md"
       - StartEndLocation/Session.swift
       - StartEndLocation/Location.swift
+      - path: data/railway.sqlite
+        buildPhase: resources
     dependencies:
       - package: SharingGRDB
+      - package: Tagged
     settings:
       DEVELOPMENT_TEAM: YK25EF78NT
       CODE_SIGN_ENTITLEMENTS: SessionViewer/SessionViewer.entitlements

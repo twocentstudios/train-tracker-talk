@@ -48,7 +48,7 @@ struct SessionDetailView: View {
             }
         }
         .navigationTitle(sessionInfo?.displayName ?? "Session")
-        .task {
+        .task(id: sessionID) {
             await loadSessionData()
         }
     }

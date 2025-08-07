@@ -161,6 +161,8 @@ targets:
       - path: SessionViewer
         excludes:
           - "CLAUDE.md"
+      - StartEndLocation/Session.swift
+      - StartEndLocation/Location.swift
     dependencies:
       - package: SharingGRDB
     settings:

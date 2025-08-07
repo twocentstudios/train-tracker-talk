@@ -1,18 +1,19 @@
 import Foundation
 import GRDB
 import MapKit
+import SharingGRDB
 import SwiftUI
 
 private let iso8601Formatter = ISO8601DateFormatter()
 
 struct SessionDetailView: View {
     let database: any DatabaseReader
-    let sessionID: String
+    let sessionID: UUID
 
-    @State private var locations: [LocationData] = []
+    @State private var locations: [Location] = []
     @State private var isLoading = true
     @State private var error: Error?
-    @State private var sessionInfo: SessionInfo?
+    @State private var session: Session?
 
     var body: some View {
         Group {
@@ -47,7 +48,7 @@ struct SessionDetailView: View {
                 }
             }
         }
-        .navigationTitle(sessionInfo?.displayName ?? "Session")
+        .navigationTitle(session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
         .task(id: sessionID) {
             await loadSessionData()
         }
@@ -58,14 +59,14 @@ struct SessionDetailView: View {
         error = nil
 
         do {
-            let result = try await database.read { db -> (SessionInfo?, [LocationData]) in
-                let sessionInfo = try SessionInfo.fetchOne(db, sessionID: sessionID)
-                let locations = try LocationData.fetchAll(db, sessionID: sessionID)
-                return (sessionInfo, locations)
+            let result = try await database.read { db -> (Session?, [Location]) in
+                let session = try Session.where { $0.id.eq(sessionID) }.fetchOne(db)
+                let locations = try Location.where { $0.sessionID.eq(sessionID) }.order { $0.timestamp.asc() }.fetchAll(db)
+                return (session, locations)
             }
 
             await MainActor.run {
-                sessionInfo = result.0
+                session = result.0
                 locations = result.1
                 isLoading = false
             }
@@ -79,7 +80,7 @@ struct SessionDetailView: View {
 }
 
 struct LocationMapView: View {
-    let locations: [LocationData]
+    let locations: [Location]
 
     private var mapRegion: MapCameraPosition {
         guard !locations.isEmpty else {
@@ -130,7 +131,7 @@ struct LocationMapView: View {
 }
 
 struct LocationListView: View {
-    let locations: [LocationData]
+    let locations: [Location]
 
     var body: some View {
         Group {
@@ -181,78 +182,5 @@ struct LocationListView: View {
             }
         }
         .navigationTitle("Locations (\(locations.count))")
-    }
-}
-
-struct SessionInfo {
-    let id: String
-    let startDate: Date
-    let endDate: Date?
-    let isOnTrain: Bool
-
-    var displayName: String {
-        "Session - \(startDate.formatted(.dateTime.month().day().year().hour().minute()))"
-    }
-}
-
-extension SessionInfo: FetchableRecord {
-    init(row: Row) {
-        id = row["id"]
-
-        let startDateString: String = row["startDate"]
-        startDate = iso8601Formatter.date(from: startDateString) ?? Date()
-
-        if let endDateString: String? = row["endDate"], let endDateString {
-            endDate = iso8601Formatter.date(from: endDateString)
-        } else {
-            endDate = nil
-        }
-
-        isOnTrain = row["isOnTrain"] == 1
-    }
-
-    static func fetchOne(_ db: Database, sessionID: String) throws -> SessionInfo? {
-        try SessionInfo.fetchOne(db, sql: "SELECT * FROM sessions WHERE id = ?", arguments: [sessionID])
-    }
-}
-
-struct LocationData: Identifiable, Hashable {
-    let id: String
-    let latitude: Double
-    let longitude: Double
-    let timestamp: Date
-    let speed: Double?
-    let horizontalAccuracy: Double?
-}
-
-extension LocationData: FetchableRecord {
-    init(row: Row) {
-        id = row["id"]
-        latitude = row["latitude"]
-        longitude = row["longitude"]
-
-        let timestampString: String = row["timestamp"]
-        timestamp = iso8601Formatter.date(from: timestampString) ?? Date()
-
-        if let speedValue: Double = row["speed"], speedValue >= 0 {
-            speed = speedValue
-        } else {
-            speed = nil
-        }
-
-        if let accuracyValue: Double = row["horizontalAccuracy"], accuracyValue > 0 {
-            horizontalAccuracy = accuracyValue
-        } else {
-            horizontalAccuracy = nil
-        }
-    }
-
-    static func fetchAll(_ db: Database, sessionID: String) throws -> [LocationData] {
-        try LocationData.fetchAll(db, sql: """
-        SELECT id, latitude, longitude, timestamp, speed, horizontalAccuracy
-        FROM locations
-        WHERE sessionID = ?
-        ORDER BY timestamp ASC
-        """, arguments: [sessionID])
     }
 }

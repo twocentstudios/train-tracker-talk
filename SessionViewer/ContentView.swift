@@ -3,7 +3,7 @@ import SwiftUI
 
 struct ContentView: View {
     var document: SessionDatabase
-    @State private var selectedSessionID: String?
+    @State private var selectedSessionID: UUID?
     @State private var sessionsDatabase: (any DatabaseReader)?
     @State private var databaseError: Error?
 

@@ -1,13 +1,14 @@
 import Foundation
 import GRDB
+import SharingGRDB
 import SwiftUI
 
 private let iso8601Formatter = ISO8601DateFormatter()
 
 struct SessionsListView: View {
     let database: any DatabaseReader
-    @Binding var selectedSessionID: String?
-    @State private var sessions: [SessionSummary] = []
+    @Binding var selectedSessionID: UUID?
+    @State private var sessions: [Session] = []
     @State private var isLoading = true
     @State private var error: Error?
 
@@ -71,12 +72,6 @@ struct SessionsListView: View {
                                 .foregroundStyle(.secondary)
 
                             Spacer()
-
-                            if let locationCount = session.locationCount {
-                                Text("\(locationCount) locations")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
                         }
                     }
                     .padding(.vertical, 2)
@@ -95,11 +90,11 @@ struct SessionsListView: View {
 
         do {
             let loadedSessions = try await database.read { db in
-                try SessionSummary.fetchAll(db)
+                try Session.order { $0.startDate.desc() }.fetchAll(db)
             }
 
             await MainActor.run {
-                sessions = loadedSessions.sorted { $0.startDate > $1.startDate }
+                sessions = loadedSessions
                 isLoading = false
             }
         } catch {
@@ -108,62 +103,5 @@ struct SessionsListView: View {
                 isLoading = false
             }
         }
-    }
-}
-
-struct SessionSummary: Hashable, Identifiable {
-    let id: String
-    let startDate: Date
-    let endDate: Date?
-    let isOnTrain: Bool
-    let locationCount: Int?
-
-    var durationFormatted: String {
-        guard let endDate else { return "Active" }
-
-        let duration = endDate.timeIntervalSince(startDate)
-        let minutes = Int(duration) / 60
-        let seconds = Int(duration) % 60
-
-        if minutes > 0 {
-            return "\(minutes)m \(seconds)s"
-        } else {
-            return "\(seconds)s"
-        }
-    }
-}
-
-extension SessionSummary: FetchableRecord {
-    init(row: Row) {
-        id = row["id"]
-
-        let startDateString: String = row["startDate"]
-        startDate = iso8601Formatter.date(from: startDateString) ?? Date()
-
-        if let endDateString: String? = row["endDate"], let endDateString {
-            endDate = iso8601Formatter.date(from: endDateString)
-        } else {
-            endDate = nil
-        }
-
-        isOnTrain = row["isOnTrain"] == 1
-        locationCount = row["locationCount"]
-    }
-
-    static func fetchAll(_ db: Database) throws -> [SessionSummary] {
-        let sql = """
-        SELECT 
-            s.id,
-            s.startDate,
-            s.endDate,
-            s.isOnTrain,
-            COUNT(l.id) as locationCount
-        FROM sessions s
-        LEFT JOIN locations l ON s.id = l.sessionID
-        GROUP BY s.id, s.startDate, s.endDate, s.isOnTrain
-        ORDER BY s.startDate DESC
-        """
-
-        return try SessionSummary.fetchAll(db, sql: sql)
     }
 }

@@ -128,6 +128,7 @@ struct LocationMapView: View {
 
 struct LocationListView: View {
     let locations: [Location]
+    @State private var selectedLocationID: Location.ID?
 
     var body: some View {
         Group {
@@ -148,32 +149,41 @@ struct LocationListView: View {
                 }
                 .padding()
             } else {
-                List(locations) { location in
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
-                                .font(.headline)
-
-                            Spacer()
-
-                            if let speed = location.speed, speed > 0 {
-                                Text("\(speed, specifier: "%.1f") m/s")
-                                    .font(.caption)
-                                    .foregroundStyle(.blue)
-                            }
-                        }
-
-                        Text("\(location.latitude, specifier: "%.6f"), \(location.longitude, specifier: "%.6f")")
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundStyle(.secondary)
-
-                        if let accuracy = location.horizontalAccuracy, accuracy > 0 {
-                            Text("Accuracy: ±\(accuracy, specifier: "%.0f")m")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                Table(locations, selection: $selectedLocationID) {
+                    TableColumn("Index") { location in
+                        let index = locations.firstIndex(of: location)?.formatted(.number) ?? "-"
+                        Text(index)
+                    }
+                    TableColumn("Time") { location in
+                        Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
+                    }
+                    TableColumn("Latitude") { location in
+                        Text(location.latitude.formatted(.number.precision(.fractionLength(6))))
+                    }
+                    TableColumn("Longitude") { location in
+                        Text(location.longitude.formatted(.number.precision(.fractionLength(6))))
+                    }
+                    TableColumn("Speed") { location in
+                        if let speed = location.speed, speed > 0 {
+                            Text(speed.formatted(.number.precision(.fractionLength(1))) + " m/s")
+                        } else {
+                            Text("-")
                         }
                     }
-                    .padding(.vertical, 2)
+                    TableColumn("Course") { location in
+                        if let course = location.course, course >= 0 {
+                            Text(course.formatted(.number.precision(.fractionLength(1))) + "°")
+                        } else {
+                            Text("-")
+                        }
+                    }
+                    TableColumn("Horizontal Accuracy") { location in
+                        if let accuracy = location.horizontalAccuracy, accuracy > 0 {
+                            Text("±\(accuracy.formatted(.number.precision(.fractionLength(0))))m")
+                        } else {
+                            Text("-")
+                        }
+                    }
                 }
             }
         }

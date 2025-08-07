@@ -109,9 +109,10 @@ struct LocationMapView: View {
         Map(position: .constant(mapRegion)) {
             ForEach(locations) { location in
                 Annotation("", coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)) {
-                    Circle()
-                        .fill(.blue)
-                        .frame(width: 6, height: 6)
+                    Image(systemName: (location.horizontalAccuracy ?? 0) > 500 ? "xmark" : (location.course ?? -1) >= 0 ? "arrow.up" : "circle")
+                        .symbolVariant(.fill)
+                        .rotationEffect(.degrees((location.course ?? -1) >= 0 ? location.course! : 0))
+                        .foregroundStyle(color(for: location.speed ?? -1))
                 }
             }
 
@@ -119,10 +120,16 @@ struct LocationMapView: View {
                 MapPolyline(coordinates: locations.map {
                     CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
                 })
-                .stroke(.blue, lineWidth: 2)
+                .stroke(.foreground, lineWidth: 4)
             }
         }
-        .mapStyle(.standard)
+        .mapStyle(.standard(elevation: .automatic, emphasis: .muted, pointsOfInterest: .including([.publicTransport]), showsTraffic: false))
+    }
+
+    private func color(for speed: Double) -> Color {
+        guard speed != -1 else { return .blue }
+        let t = min(max((speed - 1) / 20, 0), 1)
+        return Color(red: 1 - t, green: t, blue: 0)
     }
 }
 

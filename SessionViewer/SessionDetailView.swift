@@ -232,48 +232,39 @@ struct LocationListView: View {
     @Binding var selectedLocationID: Location.ID?
 
     var body: some View {
-        Group {
-            if locations.isEmpty {
-                Text("No locations")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-                    .padding()
-            } else {
-                Table(locations, selection: $selectedLocationID) {
-                    TableColumn("Index") { location in
-                        let index = locations.firstIndex(of: location)?.formatted(.number) ?? "-"
-                        Text(index)
-                    }
-                    TableColumn("Time") { location in
-                        Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
-                    }
-                    TableColumn("Latitude") { location in
-                        Text(location.latitude.formatted(.number.precision(.fractionLength(6))))
-                    }
-                    TableColumn("Longitude") { location in
-                        Text(location.longitude.formatted(.number.precision(.fractionLength(6))))
-                    }
-                    TableColumn("Speed") { location in
-                        if let speed = location.speed, speed > 0 {
-                            Text(speed.formatted(.number.precision(.fractionLength(1))) + " m/s")
-                        } else {
-                            Text("-")
-                        }
-                    }
-                    TableColumn("Course") { location in
-                        if let course = location.course, course >= 0 {
-                            Text(course.formatted(.number.precision(.fractionLength(1))) + "°")
-                        } else {
-                            Text("-")
-                        }
-                    }
-                    TableColumn("Horizontal Accuracy") { location in
-                        if let accuracy = location.horizontalAccuracy, accuracy > 0 {
-                            Text("±\(accuracy.formatted(.number.precision(.fractionLength(0))))m")
-                        } else {
-                            Text("-")
-                        }
-                    }
+        Table(locations, selection: $selectedLocationID) {
+            TableColumn("Index") { location in
+                let index = locations.firstIndex(of: location)?.formatted(.number) ?? "-"
+                Text(index)
+            }
+            TableColumn("Time") { location in
+                Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
+            }
+            TableColumn("Latitude") { location in
+                Text(location.latitude.formatted(.number.precision(.fractionLength(6))))
+            }
+            TableColumn("Longitude") { location in
+                Text(location.longitude.formatted(.number.precision(.fractionLength(6))))
+            }
+            TableColumn("Speed") { location in
+                if let speed = location.speed, speed > 0 {
+                    Text(speed.formatted(.number.precision(.fractionLength(1))) + " m/s")
+                } else {
+                    Text("-")
+                }
+            }
+            TableColumn("Course") { location in
+                if let course = location.course, course >= 0 {
+                    Text(course.formatted(.number.precision(.fractionLength(1))) + "°")
+                } else {
+                    Text("-")
+                }
+            }
+            TableColumn("Horizontal Accuracy") { location in
+                if let accuracy = location.horizontalAccuracy, accuracy > 0 {
+                    Text("±\(accuracy.formatted(.number.precision(.fractionLength(0))))m")
+                } else {
+                    Text("-")
                 }
             }
         }

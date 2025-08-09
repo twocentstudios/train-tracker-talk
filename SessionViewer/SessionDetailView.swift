@@ -5,37 +5,34 @@ import SharingGRDB
 import SwiftUI
 
 @MainActor @Observable final class SessionDetailStore: Identifiable {
-    struct State {
-        var locations: [Location] = []
-        var session: Session?
-        var isLoading = false
-        var error: Error?
-        var selectedLocationID: Location.ID?
-    }
-
-    var state = State()
-
-    var selectedResult: RailwayTrackerResult? {
-        guard let selectedLocationID = state.selectedLocationID else { return nil }
-        return resultsCache[selectedLocationID]
-    }
-
-    var currentLocationIndex: Int {
-        guard let selectedLocationID = state.selectedLocationID else { return 0 }
-        return state.locations.firstIndex { $0.id == selectedLocationID } ?? 0
-    }
-
-    var isPlaying: Bool { playbackTask != nil }
+    var locations: [Location] = []
+    var session: Session?
+    var isLoading = false
+    var error: Error?
+    var selectedLocationID: Location.ID?
+    var playbackSpeedMultiplier: Double = 0.1
+    var cameraPosition: MapCameraPosition = .automatic
+    var isShowingDetailedPolyline: Bool = false
 
     let sessionID: UUID
     private(set) var resultsCache: [Location.ID: RailwayTrackerResult] = [:]
     private var playbackTask: Task<Void, Never>? = nil
-    var playbackSpeedMultiplier: Double = 0.1
-    var cameraPosition: MapCameraPosition = .automatic
-    var isShowingDetailedPolyline: Bool = false
     let playingTrailLength: Int = 50
+
     @ObservationIgnored private let database: any DatabaseReader
     @ObservationIgnored private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
+
+    var selectedResult: RailwayTrackerResult? {
+        guard let selectedLocationID else { return nil }
+        return resultsCache[selectedLocationID]
+    }
+
+    var currentLocationIndex: Int {
+        guard let selectedLocationID else { return 0 }
+        return locations.firstIndex { $0.id == selectedLocationID } ?? 0
+    }
+
+    var isPlaying: Bool { playbackTask != nil }
 
     init(database: any DatabaseReader, sessionID: UUID) {
         self.database = database
@@ -43,10 +40,10 @@ import SwiftUI
     }
 
     func loadSessionData() async {
-        state.isLoading = true
-        state.error = nil
-        state.session = nil
-        state.locations = []
+        isLoading = true
+        error = nil
+        session = nil
+        locations = []
         serialProcessor = nil
 
         do {
@@ -56,9 +53,9 @@ import SwiftUI
                 return (session, locations)
             }
 
-            state.session = result.0
-            state.locations = result.1
-            state.isLoading = false
+            session = result.0
+            locations = result.1
+            isLoading = false
 
             let railwayTracker = RailwayTracker(railwayDatabase: database)
             let serialProcessor = SerialProcessor(
@@ -71,7 +68,7 @@ import SwiftUI
             self.serialProcessor = serialProcessor
 
             Task {
-                for location in state.locations {
+                for location in locations {
                     serialProcessor.submit(location)
                 }
             }
@@ -80,8 +77,8 @@ import SwiftUI
                 resultsCache[result.location.id] = result
             }
         } catch {
-            state.error = error
-            state.isLoading = false
+            self.error = error
+            isLoading = false
         }
     }
 
@@ -89,19 +86,19 @@ import SwiftUI
         if !isPlaying {
             playbackTask = Task { [weak self] in
                 guard let self else { return }
-                let locationIDs = state.locations.map(\.id)
-                guard let firstLocationID = state.locations.first?.id else { return }
-                let selectedLocationID = state.selectedLocationID ?? firstLocationID
+                let locationIDs = locations.map(\.id)
+                guard let firstLocationID = locations.first?.id else { return }
+                let selectedLocationID = selectedLocationID ?? firstLocationID
                 guard let selectedLocationIndex = locationIDs.firstIndex(of: selectedLocationID) else { return }
                 let playbackLocationIDs = locationIDs.suffix(from: selectedLocationIndex)
                 for (index, locationID) in playbackLocationIDs.enumerated() {
                     guard !Task.isCancelled else { break }
-                    state.selectedLocationID = locationID
+                    self.selectedLocationID = locationID
 
                     if index + 1 < playbackLocationIDs.count {
-                        let currentLocation = state.locations.first { $0.id == locationID }
+                        let currentLocation = locations.first { $0.id == locationID }
                         let nextLocationID = playbackLocationIDs[playbackLocationIDs.index(playbackLocationIDs.startIndex, offsetBy: index + 1)]
-                        let nextLocation = state.locations.first { $0.id == nextLocationID }
+                        let nextLocation = locations.first { $0.id == nextLocationID }
 
                         if let currentLocation, let nextLocation {
                             let waitTime = nextLocation.timestamp.timeIntervalSince(currentLocation.timestamp)
@@ -132,21 +129,21 @@ struct SessionDetailView: View {
                 .frame(minHeight: 300)
 
             LocationListView(
-                locations: store.state.locations,
-                selectedLocationID: $store.state.selectedLocationID
+                locations: store.locations,
+                selectedLocationID: $store.selectedLocationID
             )
             .disabled(store.isPlaying)
             .frame(maxWidth: .infinity)
             .frame(minHeight: 200)
         }
         .overlay {
-            if store.state.isLoading {
+            if store.isLoading {
                 VStack {
                     ProgressView()
                     Text("Loading session data...")
                         .foregroundStyle(.secondary)
                 }
-            } else if let error = store.state.error {
+            } else if let error = store.error {
                 VStack(spacing: 12) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.largeTitle)
@@ -182,21 +179,21 @@ struct SessionDetailView: View {
                 } label: {
                     Image(systemName: store.isPlaying ? "pause" : "play")
                 }
-                .disabled(store.state.isLoading)
+                .disabled(store.isLoading)
 
                 Picker("Playback Speed", selection: $store.playbackSpeedMultiplier) {
                     ForEach([0.05, 0.1, 0.2, 0.3, 0.5, 1.0, 2.0], id: \.self) { speed in
                         Text("\((1 / speed).formatted(.number.precision(.significantDigits(2))))x").tag(speed)
                     }
                 }
-                .disabled(store.isPlaying || store.state.isLoading)
+                .disabled(store.isPlaying || store.isLoading)
                 .pickerStyle(.menu)
 
                 Toggle("Show Detailed Polyline", systemImage: "chart.xyaxis.line", isOn: $store.isShowingDetailedPolyline)
-                    .disabled(store.isPlaying || store.state.isLoading)
+                    .disabled(store.isPlaying || store.isLoading)
             }
         }
-        .navigationTitle(store.state.session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
+        .navigationTitle(store.session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
         .task(id: store.sessionID) {
             await store.loadSessionData()
         }
@@ -204,7 +201,7 @@ struct SessionDetailView: View {
             if store.isPlaying {
                 store.togglePlayback()
             } else {
-                store.state.selectedLocationID = nil
+                store.selectedLocationID = nil
             }
             return .handled
         }
@@ -216,9 +213,9 @@ struct LocationMapView: View {
 
     private var displayedLocations: [Location] {
         let playingTrailLength = store.playingTrailLength
-        let locations = store.state.locations
+        let locations = store.locations
         let isPlaying = store.isPlaying
-        let selectedLocationID = store.state.selectedLocationID
+        let selectedLocationID = store.selectedLocationID
 
         if isPlaying {
             let currentIndex = store.currentLocationIndex
@@ -243,12 +240,12 @@ struct LocationMapView: View {
                 ForEach(locations) { location in
                     Annotation("", coordinate: location.coordinate) {
                         Image(systemName: (location.horizontalAccuracy ?? 0) > 500 ? "xmark" : (location.course ?? -1) >= 0 ? "arrow.up" : "circle")
-                            .symbolVariant(store.state.selectedLocationID == location.id ? .fill : .circle)
+                            .symbolVariant(store.selectedLocationID == location.id ? .fill : .circle)
                             .rotationEffect(.degrees((location.course ?? -1) >= 0 ? location.course! : 0))
                             .foregroundStyle(color(for: location.speed ?? -1))
-                            .scaleEffect(store.state.selectedLocationID == location.id ? 2.0 : 1.0)
+                            .scaleEffect(store.selectedLocationID == location.id ? 2.0 : 1.0)
                             .onTapGesture {
-                                store.state.selectedLocationID = location.id
+                                store.selectedLocationID = location.id
                             }
                     }
                 }
@@ -264,9 +261,9 @@ struct LocationMapView: View {
             }
         }
         .mapStyle(.standard(elevation: .automatic, emphasis: .muted, pointsOfInterest: .including([.publicTransport]), showsTraffic: false))
-        .onChange(of: store.state.selectedLocationID) { _, newSelectedLocationID in
+        .onChange(of: store.selectedLocationID) { _, newSelectedLocationID in
             if let newSelectedLocationID, !store.isPlaying {
-                guard let location = store.state.locations.first(where: { $0.id == newSelectedLocationID }) else { return }
+                guard let location = store.locations.first(where: { $0.id == newSelectedLocationID }) else { return }
                 let coordinate = location.coordinate
                 store.cameraPosition = MapCameraPosition.region(
                     MKCoordinateRegion(

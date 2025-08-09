@@ -4,8 +4,6 @@ import MapKit
 import SharingGRDB
 import SwiftUI
 
-private let iso8601Formatter = ISO8601DateFormatter()
-
 @MainActor @Observable final class SessionDetailStore: Identifiable {
     struct State {
         var locations: [Location] = []
@@ -22,12 +20,20 @@ private let iso8601Formatter = ISO8601DateFormatter()
         return resultsCache[selectedLocationID]
     }
 
+    var currentLocationIndex: Int {
+        guard let selectedLocationID = state.selectedLocationID else { return 0 }
+        return state.locations.firstIndex { $0.id == selectedLocationID } ?? 0
+    }
+
     var isPlaying: Bool { playbackTask != nil }
 
     let sessionID: UUID
     private(set) var resultsCache: [Location.ID: RailwayTrackerResult] = [:]
     private var playbackTask: Task<Void, Never>? = nil
     var playbackSpeedMultiplier: Double = 0.1
+    var cameraPosition: MapCameraPosition = .automatic
+    var isShowingDetailedPolyline: Bool = false
+    let playingTrailLength: Int = 50
     @ObservationIgnored private let database: any DatabaseReader
     @ObservationIgnored private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
 
@@ -91,12 +97,12 @@ private let iso8601Formatter = ISO8601DateFormatter()
                 for (index, locationID) in playbackLocationIDs.enumerated() {
                     guard !Task.isCancelled else { break }
                     state.selectedLocationID = locationID
-                    
+
                     if index + 1 < playbackLocationIDs.count {
                         let currentLocation = state.locations.first { $0.id == locationID }
                         let nextLocationID = playbackLocationIDs[playbackLocationIDs.index(playbackLocationIDs.startIndex, offsetBy: index + 1)]
                         let nextLocation = state.locations.first { $0.id == nextLocationID }
-                        
+
                         if let currentLocation, let nextLocation {
                             let waitTime = nextLocation.timestamp.timeIntervalSince(currentLocation.timestamp)
                             let maxWaitTime: TimeInterval = 10
@@ -121,7 +127,7 @@ struct SessionDetailView: View {
 
     var body: some View {
         VSplitView {
-            LocationMapView(locations: store.state.locations)
+            LocationMapView(store: store)
                 .frame(maxWidth: .infinity)
                 .frame(minHeight: 300)
 
@@ -177,7 +183,7 @@ struct SessionDetailView: View {
                     Image(systemName: store.isPlaying ? "pause" : "play")
                 }
                 .disabled(store.state.isLoading)
-                
+
                 Picker("Playback Speed", selection: $store.playbackSpeedMultiplier) {
                     ForEach([0.05, 0.1, 0.2, 0.3, 0.5, 1.0, 2.0], id: \.self) { speed in
                         Text("\((1 / speed).formatted(.number.precision(.significantDigits(2))))x").tag(speed)
@@ -185,64 +191,93 @@ struct SessionDetailView: View {
                 }
                 .disabled(store.isPlaying || store.state.isLoading)
                 .pickerStyle(.menu)
+
+                Toggle("Show Detailed Polyline", systemImage: "chart.xyaxis.line", isOn: $store.isShowingDetailedPolyline)
+                    .disabled(store.isPlaying || store.state.isLoading)
             }
         }
         .navigationTitle(store.state.session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
         .task(id: store.sessionID) {
             await store.loadSessionData()
         }
+        .onKeyPress(.escape) {
+            if store.isPlaying {
+                store.togglePlayback()
+            } else {
+                store.state.selectedLocationID = nil
+            }
+            return .handled
+        }
     }
 }
 
 struct LocationMapView: View {
-    let locations: [Location]
+    @Bindable var store: SessionDetailStore
 
-    private var mapRegion: MapCameraPosition {
-        guard !locations.isEmpty else {
-            return .region(MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503),
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-            ))
+    private var displayedLocations: [Location] {
+        let playingTrailLength = store.playingTrailLength
+        let locations = store.state.locations
+        let isPlaying = store.isPlaying
+        let selectedLocationID = store.state.selectedLocationID
+
+        if isPlaying {
+            let currentIndex = store.currentLocationIndex
+            let startIndex = max(0, currentIndex - playingTrailLength + 1)
+            let endIndex = min(currentIndex + 1, locations.count)
+            return Array(locations[startIndex ..< endIndex])
+        } else if let selectedLocationID,
+                  let selectedLocation = locations.first(where: { $0.id == selectedLocationID })
+        {
+            return [selectedLocation]
+        } else {
+            return locations
         }
-
-        let coordinates = locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-        let minLat = coordinates.map(\.latitude).min()!
-        let maxLat = coordinates.map(\.latitude).max()!
-        let minLon = coordinates.map(\.longitude).min()!
-        let maxLon = coordinates.map(\.longitude).max()!
-
-        let center = CLLocationCoordinate2D(
-            latitude: (minLat + maxLat) / 2,
-            longitude: (minLon + maxLon) / 2
-        )
-
-        let span = MKCoordinateSpan(
-            latitudeDelta: max((maxLat - minLat) * 1.2, 0.001),
-            longitudeDelta: max((maxLon - minLon) * 1.2, 0.001)
-        )
-
-        return .region(MKCoordinateRegion(center: center, span: span))
     }
 
     var body: some View {
-        Map(position: .constant(mapRegion)) {
-            ForEach(locations) { location in
-                Annotation("", coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)) {
-                    Image(systemName: (location.horizontalAccuracy ?? 0) > 500 ? "xmark" : (location.course ?? -1) >= 0 ? "arrow.up" : "circle")
-                        .symbolVariant(.fill)
-                        .rotationEffect(.degrees((location.course ?? -1) >= 0 ? location.course! : 0))
-                        .foregroundStyle(color(for: location.speed ?? -1))
-                }
-            }
+        Map(position: $store.cameraPosition) {
+            let locations = displayedLocations
+            let playingTrailLength = store.playingTrailLength
 
-            if locations.count > 1 {
-                MapPolyline(coordinates: locations.map {
-                    CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
-                })
-                .stroke(.foreground, lineWidth: 4)
+            if locations.count <= playingTrailLength || store.isShowingDetailedPolyline {
+                ForEach(locations) { location in
+                    Annotation("", coordinate: location.coordinate) {
+                        Image(systemName: (location.horizontalAccuracy ?? 0) > 500 ? "xmark" : (location.course ?? -1) >= 0 ? "arrow.up" : "circle")
+                            .symbolVariant(store.state.selectedLocationID == location.id ? .fill : .circle)
+                            .rotationEffect(.degrees((location.course ?? -1) >= 0 ? location.course! : 0))
+                            .foregroundStyle(color(for: location.speed ?? -1))
+                            .scaleEffect(store.state.selectedLocationID == location.id ? 2.0 : 1.0)
+                            .onTapGesture {
+                                store.state.selectedLocationID = location.id
+                            }
+                    }
+                }
+            } else {
+                MapPolyline(coordinates: locations.map(\.coordinate))
+                    .stroke(.foreground, lineWidth: 4)
+                if let startLocation = locations.first,
+                   let endLocation = locations.last
+                {
+                    Marker("Start", coordinate: startLocation.coordinate)
+                    Marker("End", coordinate: endLocation.coordinate)
+                }
             }
         }
         .mapStyle(.standard(elevation: .automatic, emphasis: .muted, pointsOfInterest: .including([.publicTransport]), showsTraffic: false))
+        .onChange(of: store.state.selectedLocationID) { _, newSelectedLocationID in
+            if let newSelectedLocationID, !store.isPlaying {
+                guard let location = store.state.locations.first(where: { $0.id == newSelectedLocationID }) else { return }
+                let coordinate = location.coordinate
+                store.cameraPosition = MapCameraPosition.region(
+                    MKCoordinateRegion(
+                        center: coordinate,
+                        span: .init(latitudeDelta: 0.008, longitudeDelta: 0.008)
+                    )
+                )
+            } else {
+                store.cameraPosition = .automatic
+            }
+        }
     }
 
     private func color(for speed: Double) -> Color {
@@ -300,5 +335,11 @@ struct LocationListView: View {
                 proxy.scrollTo(id, anchor: .center)
             }
         }
+    }
+}
+
+extension Location {
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 }

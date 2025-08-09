@@ -4,13 +4,13 @@ import OSLog
 
 /*
  Railway Database Schema:
- 
+
  railway: id(TEXT PK), title(TEXT), stations(TEXT), color(TEXT), ascending(TEXT), descending(TEXT)
  station: id(TEXT PK), railway(TEXT FK), title(TEXT), latitude(DOUBLE), longitude(DOUBLE), order(INT)
  segment: id(INT PK AUTO), railway(TEXT FK), underground(BOOL), order(INT)
  coordinate: id(INT PK AUTO), latitude(DOUBLE), longitude(DOUBLE) UNIQUE(lat,lon)
  segmentCoordinate: segment(INT FK), order(INT), coordinate(INT FK) PK(segment,order)
- 
+
  Indexes:
  - station_on_latitude ON station(latitude)
  - station_on_longitude ON station(longitude)

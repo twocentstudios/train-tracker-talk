@@ -10,7 +10,7 @@ private let iso8601Formatter = ISO8601DateFormatter()
     struct State {
         var locations: [Location] = []
         var session: Session?
-        var isLoading = true
+        var isLoading = false
         var error: Error?
         var selectedLocationID: Location.ID?
     }
@@ -22,8 +22,11 @@ private let iso8601Formatter = ISO8601DateFormatter()
         return resultsCache[selectedLocationID]
     }
 
+    var isPlaying: Bool { playbackTask != nil }
+
     let sessionID: UUID
     private(set) var resultsCache: [Location.ID: RailwayTrackerResult] = [:]
+    private var playbackTask: Task<Void, Never>? = nil
     @ObservationIgnored private let database: any DatabaseReader
     @ObservationIgnored private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
 
@@ -72,6 +75,28 @@ private let iso8601Formatter = ISO8601DateFormatter()
         } catch {
             state.error = error
             state.isLoading = false
+        }
+    }
+
+    func togglePlayback() {
+        if !isPlaying {
+            playbackTask = Task { [weak self] in
+                guard let self else { return }
+                let locationIDs = state.locations.map(\.id)
+                guard let firstLocationID = state.locations.first?.id else { return }
+                let selectedLocationID = state.selectedLocationID ?? firstLocationID
+                guard let selectedLocationIndex = locationIDs.firstIndex(of: selectedLocationID) else { return }
+                let playbackLocationIDs = locationIDs.suffix(from: selectedLocationIndex)
+                for locationID in playbackLocationIDs {
+                    guard !Task.isCancelled else { break }
+                    state.selectedLocationID = locationID
+                    try? await Task.sleep(for: .seconds(0.1)) // TODO: var speed
+                }
+                playbackTask = nil
+            }
+        } else {
+            playbackTask?.cancel()
+            playbackTask = nil
         }
     }
 }
@@ -127,6 +152,15 @@ struct SessionDetailView: View {
             }
             .padding()
             .background(Material.ultraThick)
+        }
+        .toolbar {
+            ToolbarItem {
+                Button {
+                    store.togglePlayback()
+                } label: {
+                    Image(systemName: store.isPlaying ? "pause" : "play")
+                }
+            }
         }
         .navigationTitle(store.state.session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
         .task(id: store.sessionID) {

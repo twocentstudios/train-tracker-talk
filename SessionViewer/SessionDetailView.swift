@@ -114,6 +114,7 @@ struct SessionDetailView: View {
                 locations: store.state.locations,
                 selectedLocationID: $store.state.selectedLocationID
             )
+            .disabled(store.isPlaying)
             .frame(maxWidth: .infinity)
             .frame(minHeight: 200)
         }
@@ -232,42 +233,48 @@ struct LocationListView: View {
     @Binding var selectedLocationID: Location.ID?
 
     var body: some View {
-        Table(locations, selection: $selectedLocationID) {
-            TableColumn("Index") { location in
-                let index = locations.firstIndex(of: location)?.formatted(.number) ?? "-"
-                Text(index)
-            }
-            TableColumn("Time") { location in
-                Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
-            }
-            TableColumn("Latitude") { location in
-                Text(location.latitude.formatted(.number.precision(.fractionLength(6))))
-            }
-            TableColumn("Longitude") { location in
-                Text(location.longitude.formatted(.number.precision(.fractionLength(6))))
-            }
-            TableColumn("Speed") { location in
-                if let speed = location.speed, speed > 0 {
-                    Text(speed.formatted(.number.precision(.fractionLength(1))) + " m/s")
-                } else {
-                    Text("-")
+        ScrollViewReader { proxy in
+            Table(locations, selection: $selectedLocationID) {
+                TableColumn("Index") { location in
+                    let index = locations.firstIndex(of: location)?.formatted(.number) ?? "-"
+                    Text(index)
+                }
+                TableColumn("Time") { location in
+                    Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
+                }
+                TableColumn("Latitude") { location in
+                    Text(location.latitude.formatted(.number.precision(.fractionLength(6))))
+                }
+                TableColumn("Longitude") { location in
+                    Text(location.longitude.formatted(.number.precision(.fractionLength(6))))
+                }
+                TableColumn("Speed") { location in
+                    if let speed = location.speed, speed > 0 {
+                        Text(speed.formatted(.number.precision(.fractionLength(1))) + " m/s")
+                    } else {
+                        Text("-")
+                    }
+                }
+                TableColumn("Course") { location in
+                    if let course = location.course, course >= 0 {
+                        Text(course.formatted(.number.precision(.fractionLength(1))) + "°")
+                    } else {
+                        Text("-")
+                    }
+                }
+                TableColumn("Horizontal Accuracy") { location in
+                    if let accuracy = location.horizontalAccuracy, accuracy > 0 {
+                        Text("±\(accuracy.formatted(.number.precision(.fractionLength(0))))m")
+                    } else {
+                        Text("-")
+                    }
                 }
             }
-            TableColumn("Course") { location in
-                if let course = location.course, course >= 0 {
-                    Text(course.formatted(.number.precision(.fractionLength(1))) + "°")
-                } else {
-                    Text("-")
-                }
-            }
-            TableColumn("Horizontal Accuracy") { location in
-                if let accuracy = location.horizontalAccuracy, accuracy > 0 {
-                    Text("±\(accuracy.formatted(.number.precision(.fractionLength(0))))m")
-                } else {
-                    Text("-")
-                }
+            .navigationTitle("Locations (\(locations.count))")
+            .onChange(of: selectedLocationID) { _, id in
+                guard let id else { return }
+                proxy.scrollTo(id, anchor: .center)
             }
         }
-        .navigationTitle("Locations (\(locations.count))")
     }
 }

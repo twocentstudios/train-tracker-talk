@@ -10,7 +10,6 @@ private let iso8601Formatter = ISO8601DateFormatter()
     struct State {
         var locations: [Location] = []
         var session: Session?
-        var latestResult: RailwayTrackerResult?
         var isLoading = true
         var error: Error?
         var selectedLocationID: Location.ID?
@@ -18,7 +17,13 @@ private let iso8601Formatter = ISO8601DateFormatter()
 
     var state = State()
 
+    var selectedResult: RailwayTrackerResult? {
+        guard let selectedLocationID = state.selectedLocationID else { return nil }
+        return resultsCache[selectedLocationID]
+    }
+
     let sessionID: UUID
+    private(set) var resultsCache: [Location.ID: RailwayTrackerResult] = [:]
     @ObservationIgnored private let database: any DatabaseReader
     @ObservationIgnored private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
 
@@ -55,18 +60,18 @@ private let iso8601Formatter = ISO8601DateFormatter()
             )
             self.serialProcessor = serialProcessor
 
+            Task {
+                for location in state.locations {
+                    serialProcessor.submit(location)
+                }
+            }
+
             for await result in serialProcessor.results {
-                state.latestResult = result
+                resultsCache[result.location.id] = result
             }
         } catch {
             state.error = error
             state.isLoading = false
-        }
-    }
-
-    func processAllLocations() {
-        for location in state.locations {
-            serialProcessor?.submit(location)
         }
     }
 }
@@ -112,17 +117,16 @@ struct SessionDetailView: View {
             }
         }
         .overlay(alignment: .top) {
-            Text(store.state.latestResult?.value ?? 0, format: .number)
-                .font(.largeTitle.bold())
-                .padding()
-                .background(Material.ultraThick)
-        }
-        .toolbar {
-            ToolbarItem {
-                Button("process") {
-                    store.processAllLocations()
-                }
+            // TODO: debug only
+            VStack {
+                Text(store.selectedResult?.value ?? 0, format: .number)
+                    .font(.largeTitle.bold())
+                    .padding()
+                Text(store.resultsCache.count, format: .number)
+                    .font(.title3)
             }
+            .padding()
+            .background(Material.ultraThick)
         }
         .navigationTitle(store.state.session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
         .task(id: store.sessionID) {

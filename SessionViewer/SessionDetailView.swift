@@ -27,6 +27,7 @@ private let iso8601Formatter = ISO8601DateFormatter()
     let sessionID: UUID
     private(set) var resultsCache: [Location.ID: RailwayTrackerResult] = [:]
     private var playbackTask: Task<Void, Never>? = nil
+    var playbackSpeedMultiplier: Double = 0.1
     @ObservationIgnored private let database: any DatabaseReader
     @ObservationIgnored private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
 
@@ -87,10 +88,24 @@ private let iso8601Formatter = ISO8601DateFormatter()
                 let selectedLocationID = state.selectedLocationID ?? firstLocationID
                 guard let selectedLocationIndex = locationIDs.firstIndex(of: selectedLocationID) else { return }
                 let playbackLocationIDs = locationIDs.suffix(from: selectedLocationIndex)
-                for locationID in playbackLocationIDs {
+                for (index, locationID) in playbackLocationIDs.enumerated() {
                     guard !Task.isCancelled else { break }
                     state.selectedLocationID = locationID
-                    try? await Task.sleep(for: .seconds(0.1)) // TODO: var speed
+                    
+                    if index + 1 < playbackLocationIDs.count {
+                        let currentLocation = state.locations.first { $0.id == locationID }
+                        let nextLocationID = playbackLocationIDs[playbackLocationIDs.index(playbackLocationIDs.startIndex, offsetBy: index + 1)]
+                        let nextLocation = state.locations.first { $0.id == nextLocationID }
+                        
+                        if let currentLocation, let nextLocation {
+                            let waitTime = nextLocation.timestamp.timeIntervalSince(currentLocation.timestamp)
+                            let maxWaitTime: TimeInterval = 10
+                            let effectiveWaitTime: TimeInterval = playbackSpeedMultiplier * min(waitTime, maxWaitTime)
+                            try? await Task.sleep(for: .milliseconds(Int(effectiveWaitTime * 1000)))
+                        } else {
+                            try? await Task.sleep(for: .seconds(0.1))
+                        }
+                    }
                 }
                 playbackTask = nil
             }
@@ -155,12 +170,21 @@ struct SessionDetailView: View {
             .background(Material.ultraThick)
         }
         .toolbar {
-            ToolbarItem {
+            ToolbarItemGroup {
                 Button {
                     store.togglePlayback()
                 } label: {
                     Image(systemName: store.isPlaying ? "pause" : "play")
                 }
+                .disabled(store.state.isLoading)
+                
+                Picker("Playback Speed", selection: $store.playbackSpeedMultiplier) {
+                    ForEach([0.05, 0.1, 0.2, 0.3, 0.5, 1.0, 2.0], id: \.self) { speed in
+                        Text("\((1 / speed).formatted(.number.precision(.significantDigits(2))))x").tag(speed)
+                    }
+                }
+                .disabled(store.isPlaying || store.state.isLoading)
+                .pickerStyle(.menu)
             }
         }
         .navigationTitle(store.state.session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")

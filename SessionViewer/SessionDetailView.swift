@@ -13,6 +13,7 @@ private let iso8601Formatter = ISO8601DateFormatter()
         var latestResult: RailwayTrackerResult?
         var isLoading = true
         var error: Error?
+        var selectedLocationID: Location.ID?
     }
 
     var state = State()
@@ -71,7 +72,7 @@ private let iso8601Formatter = ISO8601DateFormatter()
 }
 
 struct SessionDetailView: View {
-    let store: SessionDetailStore
+    @Bindable var store: SessionDetailStore
 
     var body: some View {
         VSplitView {
@@ -79,9 +80,12 @@ struct SessionDetailView: View {
                 .frame(maxWidth: .infinity)
                 .frame(minHeight: 300)
 
-            LocationListView(locations: store.state.locations)
-                .frame(maxWidth: .infinity)
-                .frame(minHeight: 200)
+            LocationListView(
+                locations: store.state.locations,
+                selectedLocationID: $store.state.selectedLocationID
+            )
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: 200)
         }
         .overlay {
             if store.state.isLoading {
@@ -187,7 +191,7 @@ struct LocationMapView: View {
 
 struct LocationListView: View {
     let locations: [Location]
-    @State private var selectedLocationID: Location.ID?
+    @Binding var selectedLocationID: Location.ID?
 
     var body: some View {
         Group {

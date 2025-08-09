@@ -47,7 +47,7 @@ struct ContentView: View {
                         database: sessionsDatabase,
                         selectedSessionID: $selectedSessionID
                     )
-                    .frame(minWidth: 170)
+                    .frame(minWidth: 200)
                 } detail: {
                     if let sessionID = selectedSessionID {
                         SessionDetailView(

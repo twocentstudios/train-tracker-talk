@@ -15,7 +15,7 @@ actor RailwayTracker {
     }
 
     func process(_ input: Location) async -> RailwayTrackerResult {
-        try? await Task.sleep(for: .seconds(0.1))
+        try? await Task.sleep(for: .seconds(0.01))
         count += 1
         return RailwayTrackerResult(location: input, value: count)
     }

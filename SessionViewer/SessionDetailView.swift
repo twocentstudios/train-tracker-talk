@@ -15,8 +15,21 @@ struct SessionDetailView: View {
     @State private var error: Error?
     @State private var session: Session?
 
+    @State private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
+
+    @State private var latestResult: RailwayTrackerResult?
+
     var body: some View {
-        Group {
+        VSplitView {
+            LocationMapView(locations: locations)
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 300)
+
+            LocationListView(locations: locations)
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 200)
+        }
+        .overlay {
             if isLoading {
                 VStack {
                     ProgressView()
@@ -38,25 +51,45 @@ struct SessionDetailView: View {
                         .multilineTextAlignment(.center)
                 }
                 .padding()
-            } else {
-                VSplitView {
-                    LocationMapView(locations: locations)
-                        .frame(minHeight: 300)
-
-                    LocationListView(locations: locations)
-                        .frame(minHeight: 200)
-                }
             }
+        }
+        .overlay(alignment: .top) {
+            Text(latestResult?.value ?? 0, format: .number)
+                .font(.largeTitle.bold())
+                .padding()
+                .background(Material.ultraThick)
         }
         .navigationTitle(session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
         .task(id: sessionID) {
+            serialProcessor = nil
             await loadSessionData()
+            if error == nil {
+                let railwayTracker = RailwayTracker(railwayDatabase: database)
+                let serialProcessor = SerialProcessor(
+                    inputBuffering: .unbounded,
+                    outputBuffering: .bufferingNewest(1),
+                    process: { @Sendable input in
+                        await railwayTracker.process(input)
+                    }
+                )
+                self.serialProcessor = serialProcessor
+
+                for location in locations {
+                    serialProcessor.submit(location)
+                }
+
+                for await result in serialProcessor.results {
+                    latestResult = result
+                }
+            }
         }
     }
 
     private func loadSessionData() async {
         isLoading = true
         error = nil
+        session = nil
+        locations = []
 
         do {
             let result = try await database.read { db -> (Session?, [Location]) in
@@ -140,21 +173,10 @@ struct LocationListView: View {
     var body: some View {
         Group {
             if locations.isEmpty {
-                VStack(spacing: 12) {
-                    Image(systemName: "location.slash")
-                        .font(.largeTitle)
-                        .foregroundStyle(.secondary)
-
-                    Text("No locations found")
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-
-                    Text("This session doesn't contain any location data.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                .padding()
+                Text("No locations")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .padding()
             } else {
                 Table(locations, selection: $selectedLocationID) {
                     TableColumn("Index") { location in

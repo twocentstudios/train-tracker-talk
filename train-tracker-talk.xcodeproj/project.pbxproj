@@ -31,6 +31,7 @@
 		402FBF98A15C4C7B2CBEAAED /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A2E7A8554B937A77675F /* Session.swift */; };
 		40DC02E111557E5090FB9B57 /* railway.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 28B3907FCF345029F8021400 /* railway.sqlite */; };
 		4155086E41B9FA8C47FF5831 /* MotionActivityFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F5422266AA1794A50424F9 /* MotionActivityFormatters.swift */; };
+		4303FDD0DE57ED0A6C46442A /* RailwayTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1113A5C5D57396BBCD00E465 /* RailwayTracker.swift */; };
 		43685311A4EC64051EF0B5E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */; };
 		43C3F7C88E8B85E7483E8107 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4D12C1D4B47F063B4B17B2 /* RootView.swift */; };
 		45EC915B1E0E4F5471D6227F /* RailwayDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3842EC37FB5803B2EC0805 /* RailwayDatabase.swift */; };
@@ -65,6 +66,7 @@
 		BB3441317176C5ECE5ED1C22 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF2093617E9C15E5C8706DF3 /* Preview Assets.xcassets */; };
 		BCD3E69ED74B4A4569328CC5 /* MotionActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56884514DD5574AF0E79F52 /* MotionActivityApp.swift */; };
 		BDA68B63A63E3C70B59F7080 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 666CA49FD4D0BDC2C4E4E02A /* Media.xcassets */; };
+		BE4CD3F9E64C871F01E66D8A /* SerialProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246A04E3703C5A553C869F6F /* SerialProcessor.swift */; };
 		C03D5E3539F35B5D5C4F77DB /* MotionActivityGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D01E4D3CB69187EA2A47BA /* MotionActivityGroup.swift */; };
 		C04BC2C8CB16C9B69FCA520C /* EventsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D7BF639775FC80E5FF03A1 /* EventsListView.swift */; };
 		C42BE923B94A20FD8A6E290D /* CMMotionActivityManager+AsyncExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B132F05E0D8C1984C57CC7E /* CMMotionActivityManager+AsyncExtensions.swift */; };
@@ -91,10 +93,12 @@
 		07F5422266AA1794A50424F9 /* MotionActivityFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityFormatters.swift; sourceTree = "<group>"; };
 		0BAA85299D526CCD40F8FA7F /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 		0D53BD5A16BF0E9944384945 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
+		1113A5C5D57396BBCD00E465 /* RailwayTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RailwayTracker.swift; sourceTree = "<group>"; };
 		186323FFC9E83FEC9DAD0E0C /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		1AAA35A7FC5CA714786D61FB /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		1B70E24361A202D0D2805F2A /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		1B8A4B00357F402F88EA6A4D /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		246A04E3703C5A553C869F6F /* SerialProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialProcessor.swift; sourceTree = "<group>"; };
 		2697D8AD74FFA20C9B22A119 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		28B3907FCF345029F8021400 /* railway.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = railway.sqlite; sourceTree = "<group>"; };
 		2DC8E53696E3F00122162025 /* SignificantStartLocation.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantStartLocation.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -248,6 +252,8 @@
 				666CA49FD4D0BDC2C4E4E02A /* Media.xcassets */,
 				FA3842EC37FB5803B2EC0805 /* RailwayDatabase.swift */,
 				E9E5D6FE59B306F30286543F /* RailwayModels.swift */,
+				1113A5C5D57396BBCD00E465 /* RailwayTracker.swift */,
+				246A04E3703C5A553C869F6F /* SerialProcessor.swift */,
 				7E5982E42046A67A09CC518D /* SessionDatabase.swift */,
 				F6C8F19549FCB66EE08B89EB /* SessionDetailView.swift */,
 				814B9B7C3E7F8C36023BC931 /* SessionsListView.swift */,
@@ -751,6 +757,8 @@
 				C4B0803B41A23BEC7A170107 /* Location.swift in Sources */,
 				45EC915B1E0E4F5471D6227F /* RailwayDatabase.swift in Sources */,
 				B9F8A2CB680D26DEB41CEE89 /* RailwayModels.swift in Sources */,
+				4303FDD0DE57ED0A6C46442A /* RailwayTracker.swift in Sources */,
+				BE4CD3F9E64C871F01E66D8A /* SerialProcessor.swift in Sources */,
 				D7D0FDA39BF9C39847796ACB /* Session.swift in Sources */,
 				27FD4072033A6F35B7F24B3D /* SessionDatabase.swift in Sources */,
 				D9DAA8A9361ECB743B0BD5BA /* SessionDetailView.swift in Sources */,

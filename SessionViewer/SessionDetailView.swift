@@ -6,37 +6,95 @@ import SwiftUI
 
 private let iso8601Formatter = ISO8601DateFormatter()
 
-struct SessionDetailView: View {
-    let database: any DatabaseReader
+@MainActor @Observable final class SessionDetailStore: Identifiable {
+    struct State {
+        var locations: [Location] = []
+        var session: Session?
+        var latestResult: RailwayTrackerResult?
+        var isLoading = true
+        var error: Error?
+    }
+
+    var state = State()
+
     let sessionID: UUID
+    @ObservationIgnored private let database: any DatabaseReader
+    @ObservationIgnored private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
 
-    @State private var locations: [Location] = []
-    @State private var isLoading = true
-    @State private var error: Error?
-    @State private var session: Session?
+    init(database: any DatabaseReader, sessionID: UUID) {
+        self.database = database
+        self.sessionID = sessionID
+    }
 
-    @State private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
+    func loadSessionData() async {
+        state.isLoading = true
+        state.error = nil
+        state.session = nil
+        state.locations = []
+        serialProcessor = nil
 
-    @State private var latestResult: RailwayTrackerResult?
+        do {
+            let result = try await database.read { db -> (Session?, [Location]) in
+                let session = try Session.where { $0.id.eq(sessionID) }.fetchOne(db)
+                let locations = try Location.where { $0.sessionID.eq(sessionID) }.order { $0.timestamp.asc() }.fetchAll(db)
+                return (session, locations)
+            }
+
+            state.session = result.0
+            state.locations = result.1
+            state.isLoading = false
+
+            await startProcessing()
+        } catch {
+            state.error = error
+            state.isLoading = false
+        }
+    }
+
+    private func startProcessing() async {
+        guard state.error == nil else { return }
+
+        let railwayTracker = RailwayTracker(railwayDatabase: database)
+        let serialProcessor = SerialProcessor(
+            inputBuffering: .unbounded,
+            outputBuffering: .bufferingNewest(1),
+            process: { @Sendable input in
+                await railwayTracker.process(input)
+            }
+        )
+        self.serialProcessor = serialProcessor
+
+        for location in state.locations {
+            serialProcessor.submit(location)
+        }
+
+        for await result in serialProcessor.results {
+            state.latestResult = result
+        }
+    }
+}
+
+struct SessionDetailView: View {
+    let store: SessionDetailStore
 
     var body: some View {
         VSplitView {
-            LocationMapView(locations: locations)
+            LocationMapView(locations: store.state.locations)
                 .frame(maxWidth: .infinity)
                 .frame(minHeight: 300)
 
-            LocationListView(locations: locations)
+            LocationListView(locations: store.state.locations)
                 .frame(maxWidth: .infinity)
                 .frame(minHeight: 200)
         }
         .overlay {
-            if isLoading {
+            if store.state.isLoading {
                 VStack {
                     ProgressView()
                     Text("Loading session data...")
                         .foregroundStyle(.secondary)
                 }
-            } else if let error {
+            } else if let error = store.state.error {
                 VStack(spacing: 12) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.largeTitle)
@@ -54,56 +112,14 @@ struct SessionDetailView: View {
             }
         }
         .overlay(alignment: .top) {
-            Text(latestResult?.value ?? 0, format: .number)
+            Text(store.state.latestResult?.value ?? 0, format: .number)
                 .font(.largeTitle.bold())
                 .padding()
                 .background(Material.ultraThick)
         }
-        .navigationTitle(session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
-        .task(id: sessionID) {
-            serialProcessor = nil
-            await loadSessionData()
-            if error == nil {
-                let railwayTracker = RailwayTracker(railwayDatabase: database)
-                let serialProcessor = SerialProcessor(
-                    inputBuffering: .unbounded,
-                    outputBuffering: .bufferingNewest(1),
-                    process: { @Sendable input in
-                        await railwayTracker.process(input)
-                    }
-                )
-                self.serialProcessor = serialProcessor
-
-                for location in locations {
-                    serialProcessor.submit(location)
-                }
-
-                for await result in serialProcessor.results {
-                    latestResult = result
-                }
-            }
-        }
-    }
-
-    private func loadSessionData() async {
-        isLoading = true
-        error = nil
-        session = nil
-        locations = []
-
-        do {
-            let result = try await database.read { db -> (Session?, [Location]) in
-                let session = try Session.where { $0.id.eq(sessionID) }.fetchOne(db)
-                let locations = try Location.where { $0.sessionID.eq(sessionID) }.order { $0.timestamp.asc() }.fetchAll(db)
-                return (session, locations)
-            }
-
-            session = result.0
-            locations = result.1
-            isLoading = false
-        } catch {
-            self.error = error
-            isLoading = false
+        .navigationTitle(store.state.session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
+        .task(id: store.sessionID) {
+            await store.loadSessionData()
         }
     }
 }

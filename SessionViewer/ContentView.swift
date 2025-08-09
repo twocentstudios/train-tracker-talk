@@ -50,8 +50,10 @@ struct ContentView: View {
                 } detail: {
                     if let sessionID = selectedSessionID {
                         SessionDetailView(
-                            database: sessionsDatabase,
-                            sessionID: sessionID
+                            store: SessionDetailStore(
+                                database: sessionsDatabase,
+                                sessionID: sessionID
+                            )
                         )
                     } else {
                         Text("Select a session to view details")

@@ -18,7 +18,6 @@ final class SerialProcessor<Input: Sendable, Output: Sendable> {
         outputBuffering: AsyncStream<Output>.Continuation.BufferingPolicy = .unbounded,
         process: @escaping Process
     ) {
-        print("ASDF SerialProcessor init")
         self.process = process
 
         let inPair = AsyncStream.makeStream(of: Input.self, bufferingPolicy: inputBuffering)
@@ -36,7 +35,6 @@ final class SerialProcessor<Input: Sendable, Output: Sendable> {
     }
 
     deinit {
-        print("ASDF SerialProcessor deinit")
         finish()
     }
 

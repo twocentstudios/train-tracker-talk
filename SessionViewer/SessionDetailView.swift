@@ -44,32 +44,28 @@ private let iso8601Formatter = ISO8601DateFormatter()
             state.locations = result.1
             state.isLoading = false
 
-            await startProcessing()
+            let railwayTracker = RailwayTracker(railwayDatabase: database)
+            let serialProcessor = SerialProcessor(
+                inputBuffering: .unbounded,
+                outputBuffering: .bufferingNewest(1),
+                process: { @Sendable input in
+                    await railwayTracker.process(input)
+                }
+            )
+            self.serialProcessor = serialProcessor
+
+            for await result in serialProcessor.results {
+                state.latestResult = result
+            }
         } catch {
             state.error = error
             state.isLoading = false
         }
     }
 
-    private func startProcessing() async {
-        guard state.error == nil else { return }
-
-        let railwayTracker = RailwayTracker(railwayDatabase: database)
-        let serialProcessor = SerialProcessor(
-            inputBuffering: .unbounded,
-            outputBuffering: .bufferingNewest(1),
-            process: { @Sendable input in
-                await railwayTracker.process(input)
-            }
-        )
-        self.serialProcessor = serialProcessor
-
+    func processAllLocations() {
         for location in state.locations {
-            serialProcessor.submit(location)
-        }
-
-        for await result in serialProcessor.results {
-            state.latestResult = result
+            serialProcessor?.submit(location)
         }
     }
 }
@@ -116,6 +112,13 @@ struct SessionDetailView: View {
                 .font(.largeTitle.bold())
                 .padding()
                 .background(Material.ultraThick)
+        }
+        .toolbar {
+            ToolbarItem {
+                Button("process") {
+                    store.processAllLocations()
+                }
+            }
         }
         .navigationTitle(store.state.session?.startDate.formatted(.dateTime.month().day().year().hour().minute()) ?? "Session")
         .task(id: store.sessionID) {

@@ -102,8 +102,6 @@ actor RailwayTracker {
         let maxLon = qLon + delta
         let minLon = qLon - delta
 
-        // Using #sql macro with interpolated table/column references for type safety
-        // While preserving the window function and R-Tree spatial index optimizations
         let results = try #sql(
             """
             WITH ranked AS (

@@ -141,6 +141,8 @@ struct SessionDetailView: View {
             }
 
             RailwayTrackerSidebar(store: store)
+                .frame(idealWidth: 300)
+                .fixedSize(horizontal: true, vertical: false)
         }
         .overlay {
             if store.isLoading {
@@ -440,6 +442,5 @@ struct RailwayTrackerSidebar: View {
             }
         }
         .listStyle(.plain)
-        .frame(minWidth: 250)
     }
 }

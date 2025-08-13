@@ -23,6 +23,8 @@ This is a repo for the Train Tracker conference talk for iOSDC. The repo showcas
 
 ## Package Documentation
 
+- [Sharing-GRDB & Swift Structured Queries guide](/docs/agents-sharing-grdb-structured-queries.md) - always read this before implementing anything related to databases.
+
 ### Sharing-GRDB Documentation
 - [SharingGRDB](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/SharingGRDB/Documentation.docc)
 - [SharingGRDBCore](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/SharingGRDBCore/Documentation.docc)

@@ -4,7 +4,19 @@ import SharingGRDB
 import StructuredQueries
 import Tagged
 
-@Table struct Station: Hashable, Identifiable, Codable {
+@Table("railway") struct Railway: Hashable, Identifiable, Codable {
+    typealias ID = Tagged<Self, String>
+    let id: ID
+    @Column(as: TitleLocalization.JSONRepresentation.self)
+    let title: TitleLocalization
+    @Column(as: [Station.ID].JSONRepresentation.self)
+    let stations: [Station.ID]
+    let color: String
+    let ascending: RailDirection
+    let descending: RailDirection
+}
+
+@Table("station") struct Station: Hashable, Identifiable, Codable {
     typealias ID = Tagged<Self, String>
     public let id: ID
     let railway: Railway.ID
@@ -23,20 +35,7 @@ import Tagged
     }
 }
 
-@Table struct Railway: Hashable, Identifiable, Codable {
-    typealias ID = Tagged<Self, String>
-    let id: ID
-    @Column(as: TitleLocalization.JSONRepresentation.self)
-    let title: TitleLocalization
-    @Column(as: [Station.ID].JSONRepresentation.self)
-    let stations: [Station.ID]
-    let color: String
-    let ascending: RailDirection
-    let descending: RailDirection
-}
-
-@Table("coordinate")
-struct Coordinate: Hashable, Identifiable, Codable {
+@Table("coordinate") struct Coordinate: Hashable, Identifiable, Codable {
     typealias ID = Tagged<Self, Int64>
     let id: ID
     let latitude: Double
@@ -47,16 +46,14 @@ struct Coordinate: Hashable, Identifiable, Codable {
     }
 }
 
-@Table("segment")
-struct Segment: Hashable, Identifiable, Codable {
+@Table("segment") struct Segment: Hashable, Identifiable, Codable {
     typealias ID = Tagged<Self, Int64>
     let id: ID
     let railway: Railway.ID
     let underground: Bool
 }
 
-@Table("segmentCoordinate")
-struct SegmentCoordinate: Hashable, Codable {
+@Table("segmentCoordinate") struct SegmentCoordinate: Hashable, Codable {
     let segment: Segment.ID
     let order: Int
     let coordinate: Coordinate.ID

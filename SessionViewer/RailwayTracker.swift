@@ -228,7 +228,7 @@ actor RailwayTracker {
 
     private static func instantaneousRailwayAscending(db: Database, location: Location, railways: [Railway.ID]) throws -> [Railway.ID: Double] {
         guard let courseVec = location.courseUnitVector else { return [:] }
-        guard let speed = location.speed, speed > 6.0 else { return [:] }
+        guard let speed = location.speed, speed > 3.0 else { return [:] }
         guard !railways.isEmpty else { return [:] }
 
         let qLat = location.latitude

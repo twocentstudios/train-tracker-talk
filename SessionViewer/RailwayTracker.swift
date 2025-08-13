@@ -63,16 +63,17 @@ actor RailwayTracker {
 
     func process(_ input: Location) async -> RailwayTrackerResult {
         do {
-            let (instantaneousRailwayCoordinateScores, instantaneousRailwayCoordinates) = try await railwayDatabase.read { db in
-                try Self.instantaneousRailwayCoordinateScores(db: db, location: input)
-            }
+            let result = try await railwayDatabase.read { db in
+                let (instantaneousRailwayCoordinateScores, instantaneousRailwayCoordinates) = try Self.instantaneousRailwayCoordinateScores(db: db, location: input)
 
-            return RailwayTrackerResult(
-                location: input,
-                instantaneousRailwayCoordinateScores: instantaneousRailwayCoordinateScores,
-                instantaneousRailwayCoordinates: instantaneousRailwayCoordinates,
-                candidates: []
-            )
+                return RailwayTrackerResult(
+                    location: input,
+                    instantaneousRailwayCoordinateScores: instantaneousRailwayCoordinateScores,
+                    instantaneousRailwayCoordinates: instantaneousRailwayCoordinates,
+                    candidates: []
+                )
+            }
+            return result
         } catch {
             // Return empty scores on error
             print(error)

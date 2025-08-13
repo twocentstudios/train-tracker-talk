@@ -60,7 +60,7 @@ import SwiftUI
             let railwayTracker = RailwayTracker(railwayDatabase: database)
             let serialProcessor = SerialProcessor(
                 inputBuffering: .unbounded,
-                outputBuffering: .bufferingNewest(50), // can be `1` when piping directly to UI
+                outputBuffering: .unbounded, // can be `1` when piping directly to UI
                 process: { @Sendable input in
                     await railwayTracker.process(input)
                 }

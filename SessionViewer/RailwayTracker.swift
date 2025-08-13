@@ -77,7 +77,7 @@ actor RailwayTracker {
                     railwayScores[railwayID, default: 0] += speedScaledScore
                 }
 
-                // Add ascending scores to the running total
+                // Add ascending scores to the running total (clipped to `abs(10)`)
                 for (railwayID, score) in instantaneousRailwayAscendingScores {
                     var runningScore = railwayAscendingScores[railwayID, default: 0]
                     runningScore += score

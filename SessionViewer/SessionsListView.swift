@@ -6,7 +6,7 @@ import SwiftUI
 private let iso8601Formatter = ISO8601DateFormatter()
 
 struct SessionsListView: View {
-    let database: any DatabaseReader
+    let sessionsDatabase: any DatabaseReader
     @Binding var selectedSessionID: UUID?
     @State private var sessions: [Session] = []
     @State private var isLoading = true
@@ -101,7 +101,7 @@ struct SessionsListView: View {
         error = nil
 
         do {
-            let loadedSessions = try await database.read { [showOnlyTrainSessions] db in
+            let loadedSessions = try await sessionsDatabase.read { [showOnlyTrainSessions] db in
                 try Session
                     .where {
                         if showOnlyTrainSessions {

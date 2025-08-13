@@ -19,7 +19,8 @@ import SwiftUI
     private var playbackTask: Task<Void, Never>? = nil
     let playingTrailLength: Int = 50
 
-    @ObservationIgnored private let database: any DatabaseReader
+    @ObservationIgnored private let sessionsDatabase: any DatabaseReader
+    @ObservationIgnored private let railwayDatabase: any DatabaseReader
     @ObservationIgnored private var serialProcessor: SerialProcessor<Location, RailwayTrackerResult>?
 
     var selectedResult: RailwayTrackerResult? {
@@ -34,8 +35,9 @@ import SwiftUI
 
     var isPlaying: Bool { playbackTask != nil }
 
-    init(database: any DatabaseReader, sessionID: UUID) {
-        self.database = database
+    init(sessionsDatabase: any DatabaseReader, railwayDatabase: any DatabaseReader, sessionID: UUID) {
+        self.sessionsDatabase = sessionsDatabase
+        self.railwayDatabase = railwayDatabase
         self.sessionID = sessionID
     }
 
@@ -47,7 +49,7 @@ import SwiftUI
         serialProcessor = nil
 
         do {
-            let result = try await database.read { db -> (Session?, [Location]) in
+            let result = try await sessionsDatabase.read { db -> (Session?, [Location]) in
                 let session = try Session.where { $0.id.eq(sessionID) }.fetchOne(db)
                 let locations = try Location.where { $0.sessionID.eq(sessionID) }.order { $0.timestamp.asc() }.fetchAll(db)
                 return (session, locations)
@@ -57,7 +59,7 @@ import SwiftUI
             locations = result.1
             isLoading = false
 
-            let railwayTracker = RailwayTracker(railwayDatabase: database)
+            let railwayTracker = RailwayTracker(railwayDatabase: railwayDatabase)
             let serialProcessor = SerialProcessor(
                 inputBuffering: .unbounded,
                 outputBuffering: .unbounded, // can be `1` when piping directly to UI

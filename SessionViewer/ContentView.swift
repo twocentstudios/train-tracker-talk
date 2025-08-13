@@ -41,10 +41,10 @@ struct ContentView: View {
                         .multilineTextAlignment(.center)
                 }
                 .padding()
-            } else if let sessionsDatabase, let _ = railwayDatabase {
+            } else if let sessionsDatabase, let railwayDatabase {
                 NavigationSplitView {
                     SessionsListView(
-                        database: sessionsDatabase,
+                        sessionsDatabase: sessionsDatabase,
                         selectedSessionID: $selectedSessionID
                     )
                     .frame(minWidth: 200)
@@ -52,7 +52,8 @@ struct ContentView: View {
                     if let sessionID = selectedSessionID {
                         SessionDetailView(
                             store: SessionDetailStore(
-                                database: sessionsDatabase,
+                                sessionsDatabase: sessionsDatabase,
+                                railwayDatabase: railwayDatabase,
                                 sessionID: sessionID
                             )
                         )

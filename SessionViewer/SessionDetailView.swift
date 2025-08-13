@@ -123,18 +123,22 @@ struct SessionDetailView: View {
     @Bindable var store: SessionDetailStore
 
     var body: some View {
-        VSplitView {
-            LocationMapView(store: store)
-                .frame(maxWidth: .infinity)
-                .frame(minHeight: 300)
+        HSplitView {
+            VSplitView {
+                LocationMapView(store: store)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 300)
 
-            LocationListView(
-                locations: store.locations,
-                selectedLocationID: $store.selectedLocationID
-            )
-            .disabled(store.isPlaying)
-            .frame(maxWidth: .infinity)
-            .frame(minHeight: 200)
+                LocationListView(
+                    locations: store.locations,
+                    selectedLocationID: $store.selectedLocationID
+                )
+                .disabled(store.isPlaying)
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 200)
+            }
+
+            RailwayTrackerSidebar(store: store)
         }
         .overlay {
             if store.isLoading {
@@ -330,5 +334,110 @@ struct LocationListView: View {
 extension Location {
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
+
+struct RailwayTrackerSidebar: View {
+    @Bindable var store: SessionDetailStore
+
+    private var selectedResult: RailwayTrackerResult? {
+        store.selectedResult
+    }
+
+    var body: some View {
+        List {
+            Section {
+                if let result = selectedResult {
+                    if result.candidates.isEmpty {
+                        Text("No candidates available")
+                            .foregroundStyle(.secondary)
+                            .italic()
+                    } else {
+                        ForEach(result.candidates, id: \.railway.id) { candidate in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(candidate.railway.title.en)
+                                    .font(.headline)
+                                if let destination = candidate.railwayDestinationStation {
+                                    Text("to \(destination.title.en)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Text("No location selected")
+                        .foregroundStyle(.secondary)
+                        .italic()
+                }
+            } header: {
+                Text("Candidates")
+            }
+
+            Section {
+                if let result = selectedResult {
+                    let sortedScores = result.instantaneousRailwayCoordinateScores.sorted(by: { $0.value > $1.value })
+                    if sortedScores.isEmpty {
+                        Text("No railway coordinate scores")
+                            .foregroundStyle(.secondary)
+                            .italic()
+                    } else {
+                        ForEach(sortedScores, id: \.key) { railwayID, score in
+                            LabeledContent(railwayID.rawValue) {
+                                Text(score.formatted(.number.precision(.significantDigits(3))))
+                                    .monospaced()
+                            }
+                        }
+                    }
+                } else {
+                    Text("No location selected")
+                        .foregroundStyle(.secondary)
+                        .italic()
+                }
+            } header: {
+                Text("Railway Coordinate Scores")
+            }
+
+            Section {
+                if let result = selectedResult {
+                    let sortedCoordinates = result.instantaneousRailwayCoordinates.sorted(by: { $0.key.rawValue < $1.key.rawValue })
+                    if sortedCoordinates.isEmpty {
+                        Text("No railway coordinates")
+                            .foregroundStyle(.secondary)
+                            .italic()
+                    } else {
+                        ForEach(sortedCoordinates, id: \.key) { railwayID, coordinate in
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(railwayID.rawValue)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                HStack {
+                                    Text("Lat:")
+                                        .foregroundStyle(.secondary)
+                                    Text(coordinate.latitude.formatted(.number.precision(.fractionLength(6))))
+                                        .monospaced()
+                                }
+                                .font(.caption)
+                                HStack {
+                                    Text("Lon:")
+                                        .foregroundStyle(.secondary)
+                                    Text(coordinate.longitude.formatted(.number.precision(.fractionLength(6))))
+                                        .monospaced()
+                                }
+                                .font(.caption)
+                            }
+                        }
+                    }
+                } else {
+                    Text("No location selected")
+                        .foregroundStyle(.secondary)
+                        .italic()
+                }
+            } header: {
+                Text("Railway Coordinates")
+            }
+        }
+        .listStyle(.plain)
+        .frame(minWidth: 250)
     }
 }

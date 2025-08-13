@@ -42,6 +42,8 @@ struct RailwayTrackerResult {
     var instantaneousRailwayCoordinateScores: [Railway.ID: Double]
     var instantaneousRailwayCoordinates: [Railway.ID: Coordinate]
     var instantaneousRailwayAscendingScores: [Railway.ID: Double]
+    var railwayScores: [Railway.ID: Double]
+    var railwayDirections: [Railway.ID: RailDirection]
     var candidates: [RailwayTrackerCandidate]
 }
 
@@ -50,26 +52,83 @@ actor RailwayTracker {
 
     var railwayScores: [Railway.ID: Double] = [:]
     var railwayAscendingScores: [Railway.ID: Double] = [:]
+    var railwayDirections: [Railway.ID: RailDirection] = [:]
 
     init(railwayDatabase: any DatabaseReader) {
         self.railwayDatabase = railwayDatabase
     }
 
-    func process(_ input: Location) async -> RailwayTrackerResult {
+    func process(_ input: Location) -> RailwayTrackerResult {
         do {
-            let result = try await railwayDatabase.read { db in
-                let (instantaneousRailwayCoordinateScores, instantaneousRailwayCoordinates) = try Self.instantaneousRailwayCoordinateScores(db: db, location: input)
-                let instantaneousRailwayAscending = try Self.instantaneousRailwayAscending(db: db, location: input, railways: Array(instantaneousRailwayCoordinateScores.keys))
+            var instantaneousRailwayCoordinateScores = [Railway.ID: Double]()
+            var instantaneousRailwayCoordinates = [Railway.ID: Coordinate]()
+            var instantaneousRailwayAscendingScores = [Railway.ID: Double]()
+            var candidates = [RailwayTrackerCandidate]()
 
-                return RailwayTrackerResult(
-                    location: input,
-                    instantaneousRailwayCoordinateScores: instantaneousRailwayCoordinateScores,
-                    instantaneousRailwayCoordinates: instantaneousRailwayCoordinates,
-                    instantaneousRailwayAscendingScores: instantaneousRailwayAscending,
-                    candidates: []
-                )
+            try railwayDatabase.read { db in
+                (instantaneousRailwayCoordinateScores, instantaneousRailwayCoordinates) = try Self.instantaneousRailwayCoordinateScores(db: db, location: input)
+                instantaneousRailwayAscendingScores = try Self.instantaneousRailwayAscending(db: db, location: input, railways: Array(instantaneousRailwayCoordinateScores.keys))
+
+                let speedNorm = linAbsNorm(input.speed.ifNil(-1).invalidOptional().ifNil(0.0), bestValue: 20.0, worstValue: 2.0, exp: 0.7)
+
+                // Add scores to the running total, where slow speeds have low weight
+                for (railwayID, score) in instantaneousRailwayCoordinateScores {
+                    let speedScaledScore = score * speedNorm
+                    railwayScores[railwayID, default: 0] += speedScaledScore
+                }
+
+                // Add ascending scores to the running total
+                for (railwayID, score) in instantaneousRailwayAscendingScores {
+                    var runningScore = railwayAscendingScores[railwayID, default: 0]
+                    runningScore += score
+                    let minMaxScore = 10.0
+                    runningScore = max(min(minMaxScore, runningScore), -minMaxScore)
+                    railwayAscendingScores[railwayID] = runningScore
+
+                    // Assign the proper railway direction
+                    if let railwayRecord = try Railway.find(railwayID).fetchOne(db) {
+                        let minimumScore = 2.0
+                        if abs(runningScore) > minimumScore {
+                            railwayDirections[railwayID] = runningScore > 0 ? railwayRecord.ascending : railwayRecord.descending
+                        } else {
+                            railwayDirections[railwayID] = nil
+                            // TODO: clear station scores because we may have reversed directions
+                        }
+                    }
+                }
+
+                let totalTopCandidateRailways = 8
+                let topCandidateRailwayIDs = railwayScores.sorted(using: KeyPathComparator(\.value, order: .reverse)).prefix(totalTopCandidateRailways).map(\.key)
+                for railwayID in topCandidateRailwayIDs {
+                    guard let railwayRecord = try Railway.find(railwayID).fetchOne(db) else { continue }
+                    guard let railwayDirection = railwayDirections[railwayID] else { continue }
+                    var railwayDestinationStation: Station?
+                    if let destinationStationID = railwayDirection == railwayRecord.ascending ? railwayRecord.stations.last : railwayRecord.stations.first {
+                        railwayDestinationStation = try Station.find(destinationStationID).fetchOne(db)
+                    }
+
+                    let candidate = RailwayTrackerCandidate(
+                        railway: railwayRecord,
+                        railwayDestinationStation: railwayDestinationStation,
+                        railwayDirection: railwayDirection,
+                        focusStation: nil,
+                        focusStationPhase: nil,
+                        laterStation: nil,
+                        laterLaterStation: nil
+                    )
+                    candidates.append(candidate)
+                }
             }
-            return result
+
+            return RailwayTrackerResult(
+                location: input,
+                instantaneousRailwayCoordinateScores: instantaneousRailwayCoordinateScores,
+                instantaneousRailwayCoordinates: instantaneousRailwayCoordinates,
+                instantaneousRailwayAscendingScores: instantaneousRailwayAscendingScores,
+                railwayScores: railwayScores,
+                railwayDirections: railwayDirections,
+                candidates: candidates
+            )
         } catch {
             // Return empty scores on error
             print(error)
@@ -78,6 +137,8 @@ actor RailwayTracker {
                 instantaneousRailwayCoordinateScores: [:],
                 instantaneousRailwayCoordinates: [:],
                 instantaneousRailwayAscendingScores: [:],
+                railwayScores: railwayScores,
+                railwayDirections: railwayDirections,
                 candidates: []
             )
         }
@@ -86,6 +147,7 @@ actor RailwayTracker {
     func reset() {
         railwayScores = [:]
         railwayAscendingScores = [:]
+        railwayDirections = [:]
     }
 
     @Selection

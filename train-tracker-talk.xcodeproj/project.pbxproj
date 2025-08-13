@@ -79,6 +79,7 @@
 		D9DAA8A9361ECB743B0BD5BA /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C8F19549FCB66EE08B89EB /* SessionDetailView.swift */; };
 		DB0BFB308DB5716C5ADB80DC /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF3ABD6CD7F411EFD09E3D8 /* EventDetailView.swift */; };
 		DC5FB667C17AB9F677415726 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 7CBCFCEE905CD52DBBABE955 /* SharingGRDB */; };
+		DC9CAF0813C59642FCCFE271 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25FD24C7AEA4738005B9025 /* ColorExtension.swift */; };
 		E162EC30045FE1AD0C6B7FB5 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5E8C97371DBEF2370B5B0550 /* SharingGRDB */; };
 		E8776F18A720BCB905A319CB /* SignificantChangeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397C76A9C68E9239BC07A8A9 /* SignificantChangeApp.swift */; };
 		E88C160E2D53969A8C9D12B1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6453C5D66E81B33E300C0F0B /* Preview Assets.xcassets */; };
@@ -166,6 +167,7 @@
 		BDF8463872AEE31643326F14 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
 		C4265C695B3D3FCAF7294813 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		D1BF42960E46892C2915F62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D25FD24C7AEA4738005B9025 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		D2952707513CA49ECF8D7804 /* MillisecondDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MillisecondDatePicker.swift; sourceTree = "<group>"; };
 		E15FDB78AA038C798F63F980 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E5F8570288E1435D45C04D9C /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 			children = (
 				436EAA9DBE2008F076886B24 /* App.swift */,
 				1B70E24361A202D0D2805F2A /* CLAUDE.md */,
+				D25FD24C7AEA4738005B9025 /* ColorExtension.swift */,
 				362F803740CAC7771300288E /* ContentView.swift */,
 				80DD8A32B87D0B6DBA8ACF89 /* Info.plist */,
 				666CA49FD4D0BDC2C4E4E02A /* Media.xcassets */,
@@ -753,6 +756,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D1594F2E517BDE09160D217 /* App.swift in Sources */,
+				DC9CAF0813C59642FCCFE271 /* ColorExtension.swift in Sources */,
 				6AD2A4015FDA2B6B27673479 /* ContentView.swift in Sources */,
 				C4B0803B41A23BEC7A170107 /* Location.swift in Sources */,
 				45EC915B1E0E4F5471D6227F /* RailwayDatabase.swift in Sources */,

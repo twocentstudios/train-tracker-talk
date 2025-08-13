@@ -10,6 +10,7 @@ import SwiftUI
     var isLoading = false
     var error: Error?
     var selectedLocationID: Location.ID?
+    var userSelectedRailway: Railway.ID?
     var playbackSpeedMultiplier: Double = 0.1
     var cameraPosition: MapCameraPosition = .automatic
     var isShowingDetailedPolyline: Bool = false
@@ -26,6 +27,17 @@ import SwiftUI
     var selectedResult: RailwayTrackerResult? {
         guard let selectedLocationID else { return nil }
         return resultsCache[selectedLocationID]
+    }
+
+    var selectedCandidate: RailwayTrackerCandidate? {
+        guard let candidates = selectedResult?.candidates else { return nil }
+        if let userSelectedCandidate = candidates.first(where: { $0.railway.id == userSelectedRailway }) {
+            return userSelectedCandidate
+        } else if let firstCandidate = candidates.first {
+            return firstCandidate
+        } else {
+            return nil
+        }
     }
 
     var currentLocationIndex: Int {
@@ -344,42 +356,66 @@ extension Location {
 struct RailwayTrackerSidebar: View {
     @Bindable var store: SessionDetailStore
 
-    private var selectedResult: RailwayTrackerResult? {
-        store.selectedResult
-    }
-
     var body: some View {
         List {
             Section {
-                if let result = selectedResult {
-                    if result.candidates.isEmpty {
-                        Text("No candidates available")
-                            .foregroundStyle(.secondary)
-                            .italic()
-                    } else {
-                        ForEach(result.candidates, id: \.railway.id) { candidate in
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(candidate.railway.title.en)
-                                    .font(.headline)
-                                if let destination = candidate.railwayDestinationStation {
-                                    Text("to \(destination.title.en)")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                if let candidates = store.selectedResult?.candidates, let selectedCandidate = store.selectedCandidate {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(candidates, id: \.railway.id) { candidate in
+                                let isSelected = candidate.railway.id == selectedCandidate.railway.id
+                                let isUserSelected = candidate.railway.id == store.userSelectedRailway
+                                Button {
+                                    if isUserSelected {
+                                        store.userSelectedRailway = nil
+                                    } else {
+                                        store.userSelectedRailway = candidate.railway.id
+                                    }
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        VStack(spacing: 1) {
+                                            Text(candidate.railway.title.en)
+                                                .bold(isSelected)
+                                                .font(.body.width(.compressed))
+                                            if let score = store.selectedResult?.railwayScores[candidate.railway.id],
+                                               let selectedScore = store.selectedResult?.railwayScores[selectedCandidate.railway.id]
+                                            {
+                                                let scoreDiff = score - selectedScore
+                                                let displayScore = !isSelected ? scoreDiff : score
+                                                Text(displayScore.formatted(.number.precision(.significantDigits(6))))
+                                                    .font(.caption2)
+                                                    .monospaced()
+                                            }
+                                        }
+                                        if isUserSelected {
+                                            Image(systemName: "lock.fill")
+                                                .font(.system(size: 12))
+                                                .foregroundStyle(Material.regular)
+                                                .transition(.scale(0.6).combined(with: .opacity))
+                                        }
+                                    }
+                                    .animation(.smooth(duration: 0.2), value: isUserSelected)
+                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, 16)
+                                    .background { Capsule().fill(isSelected ? Material.ultraThin : Material.regular) }
+                                    .background { isSelected ? Capsule().fill(Color(hexString: candidate.railway.color, alpha: 1.0)) : nil }
+                                    .overlay { Capsule().strokeBorder(Color(hexString: candidate.railway.color), lineWidth: 2) }
                                 }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
-                } else {
-                    Text("No location selected")
-                        .foregroundStyle(.secondary)
-                        .italic()
+                    .scrollClipDisabled()
+                }
+                if let selectedCandidate = store.selectedCandidate {
+                    candidateCard(candidate: selectedCandidate)
                 }
             } header: {
                 Text(verbatim: "Candidates")
             }
 
             Section {
-                if let result = selectedResult {
+                if let result = store.selectedResult {
                     let scores = result.instantaneousRailwayCoordinateScores.sorted(by: { $0.value > $1.value })
                     if scores.isEmpty {
                         Text("No railway coordinate scores")
@@ -409,5 +445,91 @@ struct RailwayTrackerSidebar: View {
             }
         }
         .listStyle(.plain)
+    }
+
+    @ViewBuilder func candidateCard(candidate: RailwayTrackerCandidate) -> some View {
+        VStack(spacing: 16) {
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text(candidate.railway.title.en)
+                    .font(.title3.width(.compressed))
+                    .padding(.leading, 9)
+                    .overlay(alignment: .leading) {
+                        let railwayHexColor = candidate.railway.color
+                        RoundedRectangle(cornerRadius: 2).fill(Color(hexString: railwayHexColor)).frame(width: 4).padding(.vertical, 2)
+                    }
+                Spacer()
+                if let railwayDestination = candidate.railwayDestinationStation?.title {
+                    Text("to \(railwayDestination.en)")
+                        .font(.body.width(.compressed))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .animation(.smooth, value: candidate.railway)
+
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                if let station = candidate.focusStation,
+                   let stationPhase = candidate.focusStationPhase
+                {
+                    Text(station.title.en)
+                        .id(station.id)
+                        .font(.largeTitle.bold().width(.compressed))
+                        .lineLimit(1)
+                        .layoutPriority(1)
+                        .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .top).combined(with: .opacity)))
+                    Text(stationPhase.debugDescription)
+                        .font(.title.width(.compressed))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .foregroundStyle(.secondary)
+                        .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .top).combined(with: .opacity)))
+                        .id(stationPhase)
+                } else {
+                    Text(verbatim: "------")
+                        .redacted(reason: .placeholder)
+                        .font(.title.bold())
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .clipped()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .animation(.smooth, value: candidate.focusStationPhase)
+            if let laterStation = candidate.laterStation {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(laterStation.title.en)
+                        .id(laterStation.id)
+                        .lineLimit(1)
+                        .font(.title3.width(.compressed))
+                        .padding(.vertical, 6)
+                        .padding(.leading, 16)
+                        .overlay(alignment: .leading) {
+                            Rectangle().fill(.clear)
+                                .overlay { Rectangle().fill(.secondary).frame(width: 1) }
+                                .overlay { Circle().inset(by: 3).fill(.primary) }
+                                .frame(width: 13)
+                        }
+                        .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .top).combined(with: .opacity)))
+                    if let laterLaterStation = candidate.laterLaterStation {
+                        Text(laterLaterStation.title.en)
+                            .id(laterLaterStation.id)
+                            .lineLimit(1)
+                            .font(.title3.width(.compressed))
+                            .padding(.vertical, 6)
+                            .padding(.leading, 16)
+                            .overlay(alignment: .leading) {
+                                Rectangle().fill(.clear)
+                                    .overlay { Rectangle().fill(.secondary).frame(width: 1) }
+                                    .overlay { Circle().inset(by: 3).fill(.primary) }
+                                    .frame(width: 13)
+                            }
+                            .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .top).combined(with: .opacity)))
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .clipped()
+                .animation(.smooth, value: candidate.laterStation)
+            }
+        }
+        .padding(.vertical, 16)
+        .padding(.horizontal, 16)
     }
 }

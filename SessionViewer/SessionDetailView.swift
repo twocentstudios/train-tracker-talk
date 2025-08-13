@@ -160,20 +160,12 @@ struct SessionDetailView: View {
                 .padding()
             }
         }
-        .overlay(alignment: .top) {
-            // TODO: debug only
-            VStack {
-                Text(store.selectedResult?.value ?? 0, format: .number)
-                    .font(.largeTitle.bold())
-                    .padding()
-                Text(store.resultsCache.count, format: .number)
-                    .font(.title3)
-            }
-            .padding()
-            .background(Material.ultraThick)
-        }
         .toolbar {
             ToolbarItemGroup {
+                if store.resultsCache.count < store.locations.count {
+                    ProgressView("Processing...", value: Double(store.resultsCache.count), total: Double(store.locations.count))
+                        .foregroundStyle(.secondary)
+                }
                 Button {
                     store.togglePlayback()
                 } label: {

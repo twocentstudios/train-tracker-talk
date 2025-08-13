@@ -75,6 +75,7 @@ actor RailwayTracker {
             )
         } catch {
             // Return empty scores on error
+            print(error)
             return RailwayTrackerResult(
                 location: input,
                 instantaneousRailwayCoordinateScores: [:],
@@ -137,7 +138,7 @@ actor RailwayTracker {
             let railwayID = Railway.ID(rawValue: result.railwayID)
             let dist = CLLocation(latitude: result.lat, longitude: result.lon)
                 .distance(from: location.location)
-            
+
             let score = linAbsNorm(dist, bestValue: 1.0, worstValue: 3000.0, exp: 5.0)
             instantaneousRailwayCoordinateScores[railwayID] = score
             instantaneousRailwayCoordinates[railwayID] = Coordinate(

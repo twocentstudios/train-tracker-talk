@@ -375,21 +375,27 @@ struct RailwayTrackerSidebar: View {
                         .italic()
                 }
             } header: {
-                Text("Candidates")
+                Text(verbatim: "Candidates")
             }
 
             Section {
                 if let result = selectedResult {
-                    let sortedScores = result.instantaneousRailwayCoordinateScores.sorted(by: { $0.value > $1.value })
-                    if sortedScores.isEmpty {
+                    let scores = result.instantaneousRailwayCoordinateScores.sorted(by: { $0.value > $1.value })
+                    if scores.isEmpty {
                         Text("No railway coordinate scores")
                             .foregroundStyle(.secondary)
                             .italic()
                     } else {
-                        ForEach(sortedScores, id: \.key) { railwayID, score in
-                            LabeledContent(railwayID.rawValue) {
-                                Text(score.formatted(.number.precision(.significantDigits(3))))
-                                    .monospaced()
+                        ForEach(scores, id: \.0) { pair in
+                            LabeledContent(pair.0.rawValue) {
+                                HStack {
+                                    if let ascendingScore = result.instantaneousRailwayAscendingScores[pair.0] {
+                                        Text(ascendingScore.formatted(.number.precision(.fractionLength(3))))
+                                            .monospaced()
+                                    }
+                                    Text(pair.1.formatted(.number.precision(.significantDigits(3))))
+                                        .monospaced()
+                                }
                             }
                         }
                     }
@@ -399,46 +405,7 @@ struct RailwayTrackerSidebar: View {
                         .italic()
                 }
             } header: {
-                Text("Railway Coordinate Scores")
-            }
-
-            Section {
-                if let result = selectedResult {
-                    let sortedCoordinates = result.instantaneousRailwayCoordinates.sorted(by: { $0.key.rawValue < $1.key.rawValue })
-                    if sortedCoordinates.isEmpty {
-                        Text("No railway coordinates")
-                            .foregroundStyle(.secondary)
-                            .italic()
-                    } else {
-                        ForEach(sortedCoordinates, id: \.key) { railwayID, coordinate in
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(railwayID.rawValue)
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                HStack {
-                                    Text("Lat:")
-                                        .foregroundStyle(.secondary)
-                                    Text(coordinate.latitude.formatted(.number.precision(.fractionLength(6))))
-                                        .monospaced()
-                                }
-                                .font(.caption)
-                                HStack {
-                                    Text("Lon:")
-                                        .foregroundStyle(.secondary)
-                                    Text(coordinate.longitude.formatted(.number.precision(.fractionLength(6))))
-                                        .monospaced()
-                                }
-                                .font(.caption)
-                            }
-                        }
-                    }
-                } else {
-                    Text("No location selected")
-                        .foregroundStyle(.secondary)
-                        .italic()
-                }
-            } header: {
-                Text("Railway Coordinates")
+                Text(verbatim: "Insta Railway Coord")
             }
         }
         .listStyle(.plain)

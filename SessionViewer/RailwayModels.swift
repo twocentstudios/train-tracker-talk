@@ -35,7 +35,8 @@ import Tagged
     let descending: RailDirection
 }
 
-@Table struct Coordinate: Hashable, Identifiable, Codable {
+@Table("coordinate")
+struct Coordinate: Hashable, Identifiable, Codable {
     typealias ID = Tagged<Self, Int64>
     let id: ID
     let latitude: Double
@@ -46,11 +47,19 @@ import Tagged
     }
 }
 
-@Table struct Segment: Hashable, Identifiable, Codable {
+@Table("segment")
+struct Segment: Hashable, Identifiable, Codable {
     typealias ID = Tagged<Self, Int64>
     let id: ID
     let railway: Railway.ID
     let underground: Bool
+}
+
+@Table("segmentCoordinate")
+struct SegmentCoordinate: Hashable, Codable {
+    let segment: Segment.ID
+    let order: Int
+    let coordinate: Coordinate.ID
 }
 
 struct TitleLocalization: Equatable, Hashable, Codable, Sendable {

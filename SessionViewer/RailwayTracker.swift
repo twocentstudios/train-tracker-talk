@@ -1,6 +1,8 @@
 import CoreLocation
 import Foundation
 import SharingGRDB
+import StructuredQueries
+import StructuredQueriesGRDB
 
 enum FocusStationPhase: Equatable, Codable, CustomDebugStringConvertible {
     case upcoming
@@ -39,6 +41,14 @@ struct RailwayTrackerResult {
     var instantaneousRailwayCoordinateScores: [Railway.ID: Double]
     var instantaneousRailwayCoordinates: [Railway.ID: Coordinate]
     var candidates: [RailwayTrackerCandidate]
+}
+
+@Selection
+struct RailwayCoordinateResult {
+    let railwayID: String
+    let lat: Double
+    let lon: Double
+    let coordinateID: Int64
 }
 
 actor RailwayTracker {
@@ -91,62 +101,49 @@ actor RailwayTracker {
         let maxLon = qLon + delta
         let minLon = qLon - delta
 
-        // For now, we'll use raw SQL similar to the original until we can properly convert to Structured Queries
-        // The original query uses coordinate_rtree which is a spatial index, complex to replicate with basic Structured Queries
-        let sql = """
-        WITH ranked AS (
-          SELECT
-            s.railway                      AS railwayID,
-            c.latitude                     AS lat,
-            c.longitude                    AS lon,
-            c.id                          AS coordinateID,
-            ROW_NUMBER() OVER (
-              PARTITION BY s.railway
-              ORDER BY
-                ((c.latitude  - ?) * (c.latitude  - ?))
-              + ((c.longitude - ?) * (c.longitude - ?))
-            ) AS rn
-          FROM coordinate_rtree
-          JOIN coordinate        AS c  ON c.id = coordinate_rtree.id
-          JOIN segmentCoordinate AS sc ON sc.coordinate = c.id
-          JOIN segment           AS s  ON s.id         = sc.segment
-          WHERE
-            coordinate_rtree.minLat <= ? AND coordinate_rtree.maxLat >= ?
-            AND coordinate_rtree.minLon <= ? AND coordinate_rtree.maxLon >= ?
-        )
-        SELECT railwayID, lat, lon, coordinateID
-        FROM ranked
-        WHERE rn = 1;
-        """
+        // Using #sql macro with interpolated table/column references for type safety
+        // While preserving the window function and R-Tree spatial index optimizations
+        let results = try #sql(
+            """
+            WITH ranked AS (
+              SELECT
+                s.railway         AS railwayID,
+                c.latitude        AS lat,
+                c.longitude       AS lon,
+                c.id              AS coordinateID,
+                ROW_NUMBER() OVER (
+                  PARTITION BY s.railway
+                  ORDER BY
+                    ((c.latitude  - \(qLat)) * (c.latitude  - \(qLat)))
+                  + ((c.longitude - \(qLon)) * (c.longitude - \(qLon)))
+                ) AS rn
+              FROM coordinate_rtree
+              JOIN \(Coordinate.self)        AS c  ON c.id = coordinate_rtree.id
+              JOIN \(SegmentCoordinate.self) AS sc ON sc.coordinate = c.id
+              JOIN \(Segment.self)           AS s  ON s.id = sc.segment
+              WHERE
+                coordinate_rtree.minLat <= \(maxLat) AND coordinate_rtree.maxLat >= \(minLat)
+                AND coordinate_rtree.minLon <= \(maxLon) AND coordinate_rtree.maxLon >= \(minLon)
+            )
+            SELECT railwayID, lat, lon, coordinateID
+            FROM ranked
+            WHERE rn = 1
+            """,
+            as: RailwayCoordinateResult.self
+        ).fetchAll(db)
 
-        let args: [Any] = [
-            qLat, qLat, qLon, qLon, // for the distance formula
-            maxLat, minLat, // bounding-box Y
-            maxLon, minLon, // bounding-box X
-        ]
-
-        let rows = try Row.fetchAll(db, sql: sql, arguments: StatementArguments(args)!)
-
-        // collect distances per railway
-        var distEntries: [(railwayID: Railway.ID, coordinateID: Int64, lat: Double, lon: Double, distance: Double)] = []
-        for row in rows {
-            let railwayID = Railway.ID(rawValue: row["railwayID"] as String)
-            let lat = row["lat"] as Double
-            let lon = row["lon"] as Double
-            let coordinateID = row["coordinateID"] as Int64
-            let dist = CLLocation(latitude: lat, longitude: lon)
+        // Process results and calculate distances
+        for result in results {
+            let railwayID = Railway.ID(rawValue: result.railwayID)
+            let dist = CLLocation(latitude: result.lat, longitude: result.lon)
                 .distance(from: location.location)
-            distEntries.append((railwayID: railwayID, coordinateID: coordinateID, lat: lat, lon: lon, distance: dist))
-        }
-
-        // assign normalized scores
-        for entry in distEntries {
-            let score = linAbsNorm(entry.distance, bestValue: 1.0, worstValue: 3000.0, exp: 5.0)
-            instantaneousRailwayCoordinateScores[entry.railwayID] = score
-            instantaneousRailwayCoordinates[entry.railwayID] = Coordinate(
-                id: .init(rawValue: entry.coordinateID),
-                latitude: entry.lat,
-                longitude: entry.lon
+            
+            let score = linAbsNorm(dist, bestValue: 1.0, worstValue: 3000.0, exp: 5.0)
+            instantaneousRailwayCoordinateScores[railwayID] = score
+            instantaneousRailwayCoordinates[railwayID] = Coordinate(
+                id: .init(rawValue: result.coordinateID),
+                latitude: result.lat,
+                longitude: result.lon
             )
         }
 

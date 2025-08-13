@@ -158,6 +158,7 @@ actor RailwayTracker {
         let coordinateID: Int64
     }
 
+    /// Returns a tuple of scores (0.0 ... 1.0) for each Railway within 5km of `location` and the closest `Coordinate` on the path of each `Railway` to `location`
     private static func instantaneousRailwayCoordinateScores(db: Database, location: Location) throws -> ([Railway.ID: Double], [Railway.ID: Coordinate]) {
         var instantaneousRailwayCoordinateScores = [Railway.ID: Double]()
         var instantaneousRailwayCoordinates = [Railway.ID: Coordinate]()
@@ -226,6 +227,8 @@ actor RailwayTracker {
         let order: Int64
     }
 
+    /// Returns an "ascending" score (-1.0 ... 1.0) for each of `railways` for `location`.
+    /// -1.0 is fully "descending" and 1.0 is fully "ascending" as defined by the `Railway` data.
     private static func instantaneousRailwayAscending(db: Database, location: Location, railways: [Railway.ID]) throws -> [Railway.ID: Double] {
         guard let courseVec = location.courseUnitVector else { return [:] }
         guard let speed = location.speed, speed > 3.0 else { return [:] }

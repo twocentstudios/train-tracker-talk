@@ -345,9 +345,9 @@ extension RootStore: @preconcurrency CLLocationManagerDelegate {
                 }
             }
 
-            // Check 5-minute timeout condition
+            // Check 15-minute timeout condition
             if let lastHighSpeed = updatedLastHighSpeedTime,
-               date().timeIntervalSince(lastHighSpeed) > 300
+               date().timeIntervalSince(lastHighSpeed) > 900
             {
                 handleSessionEnd()
             } else if updatedLastHighSpeedTime != lastHighSpeedTime {

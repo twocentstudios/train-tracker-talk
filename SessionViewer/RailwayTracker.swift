@@ -615,6 +615,9 @@ actor RailwayTracker {
                     case .passed:
                         // Skip duplicate
                         validatedStationPhaseHistoryItem = nil
+                    case .visited:
+                        // It's rare, but strange location combinations could cause `passed -> visited` (we can ignore)
+                        validatedStationPhaseHistoryItem = nil
                     default:
                         // terminal state
                         reportIssue("invalid transition: (\(railway.id) \(stationID) - passed -> \(proposedStationPhaseHistoryItem.phase)")

@@ -542,7 +542,7 @@ actor RailwayTracker {
                     }
                 } else {
                     proposedStationPhaseHistoryItem = nil
-                    assertionFailure("unexpected stationLocationHistory: \(stationLocationHistory)")
+                    reportIssue("unexpected stationLocationHistory: \(stationLocationHistory)")
                 }
 
                 guard let proposedStationPhaseHistoryItem else { continue }

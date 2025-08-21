@@ -575,7 +575,7 @@ actor RailwayTracker {
                         // Skip duplicate
                         validatedStationPhaseHistoryItem = nil
                     default:
-                        assertionFailure("departure phase should always be terminal phase; instead got \(proposedStationPhaseHistoryItem)")
+                        reportIssue("(\(railway.id) \(stationID) - departure phase should always be terminal phase; instead got \(proposedStationPhaseHistoryItem)")
                         validatedStationPhaseHistoryItem = nil
                     }
                 case .some(.approaching):
@@ -584,7 +584,7 @@ actor RailwayTracker {
                         // Skip duplicate
                         validatedStationPhaseHistoryItem = nil
                     case .departure:
-                        assertionFailure("invalid transition: approaching -> departure")
+                        reportIssue("invalid transition: (\(railway.id) \(stationID) - approaching -> departure")
                         validatedStationPhaseHistoryItem = nil
                     default:
                         validatedStationPhaseHistoryItem = proposedStationPhaseHistoryItem
@@ -595,7 +595,7 @@ actor RailwayTracker {
                         // Skip duplicate
                         validatedStationPhaseHistoryItem = nil
                     case .approaching, .departure:
-                        assertionFailure("invalid transition: visiting -> \(proposedStationPhaseHistoryItem.phase)")
+                        reportIssue("invalid transition: (\(railway.id) \(stationID) - visiting -> \(proposedStationPhaseHistoryItem.phase)")
                         validatedStationPhaseHistoryItem = nil
                     default:
                         validatedStationPhaseHistoryItem = proposedStationPhaseHistoryItem
@@ -607,7 +607,7 @@ actor RailwayTracker {
                         validatedStationPhaseHistoryItem = nil
                     default:
                         // terminal state
-                        assertionFailure("invalid transition: visited -> \(proposedStationPhaseHistoryItem.phase)")
+                        reportIssue("invalid transition: (\(railway.id) \(stationID) - visited -> \(proposedStationPhaseHistoryItem.phase)")
                         validatedStationPhaseHistoryItem = nil
                     }
                 case .some(.passed):
@@ -617,7 +617,7 @@ actor RailwayTracker {
                         validatedStationPhaseHistoryItem = nil
                     default:
                         // terminal state
-                        assertionFailure("invalid transition: passed -> \(proposedStationPhaseHistoryItem.phase)")
+                        reportIssue("invalid transition: (\(railway.id) \(stationID) - passed -> \(proposedStationPhaseHistoryItem.phase)")
                         validatedStationPhaseHistoryItem = nil
                     }
                 }

@@ -541,6 +541,13 @@ actor RailwayTracker {
                     } else {
                         proposedStationPhaseHistoryItem = .init(phase: .passed, date: now)
                     }
+                } else if !stationLocationHistory.approachingLocations.isEmpty,
+                          stationLocationHistory.visitingLocations.isEmpty,
+                          stationLocationHistory.firstDepartureLocation != nil
+                {
+                    // It's common for locations to enter the approaching bounds of a nearby railway to the actual railway but never the visiting area.
+                    // We'll consider these `passed`, but they should perhaps be their own special identifier.
+                    proposedStationPhaseHistoryItem = .init(phase: .passed, date: now)
                 } else {
                     proposedStationPhaseHistoryItem = nil
                     reportIssue("unexpected stationLocationHistory: \(stationLocationHistory)")

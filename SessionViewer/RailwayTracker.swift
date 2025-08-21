@@ -470,13 +470,7 @@ actor RailwayTracker {
                     // location is within approaching distance and facing station in travel direction
                     stationLocationHistories[stationRailDirection, default: .init()].approachingLocations.append(location)
                     hasPlacedLocationInRailway = true
-                } else if dot > 0 {
-                    if let bestCandidate = potentialDepartureStation, bestCandidate.1 < dist {
-                        potentialDepartureStation = (station.id, dist)
-                    } else if potentialDepartureStation == nil {
-                        potentialDepartureStation = (station.id, dist)
-                    }
-                } else if dot <= 0 {
+                } else if dot < 0 {
                     // Always set `firstDepartureLocation` for any stations "passed" and "in progress" but not yet completed
                     if let stationLocationHistory = stationLocationHistories[stationRailDirection],
                        stationLocationHistory.firstDepartureLocation == nil,
@@ -484,6 +478,12 @@ actor RailwayTracker {
                        !stationLocationHistory.approachingLocations.isEmpty
                     {
                         stationLocationHistories[stationRailDirection]?.firstDepartureLocation = location
+                    } else if let bestCandidate = potentialDepartureStation, dist < bestCandidate.1 {
+                        print("ASDF", station.id, dist)
+                        potentialDepartureStation = (station.id, dist)
+                    } else if potentialDepartureStation == nil {
+                        print("ASDF", station.id, dist)
+                        potentialDepartureStation = (station.id, dist)
                     }
                 }
             }

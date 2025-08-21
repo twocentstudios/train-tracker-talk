@@ -443,6 +443,30 @@ struct RailwayTrackerSidebar: View {
             } header: {
                 Text(verbatim: "Insta Railway Coord")
             }
+
+            Section {
+                if let selectedCandidate = store.selectedCandidate {
+                    let railway = selectedCandidate.railway
+                    let stationIDs = selectedCandidate.railwayDirection == railway.ascending ? railway.stations : railway.stations.reversed()
+                    
+                    if stationIDs.isEmpty {
+                        Text("No stations found")
+                            .foregroundStyle(.secondary)
+                            .italic()
+                    } else {
+                        ForEach(stationIDs, id: \.self) { stationID in
+                            Text(stationID.rawValue)
+                                .monospaced()
+                        }
+                    }
+                } else {
+                    Text("No candidate selected")
+                        .foregroundStyle(.secondary)
+                        .italic()
+                }
+            } header: {
+                Text(verbatim: "Railway Stations")
+            }
         }
         .listStyle(.plain)
     }

@@ -193,7 +193,7 @@ actor RailwayTracker {
                     guard let destinationStationID = directionalStationIDs.last else { assertionFailure(); continue }
                     let railwayDestinationStation = try Station.find(destinationStationID).fetchOne(db)
 
-                    guard let focusStation = railwayRailDirectionFocusStations[railwayRailDirection] else { assertionFailure(); continue }
+                    guard let focusStation = railwayRailDirectionFocusStations[railwayRailDirection] else { continue }
                     guard let focusStationRecord = try Station.find(focusStation.stationID).fetchOne(db) else { assertionFailure(); continue }
                     guard let focusStationIndex = directionalStationIDs.firstIndex(of: focusStation.stationID) else { assertionFailure(); continue }
                     let laterStationIndex = focusStationIndex + 1

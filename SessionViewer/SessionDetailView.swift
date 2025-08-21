@@ -478,10 +478,27 @@ struct RailwayTrackerSidebar: View {
             if let railwayDirection = candidate.railwayDirection {
                 let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: railwayDirection)
                 let lastPhase = store.selectedResult?.stationPhaseHistories[stationRailDirection]?.items.last?.phase
-                Text(lastPhase.map(String.init(describing:)) ?? "-")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .monospaced()
+                Menu {
+                    if let items = store.selectedResult?.stationPhaseHistories[stationRailDirection]?.items {
+                        if items.isEmpty {
+                            Text("No phase history")
+                        } else {
+                            ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                                Text("\(String(describing: item.phase)) - \(item.date.formatted(.dateTime.hour().minute().second()))")
+                            }
+                        }
+                    } else {
+                        Text("No phase history")
+                    }
+                } label: {
+                    Text(lastPhase.map(String.init(describing:)) ?? "-")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .monospaced()
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .fixedSize()
             } else {
                 Text("-")
                     .font(.caption)

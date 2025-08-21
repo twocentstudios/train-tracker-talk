@@ -27,6 +27,44 @@ enum FocusStationPhase: Equatable, Codable, CustomDebugStringConvertible {
     }
 }
 
+struct RailwayRailDirection: Hashable {
+    var railwayID: Railway.ID
+    var railDirection: RailDirection
+}
+
+struct StationRailDirection: Hashable {
+    var stationID: Station.ID
+    var railDirection: RailDirection
+}
+
+struct StationDirectionalLocationHistory {
+    // Locations within N meters from station (date asc)
+    var visitingLocations: [Location] = []
+
+    // Locations within K directional meters from station but outside N meters (date asc)
+    var approachingLocations: [Location] = []
+
+    // First location that does not fall within visiting/approaching, or same as last visiting location if it's the last station on the line
+    var firstDepartureLocation: Location?
+}
+
+enum StationPhase {
+    case departure
+    case approaching
+    case visiting
+    case visited
+    case passed
+}
+
+struct StationPhaseHistoryItem {
+    var phase: StationPhase
+    var date: Date
+}
+
+struct StationPhaseHistory {
+    var items: [StationPhaseHistoryItem]
+}
+
 struct RailwayTrackerCandidate: Equatable {
     var railway: Railway
     var railwayDestinationStation: Station?
@@ -47,12 +85,27 @@ struct RailwayTrackerResult {
     var candidates: [RailwayTrackerCandidate]
 }
 
+struct FocusStation {
+    var stationID: Station.ID
+    var phase: FocusStationPhase
+    var date: Date
+}
+
 actor RailwayTracker {
     private let railwayDatabase: any DatabaseReader
 
     var railwayScores: [Railway.ID: Double] = [:]
     var railwayAscendingScores: [Railway.ID: Double] = [:]
     var railwayDirections: [Railway.ID: RailDirection] = [:]
+
+    var stationLocationHistories: [StationRailDirection: StationDirectionalLocationHistory] = [:]
+    var stationPhaseHistories: [StationRailDirection: StationPhaseHistory] = [:]
+    var railwayRailDirectionFocusStations: [RailwayRailDirection: FocusStation] = [:]
+
+    // TODO: Set these values and use this to improve calculations
+    // `Location`s not within any Railway's Station's `visiting` or `approaching` bounds.
+    // Used to differentiate local from express trains penalizing any railway with locations indicating stopping between stations.
+    var orphanedRailwayRailDirectionLocations: [RailwayRailDirection: [Location]] = [:]
 
     init(railwayDatabase: any DatabaseReader) {
         self.railwayDatabase = railwayDatabase
@@ -65,6 +118,9 @@ actor RailwayTracker {
             var instantaneousRailwayAscendingScores = [Railway.ID: Double]()
             var candidates = [RailwayTrackerCandidate]()
 
+            // TODO: consider caching full railways
+            // TODO: consider passing full railways list as railwayRailDirections into helper funcs instead of refetching from db
+            // TODO: consider breaking up database reads
             try railwayDatabase.read { db in
                 (instantaneousRailwayCoordinateScores, instantaneousRailwayCoordinates) = try Self.instantaneousRailwayCoordinateScores(db: db, location: input)
                 instantaneousRailwayAscendingScores = try Self.instantaneousRailwayAscending(db: db, location: input, railways: Array(instantaneousRailwayCoordinateScores.keys))
@@ -99,22 +155,70 @@ actor RailwayTracker {
 
                 let totalTopCandidateRailways = 8
                 let topCandidateRailwayIDs = railwayScores.sorted(using: KeyPathComparator(\.value, order: .reverse)).prefix(totalTopCandidateRailways).map(\.key)
-                for railwayID in topCandidateRailwayIDs {
-                    guard let railwayRecord = try Railway.find(railwayID).fetchOne(db) else { continue }
-                    guard let railwayDirection = railwayDirections[railwayID] else { continue }
-                    var railwayDestinationStation: Station?
-                    if let destinationStationID = railwayDirection == railwayRecord.ascending ? railwayRecord.stations.last : railwayRecord.stations.first {
-                        railwayDestinationStation = try Station.find(destinationStationID).fetchOne(db)
+
+                let topCandidateRailwayRailDirections: [RailwayRailDirection] = topCandidateRailwayIDs.compactMap { railwayID in
+                    guard let railwayDirection = railwayDirections[railwayID] else { return nil }
+                    return RailwayRailDirection(railwayID: railwayID, railDirection: railwayDirection)
+                }
+
+                try Self.addLocationToStationLocationHistories(
+                    db: db,
+                    location: input,
+                    railwayRailDirections: topCandidateRailwayRailDirections,
+                    stationLocationHistories: &stationLocationHistories
+                )
+
+                try Self.updateStationPhaseHistory(
+                    db: db,
+                    now: input.timestamp,
+                    railwayRailDirections: topCandidateRailwayRailDirections,
+                    stationLocationHistories: stationLocationHistories,
+                    stationPhaseHistories: &stationPhaseHistories
+                )
+
+                try Self.updateFocusStation(
+                    db: db,
+                    railwayRailDirections: topCandidateRailwayRailDirections,
+                    stationPhaseHistories: stationPhaseHistories,
+                    railwayRailDirectionFocusStations: &railwayRailDirectionFocusStations
+                )
+
+                for railwayRailDirection in topCandidateRailwayRailDirections {
+                    guard let railwayRecord = try Railway.find(railwayRailDirection.railwayID).fetchOne(db) else { continue }
+                    let railwayDirection = railwayRailDirection.railDirection
+
+                    let directionalStationIDs = railwayDirection == railwayRecord.ascending ? railwayRecord.stations : railwayRecord.stations.reversed()
+
+                    guard let destinationStationID = directionalStationIDs.last else { assertionFailure(); continue }
+                    let railwayDestinationStation = try Station.find(destinationStationID).fetchOne(db)
+
+                    guard let focusStation = railwayRailDirectionFocusStations[railwayRailDirection] else { assertionFailure(); continue }
+                    guard let focusStationRecord = try Station.find(focusStation.stationID).fetchOne(db) else { assertionFailure(); continue }
+                    guard let focusStationIndex = directionalStationIDs.firstIndex(of: focusStation.stationID) else { assertionFailure(); continue }
+                    let laterStationIndex = focusStationIndex + 1
+                    let laterLaterStationIndex = laterStationIndex + 1
+
+                    var laterStation: Station?
+                    if let laterStationID = directionalStationIDs[safe: laterStationIndex],
+                       let s = try Station.find(laterStationID).fetchOne(db)
+                    {
+                        laterStation = s
+                    }
+                    var laterLaterStation: Station?
+                    if let laterLaterStationID = directionalStationIDs[safe: laterLaterStationIndex],
+                       let s = try Station.find(laterLaterStationID).fetchOne(db)
+                    {
+                        laterLaterStation = s
                     }
 
                     let candidate = RailwayTrackerCandidate(
                         railway: railwayRecord,
                         railwayDestinationStation: railwayDestinationStation,
                         railwayDirection: railwayDirection,
-                        focusStation: nil,
-                        focusStationPhase: nil,
-                        laterStation: nil,
-                        laterLaterStation: nil
+                        focusStation: focusStationRecord,
+                        focusStationPhase: focusStation.phase,
+                        laterStation: laterStation,
+                        laterLaterStation: laterLaterStation
                     )
                     candidates.append(candidate)
                 }
@@ -171,6 +275,7 @@ actor RailwayTracker {
         let maxLon = qLon + delta
         let minLon = qLon - delta
 
+        // The closest Coordinate for each Railway within N km of `location`
         let results = try #sql(
             """
             WITH ranked AS (
@@ -302,6 +407,278 @@ actor RailwayTracker {
 
         return scores
     }
+
+    private static func addLocationToStationLocationHistories(
+        db: Database,
+        location: Location,
+        railwayRailDirections: [RailwayRailDirection],
+        stationLocationHistories: inout [StationRailDirection: StationDirectionalLocationHistory]
+    ) throws {
+        guard let courseUnitVector = location.courseUnitVector else {
+            // TODO: how to handle locations with no course?
+            // TODO: handle dot as optional - not required for dist <= visitingDistanceConst case
+            return
+        }
+
+        // TODO: tweak these constants
+        let visitingDistanceConst: CLLocationDistance = 200
+        let approachingDistanceConst: CLLocationDistance = 500
+
+        for railwayRailDirection in railwayRailDirections {
+            guard let railway = try Railway.find(railwayRailDirection.railwayID).fetchOne(db) else { throw NotFound() }
+            let isAscending = railwayRailDirection.railDirection == railway.ascending
+            let directionalStations = try Station
+                .where { $0.id.in(railway.stations) }
+                .order(by: {
+                    if isAscending {
+                        $0.order.asc()
+                    } else {
+                        $0.order.desc()
+                    }
+                })
+                .fetchAll(db)
+
+            // The `location` is placed in at most one station's `visiting` or `approaching` histories per railway.
+            // A `location` can be repeated amongst many stations' `firstDepartureLocation`.
+            // Stations earlier in the direction of travel have priority in "claiming" a `location` in the case a `visiting` boundary of the earlier station overlaps a `approaching` boundary in the later station.
+            var hasPlacedLocationInRailway = false
+            var potentialDepartureStation: (Station.ID, CLLocationDistance)? = nil
+            for station in directionalStations {
+                let stationRailDirection = StationRailDirection(stationID: station.id, railDirection: railwayRailDirection.railDirection)
+                guard !hasPlacedLocationInRailway else { continue }
+
+                // Calculate distance and dot product from location to station
+                let dist = station.location.distance(from: location.location)
+                let dot = simd_dot(
+                    simd_normalize(CLLocationCoordinate2D.vector(lhs: location.coordinate, rhs: station.coordinate)),
+                    courseUnitVector
+                )
+
+                if dist <= visitingDistanceConst {
+                    // location is within visiting distance
+                    stationLocationHistories[stationRailDirection, default: .init()].visitingLocations.append(location)
+                    hasPlacedLocationInRailway = true
+
+                    // If this is the last station in the railway, always set its firstDepartureLocation to mark it complete
+                    if station.id == directionalStations.last?.id {
+                        stationLocationHistories[stationRailDirection]?.firstDepartureLocation = location
+                    }
+                } else if dist <= approachingDistanceConst, dot > 0 {
+                    // location is within approaching distance and facing station in travel direction
+                    stationLocationHistories[stationRailDirection, default: .init()].approachingLocations.append(location)
+                    hasPlacedLocationInRailway = true
+                } else if dot > 0 {
+                    if let bestCandidate = potentialDepartureStation, bestCandidate.1 < dist {
+                        potentialDepartureStation = (station.id, dist)
+                    } else if potentialDepartureStation == nil {
+                        potentialDepartureStation = (station.id, dist)
+                    }
+                } else if dot <= 0 {
+                    // Always set `firstDepartureLocation` for any stations "passed" and "in progress" but not yet completed
+                    if let stationLocationHistory = stationLocationHistories[stationRailDirection],
+                       stationLocationHistory.firstDepartureLocation == nil,
+                       !stationLocationHistory.visitingLocations.isEmpty,
+                       !stationLocationHistory.approachingLocations.isEmpty
+                    {
+                        stationLocationHistories[stationRailDirection]?.firstDepartureLocation = location
+                    }
+                }
+            }
+
+            // TODO: add orphanedRailwayRailDirectionLocations: [RailwayRailDirection: [Location]] class-level store to add locations that are not hasPlacedLocationInRailway
+            // TODO: use these during railway score calculation - railway score should decrease if speed < 1 locations exist between stations (meaning an express train on the same line as a local will be lowered when riding the local)
+
+            // In the case the railway has no stations with departures, mark the departure station
+            let isStationDeparturesHistoriesEmpty = directionalStations
+                .compactMap { stationLocationHistories[.init(stationID: $0.id, railDirection: railwayRailDirection.railDirection)]?.firstDepartureLocation }
+                .isEmpty
+            if isStationDeparturesHistoriesEmpty, let potentialDepartureStation {
+                stationLocationHistories[.init(stationID: potentialDepartureStation.0, railDirection: railwayRailDirection.railDirection)] = .init(firstDepartureLocation: location)
+            }
+        }
+    }
+
+    /// Update the phase history for each Station based on the stationLocationHistories
+    private static func updateStationPhaseHistory(
+        db: Database,
+        now: Date,
+        railwayRailDirections: [RailwayRailDirection],
+        stationLocationHistories: [StationRailDirection: StationDirectionalLocationHistory],
+        stationPhaseHistories: inout [StationRailDirection: StationPhaseHistory]
+    ) throws {
+        let stationVisitedDwellTimeConst: TimeInterval = 20
+        for railwayRailDirection in railwayRailDirections {
+            guard let railway = try Railway.find(railwayRailDirection.railwayID).fetchOne(db) else { throw NotFound() }
+            let directionalStationIDs = railwayRailDirection.railDirection == railway.ascending ? railway.stations : railway.stations.reversed()
+            for stationID in directionalStationIDs {
+                let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: railwayRailDirection.railDirection)
+                guard let stationLocationHistory = stationLocationHistories[stationRailDirection] else { continue }
+                let proposedStationPhaseHistoryItem: StationPhaseHistoryItem?
+                if stationLocationHistory.visitingLocations.isEmpty,
+                   stationLocationHistory.approachingLocations.isEmpty,
+                   stationLocationHistory.firstDepartureLocation != nil
+                {
+                    proposedStationPhaseHistoryItem = .init(phase: .departure, date: now)
+                } else if stationLocationHistory.visitingLocations.isEmpty,
+                          !stationLocationHistory.approachingLocations.isEmpty,
+                          stationLocationHistory.firstDepartureLocation == nil
+                {
+                    proposedStationPhaseHistoryItem = .init(phase: .approaching, date: now)
+                } else if !stationLocationHistory.visitingLocations.isEmpty,
+                          stationLocationHistory.firstDepartureLocation == nil
+                {
+                    proposedStationPhaseHistoryItem = .init(phase: .visiting, date: now)
+                } else if let firstVisitingLocation = stationLocationHistory.visitingLocations.first,
+                          let firstDepartureLocation = stationLocationHistory.firstDepartureLocation
+                {
+                    if stationID == directionalStationIDs.last {
+                        // Last station on a line will always be visited
+                        proposedStationPhaseHistoryItem = .init(phase: .visited, date: now)
+                    } else if firstDepartureLocation.timestamp.timeIntervalSince(firstVisitingLocation.timestamp) > stationVisitedDwellTimeConst {
+                        proposedStationPhaseHistoryItem = .init(phase: .visited, date: now)
+                    } else {
+                        proposedStationPhaseHistoryItem = .init(phase: .passed, date: now)
+                    }
+                } else {
+                    proposedStationPhaseHistoryItem = nil
+                    assertionFailure("unexpected stationLocationHistory: \(stationLocationHistory)")
+                }
+
+                guard let proposedStationPhaseHistoryItem else { continue }
+                let latestStationHistoryItem = stationPhaseHistories[stationRailDirection]?.items.last
+                if let latestStationHistoryItem,
+                   latestStationHistoryItem.date > proposedStationPhaseHistoryItem.date
+                {
+                    // Ensure the new item is not somehow earlier than the old one
+                    assertionFailure("unexpected condition: \(latestStationHistoryItem) is later than \(proposedStationPhaseHistoryItem)")
+                    continue
+                }
+
+                // Handle the possible state transition
+                let validatedStationPhaseHistoryItem: StationPhaseHistoryItem?
+                switch latestStationHistoryItem?.phase {
+                case .none:
+                    // If phase history is empty, always set the proposed item
+                    validatedStationPhaseHistoryItem = proposedStationPhaseHistoryItem
+                case .some(.departure):
+                    switch proposedStationPhaseHistoryItem.phase {
+                    case .departure:
+                        // Skip duplicate
+                        validatedStationPhaseHistoryItem = nil
+                    default:
+                        assertionFailure("departure phase should always be terminal phase; instead got \(proposedStationPhaseHistoryItem)")
+                        validatedStationPhaseHistoryItem = nil
+                    }
+                case .some(.approaching):
+                    switch proposedStationPhaseHistoryItem.phase {
+                    case .approaching:
+                        // Skip duplicate
+                        validatedStationPhaseHistoryItem = nil
+                    case .departure:
+                        assertionFailure("invalid transition: approaching -> departure")
+                        validatedStationPhaseHistoryItem = nil
+                    default:
+                        validatedStationPhaseHistoryItem = proposedStationPhaseHistoryItem
+                    }
+                case .some(.visiting):
+                    switch proposedStationPhaseHistoryItem.phase {
+                    case .visiting:
+                        // Skip duplicate
+                        validatedStationPhaseHistoryItem = nil
+                    case .approaching, .departure:
+                        assertionFailure("invalid transition: visiting -> \(proposedStationPhaseHistoryItem.phase)")
+                        validatedStationPhaseHistoryItem = nil
+                    default:
+                        validatedStationPhaseHistoryItem = proposedStationPhaseHistoryItem
+                    }
+                case .some(.visited):
+                    switch proposedStationPhaseHistoryItem.phase {
+                    case .visited:
+                        // Skip duplicate
+                        validatedStationPhaseHistoryItem = nil
+                    default:
+                        // terminal state
+                        assertionFailure("invalid transition: visited -> \(proposedStationPhaseHistoryItem.phase)")
+                        validatedStationPhaseHistoryItem = nil
+                    }
+                case .some(.passed):
+                    switch proposedStationPhaseHistoryItem.phase {
+                    case .passed:
+                        // Skip duplicate
+                        validatedStationPhaseHistoryItem = nil
+                    default:
+                        // terminal state
+                        assertionFailure("invalid transition: passed -> \(proposedStationPhaseHistoryItem.phase)")
+                        validatedStationPhaseHistoryItem = nil
+                    }
+                }
+
+                if let validatedStationPhaseHistoryItem {
+                    // Append the new valid history item
+                    stationPhaseHistories[stationRailDirection, default: .init(items: [])].items.append(validatedStationPhaseHistoryItem)
+                }
+            }
+        }
+    }
+
+    private static func updateFocusStation(
+        db: Database,
+        railwayRailDirections: [RailwayRailDirection],
+        stationPhaseHistories: [StationRailDirection: StationPhaseHistory],
+        railwayRailDirectionFocusStations: inout [RailwayRailDirection: FocusStation]
+    ) throws {
+        for railwayRailDirection in railwayRailDirections {
+            guard let railway = try Railway.find(railwayRailDirection.railwayID).fetchOne(db) else { throw NotFound() }
+            let directionalStationIDs = railwayRailDirection.railDirection == railway.ascending ? railway.stations : railway.stations.reversed()
+            let directionalLatestStationPhaseHistoryItems: [StationPhaseHistoryItem?] = directionalStationIDs
+                .map { StationRailDirection(stationID: $0, railDirection: railwayRailDirection.railDirection) }
+                .map { stationPhaseHistories[$0, default: .init(items: [])] }
+                .map(\.items.last)
+
+            let directionalLatestStationPhaseHistoryItemPairs = zip(directionalStationIDs, directionalLatestStationPhaseHistoryItems)
+            var proposedFocusStation: FocusStation? = nil
+            for (index, (stationID, phaseHistoryItem)) in directionalLatestStationPhaseHistoryItemPairs.enumerated() {
+                // Ignore stations with no history
+                guard let phaseHistoryItem else { continue }
+
+                // We'll often need to know the next station
+                let nextItem = Array(directionalLatestStationPhaseHistoryItemPairs)[safe: index + 1]
+
+                // Set the proposed FocusStation assuming this station is the last one with a valid PhaseHistoryItem
+                // The proposed FocusStation will be overwritten until we've reached the actual last one
+                switch phaseHistoryItem.phase {
+                case .departure:
+                    if let nextItem,
+                       let nextPhaseHistoryItem = nextItem.1
+                    {
+                        proposedFocusStation = FocusStation(stationID: nextItem.0, phase: .upcoming, date: nextPhaseHistoryItem.date)
+                    } else {
+                        // Departure station is final (Ambiguous case)
+                        proposedFocusStation = FocusStation(stationID: stationID, phase: .visiting, date: phaseHistoryItem.date)
+                    }
+                case .approaching:
+                    proposedFocusStation = FocusStation(stationID: stationID, phase: .approaching, date: phaseHistoryItem.date)
+                case .visiting:
+                    proposedFocusStation = FocusStation(stationID: stationID, phase: .visiting, date: phaseHistoryItem.date)
+                case .visited,
+                     .passed:
+                    if let nextItem,
+                       let nextPhaseHistoryItem = nextItem.1
+                    {
+                        proposedFocusStation = FocusStation(stationID: nextItem.0, phase: .upcoming, date: nextPhaseHistoryItem.date)
+                    } else {
+                        // Visited station is final
+                        proposedFocusStation = FocusStation(stationID: stationID, phase: .visiting, date: phaseHistoryItem.date)
+                    }
+                }
+            }
+            guard let proposedFocusStation else {
+                // Railway has no station phase history data
+                continue
+            }
+            railwayRailDirectionFocusStations[railwayRailDirection] = proposedFocusStation
+        }
+    }
 }
 
 /// Helpers
@@ -349,5 +726,15 @@ extension Location {
 extension CLLocationCoordinate2D {
     static func vector(lhs: Self, rhs: Self) -> simd_double2 {
         .init(rhs.longitude - lhs.longitude, rhs.latitude - lhs.latitude)
+    }
+
+    var location: CLLocation {
+        CLLocation(latitude: latitude, longitude: longitude)
+    }
+}
+
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        indices.contains(index) ? self[index] : nil
     }
 }

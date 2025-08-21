@@ -636,23 +636,22 @@ actor RailwayTracker {
                 .map { stationPhaseHistories[$0, default: .init(items: [])] }
                 .map(\.items.last)
 
-            let directionalLatestStationPhaseHistoryItemPairs = zip(directionalStationIDs, directionalLatestStationPhaseHistoryItems)
             var proposedFocusStation: FocusStation? = nil
-            for (index, (stationID, phaseHistoryItem)) in directionalLatestStationPhaseHistoryItemPairs.enumerated() {
+            for (index, phaseHistoryItem) in directionalLatestStationPhaseHistoryItems.enumerated() {
                 // Ignore stations with no history
                 guard let phaseHistoryItem else { continue }
 
+                guard let stationID = directionalStationIDs[safe: index] else { assertionFailure(); continue }
+
                 // We'll often need to know the next station
-                let nextItem = Array(directionalLatestStationPhaseHistoryItemPairs)[safe: index + 1]
+                let nextStationID = directionalStationIDs[safe: index + 1]
 
                 // Set the proposed FocusStation assuming this station is the last one with a valid PhaseHistoryItem
                 // The proposed FocusStation will be overwritten until we've reached the actual last one
                 switch phaseHistoryItem.phase {
                 case .departure:
-                    if let nextItem,
-                       let nextPhaseHistoryItem = nextItem.1
-                    {
-                        proposedFocusStation = FocusStation(stationID: nextItem.0, phase: .upcoming, date: nextPhaseHistoryItem.date)
+                    if let nextStationID {
+                        proposedFocusStation = FocusStation(stationID: nextStationID, phase: .upcoming, date: phaseHistoryItem.date)
                     } else {
                         // Departure station is final (Ambiguous case)
                         proposedFocusStation = FocusStation(stationID: stationID, phase: .visiting, date: phaseHistoryItem.date)
@@ -663,10 +662,8 @@ actor RailwayTracker {
                     proposedFocusStation = FocusStation(stationID: stationID, phase: .visiting, date: phaseHistoryItem.date)
                 case .visited,
                      .passed:
-                    if let nextItem,
-                       let nextPhaseHistoryItem = nextItem.1
-                    {
-                        proposedFocusStation = FocusStation(stationID: nextItem.0, phase: .upcoming, date: nextPhaseHistoryItem.date)
+                    if let nextStationID {
+                        proposedFocusStation = FocusStation(stationID: nextStationID, phase: .upcoming, date: phaseHistoryItem.date)
                     } else {
                         // Visited station is final
                         proposedFocusStation = FocusStation(stationID: stationID, phase: .visiting, date: phaseHistoryItem.date)

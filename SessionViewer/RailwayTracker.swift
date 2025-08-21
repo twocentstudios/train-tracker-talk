@@ -479,10 +479,8 @@ actor RailwayTracker {
                     {
                         stationLocationHistories[stationRailDirection]?.firstDepartureLocation = location
                     } else if let bestCandidate = potentialDepartureStation, dist < bestCandidate.1 {
-                        print("ASDF", station.id, dist)
                         potentialDepartureStation = (station.id, dist)
                     } else if potentialDepartureStation == nil {
-                        print("ASDF", station.id, dist)
                         potentialDepartureStation = (station.id, dist)
                     }
                 }

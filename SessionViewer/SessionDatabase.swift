@@ -46,7 +46,7 @@ func openAppDatabase(path: String) throws -> any DatabaseReader {
     configuration.foreignKeysEnabled = true
     configuration.readonly = true
 
-    #if DEBUG
+    #if DEBUG && false
         configuration.prepareDatabase { db in
             db.trace(options: .profile) {
                 logger.debug("\($0.expandedDescription)")

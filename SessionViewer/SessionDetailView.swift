@@ -415,6 +415,29 @@ struct RailwayTrackerSidebar: View {
             }
 
             Section {
+                if let selectedCandidate = store.selectedCandidate {
+                    let railway = selectedCandidate.railway
+                    let stationIDs = selectedCandidate.railwayDirection == railway.ascending ? railway.stations : railway.stations.reversed()
+                    
+                    if stationIDs.isEmpty {
+                        Text("No stations found")
+                            .foregroundStyle(.secondary)
+                            .italic()
+                    } else {
+                        ForEach(stationIDs, id: \.self) { stationID in
+                            stationRow(for: stationID, candidate: selectedCandidate)
+                        }
+                    }
+                } else {
+                    Text("No candidate selected")
+                        .foregroundStyle(.secondary)
+                        .italic()
+                }
+            } header: {
+                Text(verbatim: "Railway Stations")
+            }
+
+            Section {
                 if let result = store.selectedResult {
                     let scores = result.instantaneousRailwayCoordinateScores.sorted(by: { $0.value > $1.value })
                     if scores.isEmpty {
@@ -443,32 +466,29 @@ struct RailwayTrackerSidebar: View {
             } header: {
                 Text(verbatim: "Insta Railway Coord")
             }
-
-            Section {
-                if let selectedCandidate = store.selectedCandidate {
-                    let railway = selectedCandidate.railway
-                    let stationIDs = selectedCandidate.railwayDirection == railway.ascending ? railway.stations : railway.stations.reversed()
-                    
-                    if stationIDs.isEmpty {
-                        Text("No stations found")
-                            .foregroundStyle(.secondary)
-                            .italic()
-                    } else {
-                        ForEach(stationIDs, id: \.self) { stationID in
-                            Text(stationID.rawValue)
-                                .monospaced()
-                        }
-                    }
-                } else {
-                    Text("No candidate selected")
-                        .foregroundStyle(.secondary)
-                        .italic()
-                }
-            } header: {
-                Text(verbatim: "Railway Stations")
-            }
         }
         .listStyle(.plain)
+    }
+
+    @ViewBuilder func stationRow(for stationID: Station.ID, candidate: RailwayTrackerCandidate) -> some View {
+        HStack {
+            Text(stationID.rawValue.split(separator: ".").last?.description ?? stationID.rawValue)
+                .monospaced()
+            Spacer()
+            if let railwayDirection = candidate.railwayDirection {
+                let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: railwayDirection)
+                let lastPhase = store.selectedResult?.stationPhaseHistories[stationRailDirection]?.items.last?.phase
+                Text(lastPhase.map(String.init(describing:)) ?? "-")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .monospaced()
+            } else {
+                Text("-")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .monospaced()
+            }
+        }
     }
 
     @ViewBuilder func candidateCard(candidate: RailwayTrackerCandidate) -> some View {

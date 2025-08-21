@@ -471,16 +471,17 @@ actor RailwayTracker {
                     stationLocationHistories[stationRailDirection, default: .init()].approachingLocations.append(location)
                     hasPlacedLocationInRailway = true
                 } else if dot < 0 {
-                    // Always set `firstDepartureLocation` for any stations "passed" and "in progress" but not yet completed
                     if let stationLocationHistory = stationLocationHistories[stationRailDirection],
                        stationLocationHistory.firstDepartureLocation == nil,
-                       !stationLocationHistory.visitingLocations.isEmpty,
-                       !stationLocationHistory.approachingLocations.isEmpty
+                       !stationLocationHistory.visitingLocations.isEmpty || !stationLocationHistory.approachingLocations.isEmpty
                     {
+                        // Always set `firstDepartureLocation` for any stations "passed" or otherwise in progress but not yet completed
                         stationLocationHistories[stationRailDirection]?.firstDepartureLocation = location
                     } else if let bestCandidate = potentialDepartureStation, dist < bestCandidate.1 {
+                        // Mark a potential departure station if it's closer than the best candidate so far
                         potentialDepartureStation = (station.id, dist)
                     } else if potentialDepartureStation == nil {
+                        // Mark the potential departure station if none is set
                         potentialDepartureStation = (station.id, dist)
                     }
                 }

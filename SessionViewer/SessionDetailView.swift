@@ -418,14 +418,20 @@ struct RailwayTrackerSidebar: View {
                 if let selectedCandidate = store.selectedCandidate {
                     let railway = selectedCandidate.railway
                     let stationIDs = selectedCandidate.railwayDirection == railway.ascending ? railway.stations : railway.stations.reversed()
-                    
+
                     if stationIDs.isEmpty {
                         Text("No stations found")
                             .foregroundStyle(.secondary)
                             .italic()
                     } else {
                         ForEach(stationIDs, id: \.self) { stationID in
-                            stationRow(for: stationID, candidate: selectedCandidate)
+                            if let railwayDirection = selectedCandidate.railwayDirection {
+                                let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: railwayDirection)
+                                let hasHistory = store.selectedResult?.stationPhaseHistories[stationRailDirection]?.items.isEmpty == false
+                                if hasHistory {
+                                    stationRow(for: stationID, candidate: selectedCandidate)
+                                }
+                            }
                         }
                     }
                 } else {
@@ -473,7 +479,6 @@ struct RailwayTrackerSidebar: View {
     @ViewBuilder func stationRow(for stationID: Station.ID, candidate: RailwayTrackerCandidate) -> some View {
         HStack {
             Text(stationID.rawValue.split(separator: ".").last?.description ?? stationID.rawValue)
-                .monospaced()
             Spacer()
             if let railwayDirection = candidate.railwayDirection {
                 let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: railwayDirection)

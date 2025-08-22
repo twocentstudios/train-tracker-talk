@@ -53,6 +53,24 @@ import SwiftUI
 
     var isPlaying: Bool { playbackTask != nil }
 
+    var displayedProcessingProgress: Double? {
+        let current = resultsCache.count
+        let total = locations.count
+        
+        // Return nil when processing is complete
+        guard current < total else { return nil }
+        guard total > 0 else { return nil }
+        
+        let actualProgress = Double(current) / Double(total)
+        
+        // Quantize to 5% increments (0.05, 0.10, 0.15, etc.)
+        let quantizationStep = 0.05
+        let quantizedProgress = floor(actualProgress / quantizationStep) * quantizationStep
+        
+        // Ensure we show at least some progress initially
+        return max(quantizedProgress, 0.01)
+    }
+
     init(sessionsDatabase: any DatabaseReader, railwayDatabase: any DatabaseReader, sessionID: UUID) {
         self.sessionsDatabase = sessionsDatabase
         self.railwayDatabase = railwayDatabase
@@ -188,8 +206,8 @@ struct SessionDetailView: View {
         }
         .toolbar {
             ToolbarItemGroup {
-                if store.resultsCache.count < store.locations.count {
-                    ProgressView("Processing...", value: Double(store.resultsCache.count), total: Double(store.locations.count))
+                if let progress = store.displayedProcessingProgress {
+                    ProgressView("Processing...", value: progress, total: 1.0)
                         .foregroundStyle(.secondary)
                 }
                 Button {

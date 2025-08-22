@@ -508,7 +508,8 @@ actor RailwayTracker {
         stationLocationHistories: [StationRailDirection: StationDirectionalLocationHistory],
         stationPhaseHistories: inout [StationRailDirection: StationPhaseHistory]
     ) throws {
-        let stationVisitedDwellTimeConst: TimeInterval = 20
+        let stationStoppedDwellTimeConst: TimeInterval = 20
+        let stationVisitedDwellTimeConst: TimeInterval = 90
         for railwayRailDirection in railwayRailDirections {
             guard let railway = try Railway.find(railwayRailDirection.railwayID).fetchOne(db) else { throw NotFound() }
             let directionalStationIDs = railwayRailDirection.railDirection == railway.ascending ? railway.stations : railway.stations.reversed()
@@ -530,13 +531,25 @@ actor RailwayTracker {
                           stationLocationHistory.firstDepartureLocation == nil
                 {
                     proposedStationPhaseHistoryItem = .init(phase: .visiting, date: now)
-                } else if let firstVisitingLocation = stationLocationHistory.visitingLocations.first,
+                } else if !stationLocationHistory.visitingLocations.isEmpty,
                           let firstDepartureLocation = stationLocationHistory.firstDepartureLocation
                 {
+                    let earliestVisitedLocation = stationLocationHistory.visitingLocations.first
+                    let earliestStoppedLocation = stationLocationHistory.visitingLocations.first(where: { $0.speed ?? .greatestFiniteMagnitude <= 1.0 })
+                    let latestStoppedLocation = stationLocationHistory.visitingLocations.reversed().first(where: { $0.speed ?? .greatestFiniteMagnitude <= 1.0 })
                     if stationID == directionalStationIDs.last {
                         // Last station on a line will always be visited
                         proposedStationPhaseHistoryItem = .init(phase: .visited, date: now)
-                    } else if firstDepartureLocation.timestamp.timeIntervalSince(firstVisitingLocation.timestamp) > stationVisitedDwellTimeConst {
+                    } else if let earliestStoppedLocation,
+                              let latestStoppedLocation,
+                              latestStoppedLocation.timestamp.timeIntervalSince(earliestStoppedLocation.timestamp) > stationStoppedDwellTimeConst
+                    {
+                        // Stopped time is > N (for high GPS accuracy stations)
+                        proposedStationPhaseHistoryItem = .init(phase: .visited, date: now)
+                    } else if let earliestVisitedLocation,
+                              firstDepartureLocation.timestamp.timeIntervalSince(earliestVisitedLocation.timestamp) > stationVisitedDwellTimeConst
+                    {
+                        // Visited time is > M (for low GPS accuracy stations)
                         proposedStationPhaseHistoryItem = .init(phase: .visited, date: now)
                     } else {
                         proposedStationPhaseHistoryItem = .init(phase: .passed, date: now)

@@ -387,12 +387,20 @@ struct LocationMapView: View {
 
     private func stationLocationColor(for location: Location) -> Color {
         guard let stationHistory = store.selectedStationLocationHistory else { return .blue }
+        
+        let isVisiting = stationHistory.visitingLocations.contains(where: { $0.id == location.id })
+        let isApproaching = stationHistory.approachingLocations.contains(where: { $0.id == location.id })
+        let isDeparture = stationHistory.firstDepartureLocation?.id == location.id
 
-        if stationHistory.visitingLocations.contains(where: { $0.id == location.id }) {
+        if isDeparture && isVisiting {
+            return .purple
+        } else if isDeparture && isApproaching {
+            return .yellow
+        } else if isVisiting {
             return .green
-        } else if stationHistory.approachingLocations.contains(where: { $0.id == location.id }) {
+        } else if isApproaching {
             return .orange
-        } else if stationHistory.firstDepartureLocation?.id == location.id {
+        } else if isDeparture {
             return .red
         } else {
             return .blue

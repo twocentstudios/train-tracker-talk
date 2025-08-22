@@ -73,6 +73,7 @@ struct RailwayTrackerCandidate: Equatable {
     var focusStationPhase: FocusStationPhase?
     var laterStation: Station?
     var laterLaterStation: Station?
+    var stations: [Station]
 }
 
 struct RailwayTrackerResult {
@@ -213,6 +214,17 @@ actor RailwayTracker {
                         laterLaterStation = s
                     }
 
+                    let directionalStations = try Station
+                        .where { $0.id.in(directionalStationIDs) }
+                        .order(by: {
+                            if railwayDirection == railwayRecord.ascending {
+                                $0.order.asc()
+                            } else {
+                                $0.order.desc()
+                            }
+                        })
+                        .fetchAll(db)
+
                     let candidate = RailwayTrackerCandidate(
                         railway: railwayRecord,
                         railwayDestinationStation: railwayDestinationStation,
@@ -220,7 +232,8 @@ actor RailwayTracker {
                         focusStation: focusStationRecord,
                         focusStationPhase: focusStation.phase,
                         laterStation: laterStation,
-                        laterLaterStation: laterLaterStation
+                        laterLaterStation: laterLaterStation,
+                        stations: directionalStations
                     )
                     candidates.append(candidate)
                 }

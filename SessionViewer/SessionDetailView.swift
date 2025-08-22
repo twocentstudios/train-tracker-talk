@@ -11,6 +11,7 @@ import SwiftUI
     var error: Error?
     var selectedLocationID: Location.ID?
     var userSelectedRailway: Railway.ID?
+    var selectedStationRailDirection: StationRailDirection?
     var playbackSpeedMultiplier: Double = 0.1
     var cameraPosition: MapCameraPosition = .automatic
     var isShowingDetailedPolyline: Bool = false
@@ -38,6 +39,11 @@ import SwiftUI
         } else {
             return nil
         }
+    }
+
+    var selectedStationLocationHistory: StationDirectionalLocationHistory? {
+        guard let selectedStationRailDirection else { return nil }
+        return selectedResult?.stationLocationHistories[selectedStationRailDirection]
     }
 
     var currentLocationIndex: Int {
@@ -224,6 +230,18 @@ struct LocationMapView: View {
     @Bindable var store: SessionDetailStore
 
     private var displayedLocations: [Location] {
+        // If a station is selected, show station-specific locations
+        if let stationHistory = store.selectedStationLocationHistory {
+            var stationLocations: [Location] = []
+            stationLocations.append(contentsOf: stationHistory.visitingLocations)
+            stationLocations.append(contentsOf: stationHistory.approachingLocations)
+            if let firstDeparture = stationHistory.firstDepartureLocation {
+                stationLocations.append(firstDeparture)
+            }
+            return stationLocations
+        }
+
+        // Otherwise use the normal logic
         let playingTrailLength = store.playingTrailLength
         let locations = store.locations
         let isPlaying = store.isPlaying
@@ -247,8 +265,21 @@ struct LocationMapView: View {
         Map(position: $store.cameraPosition) {
             let locations = displayedLocations
             let playingTrailLength = store.playingTrailLength
+            let isStationMode = store.selectedStationLocationHistory != nil
 
-            if locations.count <= playingTrailLength || store.isShowingDetailedPolyline {
+            if isStationMode {
+                // Station mode: show colored circles for station-specific locations
+                ForEach(locations) { location in
+                    Annotation("", coordinate: location.coordinate) {
+                        Circle()
+                            .fill(stationLocationColor(for: location))
+                            .frame(width: 9, height: 9)
+                            .onTapGesture {
+                                store.selectedLocationID = location.id
+                            }
+                    }
+                }
+            } else if locations.count <= playingTrailLength || store.isShowingDetailedPolyline {
                 ForEach(locations) { location in
                     Annotation("", coordinate: location.coordinate) {
                         Image(systemName: (location.horizontalAccuracy ?? 0) > 500 ? "xmark" : (location.course ?? -1) >= 0 ? "arrow.up" : "circle")
@@ -274,6 +305,21 @@ struct LocationMapView: View {
         }
         .mapStyle(.standard(elevation: .automatic, emphasis: .muted, pointsOfInterest: .including([.publicTransport]), showsTraffic: false))
         .onChange(of: store.selectedLocationID) { _, newSelectedLocationID in
+            // Only clear station selection if it doesn't exist in the new location's results
+            if let selectedStation = store.selectedStationRailDirection,
+               let newResult = store.selectedResult
+            {
+                // Check if the selected station still exists in the new result's stationLocationHistories
+                if newResult.stationLocationHistories[selectedStation] == nil {
+                    // Station doesn't exist in new results, clear selection
+                    store.selectedStationRailDirection = nil
+                }
+                // Otherwise keep the selection
+            } else if store.selectedStationRailDirection != nil {
+                // No result available, clear selection
+                store.selectedStationRailDirection = nil
+            }
+
             if let newSelectedLocationID, !store.isPlaying {
                 guard let location = store.locations.first(where: { $0.id == newSelectedLocationID }) else { return }
                 let coordinate = location.coordinate
@@ -293,6 +339,20 @@ struct LocationMapView: View {
         guard speed != -1 else { return .blue }
         let t = min(max((speed - 1) / 20, 0), 1)
         return Color(red: 1 - t, green: t, blue: 0)
+    }
+
+    private func stationLocationColor(for location: Location) -> Color {
+        guard let stationHistory = store.selectedStationLocationHistory else { return .blue }
+
+        if stationHistory.visitingLocations.contains(where: { $0.id == location.id }) {
+            return .green
+        } else if stationHistory.approachingLocations.contains(where: { $0.id == location.id }) {
+            return .orange
+        } else if stationHistory.firstDepartureLocation?.id == location.id {
+            return .red
+        } else {
+            return .blue
+        }
     }
 }
 
@@ -477,34 +537,56 @@ struct RailwayTrackerSidebar: View {
     }
 
     @ViewBuilder func stationRow(for stationID: Station.ID, candidate: RailwayTrackerCandidate) -> some View {
-        HStack {
-            Text(stationID.rawValue.split(separator: ".").last?.description ?? stationID.rawValue)
-            Spacer()
-            if let railwayDirection = candidate.railwayDirection {
-                let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: railwayDirection)
-                let lastPhase = store.selectedResult?.stationPhaseHistories[stationRailDirection]?.items.last?.phase
-                Menu {
-                    if let items = store.selectedResult?.stationPhaseHistories[stationRailDirection]?.items {
-                        if items.isEmpty {
-                            Text("No phase history")
-                        } else {
-                            ForEach(Array(items.enumerated()), id: \.offset) { index, item in
-                                Text("\(String(describing: item.phase)) - \(item.date.formatted(.dateTime.hour().minute().second()))")
-                            }
-                        }
-                    } else {
-                        Text("No phase history")
-                    }
-                } label: {
-                    Text(lastPhase.map(String.init(describing:)) ?? "-")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .monospaced()
+        if let railwayDirection = candidate.railwayDirection {
+            let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: railwayDirection)
+            let isSelected = store.selectedStationRailDirection == stationRailDirection
+
+            Button {
+                if isSelected {
+                    store.selectedStationRailDirection = nil
+                } else {
+                    store.selectedStationRailDirection = stationRailDirection
                 }
-                .menuStyle(.borderlessButton)
-                .menuIndicator(.hidden)
-                .fixedSize()
-            } else {
+            } label: {
+                HStack {
+                    Text(stationID.rawValue.split(separator: ".").last?.description ?? stationID.rawValue)
+                        .foregroundStyle(isSelected ? .primary : .primary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
+
+                    let lastPhase = store.selectedResult?.stationPhaseHistories[stationRailDirection]?.items.last?.phase
+                    Menu {
+                        if let items = store.selectedResult?.stationPhaseHistories[stationRailDirection]?.items {
+                            if items.isEmpty {
+                                Text("No phase history")
+                            } else {
+                                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                                    Text("\(String(describing: item.phase)) - \(item.date.formatted(.dateTime.hour().minute().second()))")
+                                }
+                            }
+                        } else {
+                            Text("No phase history")
+                        }
+                    } label: {
+                        Text(lastPhase.map(String.init(describing:)) ?? "-")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .monospaced()
+                    }
+                    .menuStyle(.borderlessButton)
+                    .menuIndicator(.hidden)
+                    .fixedSize()
+                }
+                .padding(.vertical, 4)
+                .padding(.horizontal, 8)
+                .background(isSelected ? Color.accentColor.opacity(0.2) : Color.clear)
+                .cornerRadius(6)
+            }
+            .buttonStyle(.plain)
+        } else {
+            HStack {
+                Text(stationID.rawValue.split(separator: ".").last?.description ?? stationID.rawValue)
+                Spacer()
                 Text("-")
                     .font(.caption)
                     .foregroundStyle(.secondary)

@@ -512,7 +512,7 @@ actor RailwayTracker {
         stationPhaseHistories: inout [StationRailDirection: StationPhaseHistory]
     ) throws {
         let stationStoppedDwellTimeConst: TimeInterval = 20
-        let stationVisitedDwellTimeConst: TimeInterval = 90
+        let stationVisitedDwellTimeConst: TimeInterval = 70
         for railwayRailDirection in railwayRailDirections {
             guard let railway = try Railway.find(railwayRailDirection.railwayID).fetchOne(db) else { throw NotFound() }
             let directionalStationIDs = railwayRailDirection.railDirection == railway.ascending ? railway.stations : railway.stations.reversed()

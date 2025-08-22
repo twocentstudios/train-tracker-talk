@@ -81,6 +81,7 @@ struct RailwayTrackerResult {
     var instantaneousRailwayCoordinates: [Railway.ID: Coordinate]
     var instantaneousRailwayAscendingScores: [Railway.ID: Double]
     var stationPhaseHistories: [StationRailDirection: StationPhaseHistory]
+    var stationLocationHistories: [StationRailDirection: StationDirectionalLocationHistory]
     var railwayScores: [Railway.ID: Double]
     var railwayDirections: [Railway.ID: RailDirection]
     var candidates: [RailwayTrackerCandidate]
@@ -231,6 +232,7 @@ actor RailwayTracker {
                 instantaneousRailwayCoordinates: instantaneousRailwayCoordinates,
                 instantaneousRailwayAscendingScores: instantaneousRailwayAscendingScores,
                 stationPhaseHistories: stationPhaseHistories,
+                stationLocationHistories: stationLocationHistories,
                 railwayScores: railwayScores,
                 railwayDirections: railwayDirections,
                 candidates: candidates
@@ -244,6 +246,7 @@ actor RailwayTracker {
                 instantaneousRailwayCoordinates: [:],
                 instantaneousRailwayAscendingScores: [:],
                 stationPhaseHistories: stationPhaseHistories,
+                stationLocationHistories: stationLocationHistories,
                 railwayScores: railwayScores,
                 railwayDirections: railwayDirections,
                 candidates: []

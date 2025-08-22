@@ -340,6 +340,19 @@ struct LocationMapView: View {
                     Marker("End", coordinate: endLocation.coordinate)
                 }
             }
+
+            // Show selected station marker when a station is selected in the sidebar
+            if let selectedStationRailDirection = store.selectedStationRailDirection,
+               let selectedCandidate = store.selectedCandidate,
+               let selectedStation = selectedCandidate.stations.first(where: { $0.id == selectedStationRailDirection.stationID })
+            {
+                Annotation("", coordinate: selectedStation.coordinate) {
+                    Circle()
+                        .fill(.white)
+                        .stroke(.black, lineWidth: 2)
+                        .frame(width: 16, height: 16)
+                }
+            }
         }
         .mapStyle(.standard(elevation: .automatic, emphasis: .muted, pointsOfInterest: .including([.publicTransport]), showsTraffic: false))
         .onChange(of: store.selectedLocationID) { _, newSelectedLocationID in

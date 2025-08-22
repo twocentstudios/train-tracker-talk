@@ -358,7 +358,7 @@ struct LocationMapView: View {
                 store.selectedStationRailDirection = nil
             }
 
-            if let newSelectedLocationID, !store.isPlaying {
+            if newSelectedLocationID != nil, !store.isPlaying {
                 // Use smart bounds calculation
                 if let region = appropriateMapRegion {
                     store.cameraPosition = MapCameraPosition.region(region)

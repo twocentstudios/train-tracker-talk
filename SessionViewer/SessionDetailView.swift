@@ -454,6 +454,12 @@ struct LocationListView: View {
                     let index = locations.firstIndex(of: location)?.formatted(.number) ?? "-"
                     Text(index)
                 }
+                TableColumn("ID") { location in
+                    let idString = location.id.uuidString
+                    let suffix = String(idString.suffix(4))
+                    Text(suffix)
+                        .font(.system(.caption, design: .monospaced))
+                }
                 TableColumn("Time") { location in
                     Text(location.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
                 }

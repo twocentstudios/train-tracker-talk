@@ -260,6 +260,26 @@ struct LocationMapView: View {
             return locations
         }
     }
+    
+    private var appropriateMapRegion: MKCoordinateRegion? {
+        let isStationMode = store.selectedStationLocationHistory != nil
+        let isPlaying = store.isPlaying
+        let hasSelectedLocation = store.selectedLocationID != nil
+        
+        if isStationMode {
+            // Station selected: fit all station locations
+            return regionThatFits(displayedLocations, padding: 0.3)
+        } else if hasSelectedLocation && !isPlaying {
+            // Single location selected: center on it
+            return regionThatFits(displayedLocations, padding: 0.0)
+        } else if isPlaying {
+            // Playing: fit current trail segment
+            return regionThatFits(displayedLocations, padding: 0.1)
+        } else {
+            // No specific selection: fit all locations or return nil for automatic
+            return displayedLocations.count > 100 ? nil : regionThatFits(displayedLocations, padding: 0.1)
+        }
+    }
 
     var body: some View {
         Map(position: $store.cameraPosition) {
@@ -321,14 +341,20 @@ struct LocationMapView: View {
             }
 
             if let newSelectedLocationID, !store.isPlaying {
-                guard let location = store.locations.first(where: { $0.id == newSelectedLocationID }) else { return }
-                let coordinate = location.coordinate
-                store.cameraPosition = MapCameraPosition.region(
-                    MKCoordinateRegion(
-                        center: coordinate,
-                        span: .init(latitudeDelta: 0.008, longitudeDelta: 0.008)
-                    )
-                )
+                // Use smart bounds calculation
+                if let region = appropriateMapRegion {
+                    store.cameraPosition = MapCameraPosition.region(region)
+                } else {
+                    store.cameraPosition = .automatic
+                }
+            } else {
+                store.cameraPosition = .automatic
+            }
+        }
+        .onChange(of: store.selectedStationRailDirection) { _, newStationSelection in
+            // Update camera when station selection changes
+            if let region = appropriateMapRegion {
+                store.cameraPosition = MapCameraPosition.region(region)
             } else {
                 store.cameraPosition = .automatic
             }
@@ -353,6 +379,41 @@ struct LocationMapView: View {
         } else {
             return .blue
         }
+    }
+    
+    private func regionThatFits(_ locations: [Location], padding: Double = 0.2) -> MKCoordinateRegion? {
+        guard !locations.isEmpty else { return nil }
+        
+        if locations.count == 1 {
+            // Single location - return a small region centered on it
+            let location = locations[0]
+            return MKCoordinateRegion(
+                center: location.coordinate,
+                span: MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
+            )
+        }
+        
+        // Multiple locations - calculate bounding box
+        let coordinates = locations.map(\.coordinate)
+        let minLat = coordinates.map(\.latitude).min()!
+        let maxLat = coordinates.map(\.latitude).max()!
+        let minLon = coordinates.map(\.longitude).min()!
+        let maxLon = coordinates.map(\.longitude).max()!
+        
+        let latDelta = maxLat - minLat
+        let lonDelta = maxLon - minLon
+        
+        // Add padding (minimum span to avoid overly tight bounds)
+        let paddedLatDelta = max(latDelta * (1 + padding), 0.002)
+        let paddedLonDelta = max(lonDelta * (1 + padding), 0.002)
+        
+        let centerLat = (minLat + maxLat) / 2
+        let centerLon = (minLon + maxLon) / 2
+        
+        return MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon),
+            span: MKCoordinateSpan(latitudeDelta: paddedLatDelta, longitudeDelta: paddedLonDelta)
+        )
     }
 }
 

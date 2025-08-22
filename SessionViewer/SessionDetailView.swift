@@ -56,19 +56,12 @@ import SwiftUI
     var displayedProcessingProgress: Double? {
         let current = resultsCache.count
         let total = locations.count
-        
+
         // Return nil when processing is complete
         guard current < total else { return nil }
         guard total > 0 else { return nil }
-        
-        let actualProgress = Double(current) / Double(total)
-        
-        // Quantize to 5% increments (0.05, 0.10, 0.15, etc.)
-        let quantizationStep = 0.05
-        let quantizedProgress = floor(actualProgress / quantizationStep) * quantizationStep
-        
-        // Ensure we show at least some progress initially
-        return max(quantizedProgress, 0.01)
+
+        return Double(current) / Double(total)
     }
 
     init(sessionsDatabase: any DatabaseReader, railwayDatabase: any DatabaseReader, sessionID: UUID) {
@@ -111,9 +104,27 @@ import SwiftUI
                 }
             }
 
+            // Create local cache for accumulating results
+            var localResultsCache = resultsCache // Start with existing cache if any
+
+            // Track batch size
+            var batchCount = 0
+            let batchSize = 50
+
             for await result in serialProcessor.results {
-                resultsCache[result.location.id] = result
+                // Update local cache (not observed)
+                localResultsCache[result.location.id] = result
+                batchCount += 1
+
+                // Batch update the observed property every 50 results
+                if batchCount >= batchSize {
+                    resultsCache = localResultsCache
+                    batchCount = 0
+                }
             }
+
+            // Final update to ensure all results are in the observed cache
+            resultsCache = localResultsCache
         } catch {
             self.error = error
             isLoading = false
@@ -278,16 +289,16 @@ struct LocationMapView: View {
             return locations
         }
     }
-    
+
     private var appropriateMapRegion: MKCoordinateRegion? {
         let isStationMode = store.selectedStationLocationHistory != nil
         let isPlaying = store.isPlaying
         let hasSelectedLocation = store.selectedLocationID != nil
-        
+
         if isStationMode {
             // Station selected: fit all station locations
             return regionThatFits(displayedLocations, padding: 0.3)
-        } else if hasSelectedLocation && !isPlaying {
+        } else if hasSelectedLocation, !isPlaying {
             // Single location selected: center on it
             return regionThatFits(displayedLocations, padding: 0.0)
         } else if isPlaying {
@@ -400,14 +411,14 @@ struct LocationMapView: View {
 
     private func stationLocationColor(for location: Location) -> Color {
         guard let stationHistory = store.selectedStationLocationHistory else { return .blue }
-        
+
         let isVisiting = stationHistory.visitingLocations.contains(where: { $0.id == location.id })
         let isApproaching = stationHistory.approachingLocations.contains(where: { $0.id == location.id })
         let isDeparture = stationHistory.firstDepartureLocation?.id == location.id
 
-        if isDeparture && isVisiting {
+        if isDeparture, isVisiting {
             return .purple
-        } else if isDeparture && isApproaching {
+        } else if isDeparture, isApproaching {
             return .yellow
         } else if isVisiting {
             return .green
@@ -419,10 +430,10 @@ struct LocationMapView: View {
             return .blue
         }
     }
-    
+
     private func regionThatFits(_ locations: [Location], padding: Double = 0.2) -> MKCoordinateRegion? {
         guard !locations.isEmpty else { return nil }
-        
+
         if locations.count == 1 {
             // Single location - return a small region centered on it
             let location = locations[0]
@@ -431,24 +442,24 @@ struct LocationMapView: View {
                 span: MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
             )
         }
-        
+
         // Multiple locations - calculate bounding box
         let coordinates = locations.map(\.coordinate)
         let minLat = coordinates.map(\.latitude).min()!
         let maxLat = coordinates.map(\.latitude).max()!
         let minLon = coordinates.map(\.longitude).min()!
         let maxLon = coordinates.map(\.longitude).max()!
-        
+
         let latDelta = maxLat - minLat
         let lonDelta = maxLon - minLon
-        
+
         // Add padding (minimum span to avoid overly tight bounds)
         let paddedLatDelta = max(latDelta * (1 + padding), 0.002)
         let paddedLonDelta = max(lonDelta * (1 + padding), 0.002)
-        
+
         let centerLat = (minLat + maxLat) / 2
         let centerLon = (minLon + maxLon) / 2
-        
+
         return MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon),
             span: MKCoordinateSpan(latitudeDelta: paddedLatDelta, longitudeDelta: paddedLonDelta)

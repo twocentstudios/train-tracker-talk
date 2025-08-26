@@ -102,6 +102,7 @@ import SwiftUI
                 for location in locations {
                     serialProcessor.submit(location)
                 }
+                serialProcessor.finish()
             }
 
             // Create local cache for accumulating results
@@ -110,14 +111,17 @@ import SwiftUI
             // Track batch size
             var batchCount = 0
             let batchSize = 50
+            var processedCount = 0
+            let totalLocations = locations.count
 
             for await result in serialProcessor.results {
                 // Update local cache (not observed)
                 localResultsCache[result.location.id] = result
                 batchCount += 1
+                processedCount += 1
 
-                // Batch update the observed property every 50 results
-                if batchCount >= batchSize {
+                // Batch update the observed property every 50 results OR when we've processed all locations
+                if batchCount >= batchSize || processedCount == totalLocations {
                     resultsCache = localResultsCache
                     batchCount = 0
                 }

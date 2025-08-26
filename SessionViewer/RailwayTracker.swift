@@ -195,9 +195,20 @@ actor RailwayTracker {
                     let penaltyPerOrphanedLocationConst: Double = -0.01
                     let orphanedPenalty = Double(orphanedCount) * penaltyPerOrphanedLocationConst
 
-                    // TODO: calculate passed station penalty
+                    let passedStationPenalty: Double = try {
+                        guard let railway = try Railway.find(topCandidateRailwayRailDirection.railwayID).fetchOne(db) else { return 0.0 }
+                        let passedStationCount = railway.stations
+                            .compactMap { stationID in
+                                let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: topCandidateRailwayRailDirection.railDirection)
+                                return stationPhaseHistories[stationRailDirection]?.items.last
+                            }
+                            .filter { (phaseHistoryItem: StationPhaseHistoryItem) in phaseHistoryItem.phase == .passed }
+                            .count
+                        let penaltyPerPassedStationConst: Double = -0.01
+                        return Double(passedStationCount) * penaltyPerPassedStationConst
+                    }()
 
-                    railwayRailDirectionScores[topCandidateRailwayRailDirection] = proximityScore + orphanedPenalty
+                    railwayRailDirectionScores[topCandidateRailwayRailDirection] = proximityScore + orphanedPenalty + passedStationPenalty
                 }
                 let topCandidateRailwayRailDirections = railwayRailDirectionScores.sorted(using: KeyPathComparator(\.value, order: .reverse)).prefix(totalTopCandidateRailways).map(\.key)
 

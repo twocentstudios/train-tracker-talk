@@ -554,8 +554,10 @@ struct RailwayTrackerSidebar: View {
                                             Text(candidate.railway.title.en)
                                                 .bold(isSelected)
                                                 .font(.body.width(.compressed))
-                                            if let score = store.selectedResult?.railwayScores[candidate.railway.id],
-                                               let selectedScore = store.selectedResult?.railwayScores[selectedCandidate.railway.id]
+                                            if let railwayDirection = candidate.railwayDirection,
+                                               let selectedRailwayDirection = selectedCandidate.railwayDirection,
+                                               let score = store.selectedResult?.railwayScores[RailwayRailDirection(railwayID: candidate.railway.id, railDirection: railwayDirection)],
+                                               let selectedScore = store.selectedResult?.railwayScores[RailwayRailDirection(railwayID: selectedCandidate.railway.id, railDirection: selectedRailwayDirection)]
                                             {
                                                 let scoreDiff = score - selectedScore
                                                 let displayScore = !isSelected ? scoreDiff : score

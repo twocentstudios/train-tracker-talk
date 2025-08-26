@@ -83,7 +83,7 @@ struct RailwayTrackerResult {
     var instantaneousRailwayAscendingScores: [Railway.ID: Double]
     var stationPhaseHistories: [StationRailDirection: StationPhaseHistory]
     var stationLocationHistories: [StationRailDirection: StationDirectionalLocationHistory]
-    var railwayScores: [Railway.ID: Double]
+    var railwayScores: [RailwayRailDirection: Double]
     var railwayDirections: [Railway.ID: RailDirection]
     var candidates: [RailwayTrackerCandidate]
 }
@@ -97,7 +97,7 @@ struct FocusStation {
 actor RailwayTracker {
     private let railwayDatabase: any DatabaseReader
 
-    var railwayScores: [Railway.ID: Double] = [:]
+    var railwayProximityScores: [Railway.ID: Double] = [:]
     var railwayAscendingScores: [Railway.ID: Double] = [:]
     var railwayDirections: [Railway.ID: RailDirection] = [:]
 
@@ -116,6 +116,7 @@ actor RailwayTracker {
 
     func process(_ input: Location) -> RailwayTrackerResult {
         do {
+            var railwayRailDirectionScores = [RailwayRailDirection: Double]()
             var instantaneousRailwayCoordinateScores = [Railway.ID: Double]()
             var instantaneousRailwayCoordinates = [Railway.ID: Coordinate]()
             var instantaneousRailwayAscendingScores = [Railway.ID: Double]()
@@ -133,7 +134,7 @@ actor RailwayTracker {
                 // Add scores to the running total, where slow speeds have low weight
                 for (railwayID, score) in instantaneousRailwayCoordinateScores {
                     let speedScaledScore = score * speedNorm
-                    railwayScores[railwayID, default: 0] += speedScaledScore
+                    railwayProximityScores[railwayID, default: 0] += speedScaledScore
                 }
 
                 // Add ascending scores to the running total (clipped to `abs(10)`)
@@ -157,9 +158,9 @@ actor RailwayTracker {
                 }
 
                 let totalTopCandidateRailways = 8
-                let topCandidateRailwayIDs = railwayScores.sorted(using: KeyPathComparator(\.value, order: .reverse)).prefix(totalTopCandidateRailways).map(\.key)
+                let topProximityRailwayIDs = railwayProximityScores.sorted(using: KeyPathComparator(\.value, order: .reverse)).prefix(totalTopCandidateRailways).map(\.key)
 
-                let topCandidateRailwayRailDirections: [RailwayRailDirection] = topCandidateRailwayIDs.compactMap { railwayID in
+                let topProximityRailwayRailDirections: [RailwayRailDirection] = topProximityRailwayIDs.compactMap { railwayID in
                     guard let railwayDirection = railwayDirections[railwayID] else { return nil }
                     return RailwayRailDirection(railwayID: railwayID, railDirection: railwayDirection)
                 }
@@ -167,24 +168,38 @@ actor RailwayTracker {
                 try Self.addLocationToStationLocationHistories(
                     db: db,
                     location: input,
-                    railwayRailDirections: topCandidateRailwayRailDirections,
-                    stationLocationHistories: &stationLocationHistories
+                    railwayRailDirections: topProximityRailwayRailDirections,
+                    stationLocationHistories: &stationLocationHistories,
+                    orphanedRailwayRailDirectionLocations: &orphanedRailwayRailDirectionLocations
                 )
 
                 try Self.updateStationPhaseHistory(
                     db: db,
                     now: input.timestamp,
-                    railwayRailDirections: topCandidateRailwayRailDirections,
+                    railwayRailDirections: topProximityRailwayRailDirections,
                     stationLocationHistories: stationLocationHistories,
                     stationPhaseHistories: &stationPhaseHistories
                 )
 
                 try Self.updateFocusStation(
                     db: db,
-                    railwayRailDirections: topCandidateRailwayRailDirections,
+                    railwayRailDirections: topProximityRailwayRailDirections,
                     stationPhaseHistories: stationPhaseHistories,
                     railwayRailDirectionFocusStations: &railwayRailDirectionFocusStations
                 )
+
+                // Recalculate top railways including penalty scores
+                for topCandidateRailwayRailDirection in topProximityRailwayRailDirections {
+                    guard let proximityScore = railwayProximityScores[topCandidateRailwayRailDirection.railwayID] else { continue }
+                    let orphanedCount = orphanedRailwayRailDirectionLocations[topCandidateRailwayRailDirection]?.count ?? 0
+                    let penaltyPerOrphanedLocationConst: Double = -0.01
+                    let orphanedPenalty = Double(orphanedCount) * penaltyPerOrphanedLocationConst
+
+                    // TODO: calculate passed station penalty
+
+                    railwayRailDirectionScores[topCandidateRailwayRailDirection] = proximityScore + orphanedPenalty
+                }
+                let topCandidateRailwayRailDirections = railwayRailDirectionScores.sorted(using: KeyPathComparator(\.value, order: .reverse)).prefix(totalTopCandidateRailways).map(\.key)
 
                 for railwayRailDirection in topCandidateRailwayRailDirections {
                     guard let railwayRecord = try Railway.find(railwayRailDirection.railwayID).fetchOne(db) else { continue }
@@ -246,7 +261,7 @@ actor RailwayTracker {
                 instantaneousRailwayAscendingScores: instantaneousRailwayAscendingScores,
                 stationPhaseHistories: stationPhaseHistories,
                 stationLocationHistories: stationLocationHistories,
-                railwayScores: railwayScores,
+                railwayScores: railwayRailDirectionScores,
                 railwayDirections: railwayDirections,
                 candidates: candidates
             )
@@ -260,7 +275,7 @@ actor RailwayTracker {
                 instantaneousRailwayAscendingScores: [:],
                 stationPhaseHistories: stationPhaseHistories,
                 stationLocationHistories: stationLocationHistories,
-                railwayScores: railwayScores,
+                railwayScores: [:],
                 railwayDirections: railwayDirections,
                 candidates: []
             )
@@ -268,9 +283,10 @@ actor RailwayTracker {
     }
 
     func reset() {
-        railwayScores = [:]
+        railwayProximityScores = [:]
         railwayAscendingScores = [:]
         railwayDirections = [:]
+        orphanedRailwayRailDirectionLocations = [:]
     }
 
     @Selection
@@ -431,7 +447,8 @@ actor RailwayTracker {
         db: Database,
         location: Location,
         railwayRailDirections: [RailwayRailDirection],
-        stationLocationHistories: inout [StationRailDirection: StationDirectionalLocationHistory]
+        stationLocationHistories: inout [StationRailDirection: StationDirectionalLocationHistory],
+        orphanedRailwayRailDirectionLocations: inout [RailwayRailDirection: [Location]]
     ) throws {
         guard let courseUnitVector = location.courseUnitVector else {
             // TODO: how to handle locations with no course?
@@ -503,8 +520,13 @@ actor RailwayTracker {
                 }
             }
 
-            // TODO: add orphanedRailwayRailDirectionLocations: [RailwayRailDirection: [Location]] class-level store to add locations that are not hasPlacedLocationInRailway
-            // TODO: use these during railway score calculation - railway score should decrease if speed < 1 locations exist between stations (meaning an express train on the same line as a local will be lowered when riding the local)
+            // Orphaned locations contribute to penalty (stopping between stations is loose indicator of incorrect railway)
+            let stoppedSpeedConst = 1.0
+            if !hasPlacedLocationInRailway,
+               (location.speed ?? .greatestFiniteMagnitude) < stoppedSpeedConst
+            {
+                orphanedRailwayRailDirectionLocations[railwayRailDirection, default: []].append(location)
+            }
 
             // In the case the railway has no stations with departures, mark the departure station
             let isStationDeparturesHistoriesEmpty = directionalStations
@@ -526,6 +548,7 @@ actor RailwayTracker {
     ) throws {
         let stationStoppedDwellTimeConst: TimeInterval = 20
         let stationVisitedDwellTimeConst: TimeInterval = 70
+        let stoppedSpeedConst = 1.0
         for railwayRailDirection in railwayRailDirections {
             guard let railway = try Railway.find(railwayRailDirection.railwayID).fetchOne(db) else { throw NotFound() }
             let directionalStationIDs = railwayRailDirection.railDirection == railway.ascending ? railway.stations : railway.stations.reversed()
@@ -551,8 +574,8 @@ actor RailwayTracker {
                           let firstDepartureLocation = stationLocationHistory.firstDepartureLocation
                 {
                     let earliestVisitedLocation = stationLocationHistory.visitingLocations.first
-                    let earliestStoppedLocation = stationLocationHistory.visitingLocations.first(where: { $0.speed ?? .greatestFiniteMagnitude <= 1.0 })
-                    let latestStoppedLocation = stationLocationHistory.visitingLocations.reversed().first(where: { $0.speed ?? .greatestFiniteMagnitude <= 1.0 })
+                    let earliestStoppedLocation = stationLocationHistory.visitingLocations.first(where: { $0.speed ?? .greatestFiniteMagnitude <= stoppedSpeedConst })
+                    let latestStoppedLocation = stationLocationHistory.visitingLocations.reversed().first(where: { $0.speed ?? .greatestFiniteMagnitude <= stoppedSpeedConst })
                     if stationID == directionalStationIDs.last {
                         // Last station on a line will always be visited
                         proposedStationPhaseHistoryItem = .init(phase: .visited, date: now)

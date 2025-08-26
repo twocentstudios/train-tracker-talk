@@ -73,13 +73,13 @@ struct SessionsListView: View {
                                 .foregroundStyle(.secondary)
 
                             Spacer()
-                            
+
                             Text(String(session.id.uuidString.suffix(4)))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .monospaced()
                         }
-                        
+
                         if let notes = session.notes, !notes.isEmpty {
                             Text(notes)
                                 .font(.caption)

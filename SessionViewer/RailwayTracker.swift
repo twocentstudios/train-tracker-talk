@@ -202,8 +202,8 @@ actor RailwayTracker {
                                 let stationRailDirection = StationRailDirection(stationID: stationID, railDirection: topCandidateRailwayRailDirection.railDirection)
                                 return stationPhaseHistories[stationRailDirection]?.items.last
                             }
-                            .filter { (phaseHistoryItem: StationPhaseHistoryItem) in phaseHistoryItem.phase == .passed }
-                            .count
+                            .count(where: { (phaseHistoryItem: StationPhaseHistoryItem) in phaseHistoryItem.phase == .passed })
+
                         let penaltyPerPassedStationConst: Double = -0.01
                         return Double(passedStationCount) * penaltyPerPassedStationConst
                     }()

@@ -21,6 +21,20 @@
 
 ---
 
+This talk is about trains but...
+
+^ most of us don't write train apps.
+
+---
+
+You'll learn:
+
+- Why you should build prototypes to understand the behavior system frameworks
+- How to break down a big problem
+- Some random API trivia you can apply to your current project
+
+---
+
 # As a train passenger...
 
 - I know how to get to my destination
@@ -38,12 +52,6 @@
 - I can't see out the window
 
 ^ TODO: images
-
----
-
-## I don't need a full navigation app
-
-^ It's annoying to open an app, choose my destination, choose my route
 
 ---
 
@@ -92,39 +100,12 @@
 
 ---
 
-# [fit] The app can't run 24/7
-
----
-
-# App Wake Up Strategies
-
-- 24/7 Location Monitoring
-- Geofencing
-- Significant-change Location Service
-- Location Push Notification Extension
-
----
-
-# Journey Start Strategies
-
- | Battery Life | User Privacy | Accuracy | Simplicity
----|:---:|:---:|:---:|:---:
-Location Monitoring|❌|❌|✅|✅
-Significant-change|✅|✅|⚠️|✅
-Geofencing|✅|✅|❌|⚠️
-Location Push|❌|❌|✅|❌
-
-^ [Location Push Service Extension](https://developer.apple.com/documentation/corelocation/creating-a-location-push-service-extension)
-^ [Geofencing](https://developer.apple.com/documentation/corelocation/monitoring-the-user-s-proximity-to-geographic-regions)
-
----
-
 ## Significant-change location service
 
 - Uses cellular & Wi-Fi radios, not GPS
 - Automatically relaunches app in background
 - Device moves 500 meters
-- One event every 5 minutes at most
+- Time between events is no shorter than 5 minutes
 
 ^ [Docs](https://developer.apple.com/documentation/corelocation/cllocationmanager/startmonitoringsignificantlocationchanges())
 
@@ -132,54 +113,38 @@ Location Push|❌|❌|✅|❌
 
 # Prototype #1: Significant-change Location Data
 
----
-
-# Prototype #1
-## Goals
-
-Significant-change behavior...
-
-- while walking
-- on local train
-- on express train
-- in automobile
-- on bike
-- at home
-
----
-
-# Prototype #1
-## Code
-
-^ TODO: code for setting up significant location monitoring in background and writing to SQLite
-
----
-
-# Prototype #1
-## Results
-
-^ TODO: 
-^ map of location data annotated with transport mode
-^ summarize learnings in one or two bullets
+^ Let's build a prototype that logs every significant-change location
+^ TODO: screenshot of prototype
 
 ---
 
 # User Timeline
 
-^ TODO: illustration of timeline of user's activity vs when the app is awakened and what it's doing
+^ TODO: illustration of timeline of user's activity zoomed out to full day
 
 ---
 
-# Start tracking
-# or
-# Go back to sleep
+# User Timeline
+
+^ TODO: illustration of timeline of user's activity zoomed in to train boarding
+
+---
+
+0. [x] How to detect the user has changed location
+1. **How to detect a journey has started**
+2. How to determine railway and direction
+3. How to detect a journey has ended
+
+---
+
+# Start tracking or go back to sleep?
 
 ---
 
 # Problems
 
 - Is user moving?
-- Car, train, bike, walking?
+- Car, train, bike, walking, jogging?
 - Is user stopped at a station?
 - Is the user in Japan?
 
@@ -191,31 +156,10 @@ Significant-change behavior...
 
 ---
 
-# What's the most efficient strategy?
-
----
-
-# How fast can the app detect train riding via GPS?
-
----
-
 # Prototype #2: GPS Startup Time
 
-^ Augment prototype 1 so that it collects 3 minutes of location data after waking up
-
----
-
-# Prototype #2
-## Goal
-
-- Collect enough data to determine proper confidence ratio
-
----
-
-# Prototype #2
-## Code
-
-^ TODO: code for start location monitoring in background, writing to SQLite, stopping after time interval
+^ TODO: screenshot of prototype
+^ Collect 3 minutes of location data after significant location change
 
 ---
 
@@ -224,67 +168,45 @@ Significant-change behavior...
 
 ^ TODO: 
 ^ map of location data annotated with transport mode
-^ use accuracy, speed, distance from railway line/station
+^ use accuracy, speed
+^ decide on 6 m/s, 21 km/h
 
 ---
 
-# Can we augment GPS?
+1. [x] How to detect a journey has started
+2. How to determine railway and direction
+3. **How to detect a journey has ended**
 
 ---
 
-# Core Motion (Accelerometer)
+Speed < 6 km/h
+The user is walking
+
+---
+
+# How to detect the user is walking?
+
+---
+
+# Core Motion
 
 ---
 
 # Prototype #3: Motion Activity
 
-^ TODO: 
-^ tab 1: show last live value with log
-^ tab 2: show full history as log
-^ tab 3: show full history as grouped timeline
+^ Screenshot of prototype
 
 ---
 
-# Prototype #3
-## Code
+# User Timeline
 
-^ TODO: code for viewing live core motion and reading history
-
----
-
-# Prototype #3
-## Results
-
-^ TODO: show app screens, explain data
+^ TODO: illustration of timeline of end of journey where `walking` is triggered
 
 ---
 
-# Provisional Tracking Flow
-
-```
-wake up from significant location change ->
-check for automotive motion since last wakeup ->
-(if not or indeterminate) start full location services ->
-monitor until XX% confidence
-```
-
-^ TODO: visual flowchart
-
----
-
-# App Flowchart
-
-```
-Waiting for Location Change -> 
-Provisional Tracking -> 
-Qualified Tracking
-```
-
-^ TODO: create visual flowchart
-
----
-
-# Qualified Tracking
+1. [x] How to detect a journey has started
+2. How to determine railway and direction
+3. [x] **How to detect a journey has ended**
 
 ---
 
@@ -302,43 +224,23 @@ Qualified Tracking
 
 ---
 
+- [ ] **Live GPS data**
+- [ ] Static railway data
+
+---
+
 # Prototype #4: GPS data collection
 
-^ TODO: start tracking automatically, create session, write location data to db, stop when user taps button
-^ TODO: I'm not sure if this prototype makes sense
+^ TODO: screenshots
 
 ---
 
-# Prototype #4
-## Results
-
-^ TODO: show session as tabular data inside app
+- [x] Live GPS data
+- [ ] **Static railway data**
 
 ---
 
-# Railway data review
-
-- ODPT
-- Open Street Map
-- Mini Tokyo 3D
-
-^ Please check licenses
-
----
-
-# Write custom importer
-
-`json/tabular -> sqlite`
-
----
-
-# Embed sqlite db in app binary
-
-^ TODO: appx size
-
----
-
-# Tables
+# Railway data Tables
 
 - Railways (JR Tokaido)
 - Rail Directions (Northbound)
@@ -350,6 +252,11 @@ Qualified Tracking
 # Illustrated Data
 
 ^ TODO: map showing a railway, rail direction, station, coordinate
+
+---
+
+- [x] Live GPS data
+- [x] **Static railway data**
 
 ---
 
@@ -371,11 +278,17 @@ Qualified Tracking
 - Emergency stops between stations
 - Transfer from local to express mid-journey
 
+^ TODO: lay out in grid
+
 ---
 
-# Solution(?)
+We need a way to iterate quickly on our algorithm
 
-Use a scoring system
+---
+
+# Prototype #5: macOS viewer app
+
+^ TODO: screenshot of just sidebar and map and locations
 
 ---
 
@@ -387,7 +300,7 @@ Use a scoring system
 
 ---
 
-# Instantaneous Railway score
+# Railway proximity score
 
 - GPS coordinate distance and accuracy from closest railway coordinate
 - Compare to railway coordinate due to:

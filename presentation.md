@@ -21,317 +21,459 @@
 
 ---
 
-This talk is about trains but...
-
-^ most of us don't write train apps.
+# Let's Write a Train Tracking Algorithm
 
 ---
 
-You'll learn:
+# Prerequisites
 
-- Why you should build prototypes to understand the behavior system frameworks
-- How to break down a big problem
-- Some random API trivia you can apply to your current project
+- Static railway data
+- GPS data collected from an iPhone riding a train
 
 ---
 
-# As a train passenger...
+# Static railway data
 
-- I know how to get to my destination
-- I don't need timetables
-- I want to passively monitor my trip
+- Railways (e.g. JR Tokaido)
+- Rail Directions (e.g. Northbound)
+- Stations (e.g. JR Tokaido Shinagawa)
+- RailwayCoordinate (Points that make up a Railway)
+
+---
+
+# Static railway data
+
+^ Showing examples of railway, rail direction, station, railway coordinate on a map
+
+---
+
+# GPS data
+
+- Sessions table
+- Locations table
+
+^ Showing raw database tables
+
+---
+
+# Location
+
+^ Location has all data from CLLocation
+^ Show annotated on map
+
+---
+
+# Session
+
+^ Session is ordered list of Locations
+^ Show annotated on map
+
+---
+
+# SessionViewer macOS app
+
+^ walkthrough of SessionViewer mac app without RailwayTracker
+^ sessions in sidebar
+^ map on top, locations list on bottom
+
+---
+
+# Goal
+
+1. Determine Railway
+2. Determine Railway Direction
+3. Determine Next/Current Station
+
+---
+
+# Example 1
+
+- Railway: Toyoko Line
+- Direction: Inbound (to Shibuya)
+- Next station: Tsunashima
+
+^ Show map of a point between two stations with nearby railways illustrated
+
+---
+
+1. **Determine Railway**
+2. Determine Railway Direction
+3. Determine Next/Current Station
+
+---
+
+# Railway Algorithm 1
+
+- Find closest railway coordinates within 5km of Location
+- Sort railways by nearest
+
+---
+
+# Railway Algorithm 1
+
+^ Illustration
+
+---
+
+We did it!
+
+However...
+
+---
+
+# Example 2
+
+- Railway: Toyoko Line
+- Direction: Outbound (to Yokohama)
+- Next station: Hiyoshi
+
+^ Show map of a point between two stations with nearby railways illustrated
 
 ---
 
 # Problem
 
-## While on the train...
-
-- I can't see the announcement board
-- I can't hear the loudspeaker
-- I can't see out the window
-
-^ TODO: images
+Toyoko Line and Meguro Line run parallel
 
 ---
 
-# Let's Write a Zero-Tap Train Tracking App
+# We need history
+
+^ Show Locations on map starting from Nakameguro with both Toyoko and Meguro lines illustrated
 
 ---
 
-# Specifications
+# Railway Algorithm 2
 
-- Automatically start tracking when boarding a train
-- Automatically determine railway and direction
-- Automatically update a Live Activity
-- Automatically stop when getting off a train
+- Convert nearby distance to score
+- Add scores over time
 
 ---
 
-# Guiding Principles
+# Railway Algorithm 2
 
-- Preserve battery life
-- Respect user privacy
-- Convey accuracy of prediction
-
-^ Natural limitations: GPS accuracy, car/train differentiation, underground, startup time
+^ Illustration
 
 ---
 
-# Goal UX
+We did it!
 
-^ TODO: video of live activity appearing in dynamic island
-^ TODO: video of live activity updating
-^ TODO: video of full tracking UI with live video
+However...
 
 ---
 
-# 3 Algorithms
+# Example 3
 
-1. How to detect a journey has started
-2. How to determine railway, direction, station
-3. How to detect a journey has ended
+- Railway: Keihin-Tohoku Line
+- Direction: Northbound
+- Next station: Kamata
 
----
-
-1. **How to detect a journey has started**
-2. How to determine railway and direction
-3. How to detect a journey has ended
+^ Show map of a point between two stations with nearby railways illustrated
 
 ---
 
-## Significant-change location service
+Keihin-Tohoku Line ("Local") runs parallel to Tokaido Line ("Express")
 
-- Uses cellular & Wi-Fi radios, not GPS
-- Automatically relaunches app in background
-- Device moves 500 meters
-- Time between events is no shorter than 5 minutes
-
-^ [Docs](https://developer.apple.com/documentation/corelocation/cllocationmanager/startmonitoringsignificantlocationchanges())
+^ Illustration
 
 ---
 
-# Prototype #1: Significant-change Location Data
+# Railway Algorithm 3
 
-^ Let's build a prototype that logs every significant-change location
-^ TODO: screenshot of prototype
-
----
-
-# User Timeline
-
-^ TODO: illustration of timeline of user's activity zoomed out to full day
+- Add penalty for passed stations
+- Add penalty for stopping in-between stations
 
 ---
 
-# User Timeline
+We did it!
 
-^ TODO: illustration of timeline of user's activity zoomed in to train boarding
-
----
-
-0. [x] How to detect the user has changed location
-1. **How to detect a journey has started**
-2. How to determine railway and direction
-3. How to detect a journey has ended
+There are many more edge cases but...
 
 ---
 
-# Start tracking or go back to sleep?
+Let's move on!
 
 ---
 
-# Problems
-
-- Is user moving?
-- Car, train, bike, walking, jogging?
-- Is user stopped at a station?
-- Is the user in Japan?
-
-^ TODO: Punch up the text on this slide
+1. Determine Railway
+2. **Determine Railway Direction**
+3. Determine Next/Current Station
 
 ---
 
-# Goal: minimize app time spent running
+Every Railway has 2 directions
 
 ---
 
-# Prototype #2: GPS Startup Time
-
-^ TODO: screenshot of prototype
-^ Collect 3 minutes of location data after significant location change
+^ Illustration: departure board Toyoko towards Shibuya, towards Yokohama
 
 ---
 
-# Prototype #2
-## Results
-
-^ TODO: 
-^ map of location data annotated with transport mode
-^ use accuracy, speed
-^ decide on 6 m/s, 21 km/h
+^ Illustration: map Toyoko towards Shibuya, towards Yokohama
 
 ---
 
-1. [x] How to detect a journey has started
-2. How to determine railway and direction
-3. **How to detect a journey has ended**
+# Example
+
+- Railway: Toyoko Line
+- Direction: Inbound (to Shibuya)
+- Next station: Tsunashima
+
+^ Show map of a point between two stations with nearby railways illustrated
 
 ---
 
-Speed < 6 km/h
-The user is walking
+# Direction Algorithm 1
+
+- Store first nearby station for Railway
+- Store second nearby station for Railway
+- Compare order of first and second station
 
 ---
 
-# How to detect the user is walking?
+^ Illustration of Algorithm 1 using example
 
 ---
 
-# Core Motion
+We did it!
+
+However...
 
 ---
 
-# Prototype #3: Motion Activity
-
-^ Screenshot of prototype
+We must visit 2 stations in order to get a prediction...
 
 ---
 
-# User Timeline
-
-^ TODO: illustration of timeline of end of journey where `walking` is triggered
+Can we do better?
 
 ---
 
-1. [x] How to detect a journey has started
-2. How to determine railway and direction
-3. [x] **How to detect a journey has ended**
+Use `Location.course`!
 
 ---
 
-1. How to detect a journey has started
-2. **How to determine railway and direction**
-3. How to detect a journey has ended
+^ Illustration: location with course 0-360
 
 ---
 
-# Let's write the tracking algorithm
+# Direction Algorithm 2
+
+- Fetch 2 closest stations to input location
+- Calculate vector between 2 closest stations for "ascending" direction
+- Calculate dot product between location course vector and closest stations vector
+- Positive dot product == "ascending"
+- Negative dot product == "descending"
 
 ---
 
-# How can we write a data processing algorithm without data?
+^ Illustration of Algorithm 2 using example
 
 ---
 
-- [ ] **Live GPS data**
-- [ ] Static railway data
+Accumulate direction scores over time
 
 ---
 
-# Prototype #4: GPS data collection
-
-^ TODO: screenshots
+We did it!
 
 ---
 
-- [x] Live GPS data
-- [ ] **Static railway data**
+Let's move on!
 
 ---
 
-# Railway data Tables
-
-- Railways (JR Tokaido)
-- Rail Directions (Northbound)
-- Stations (Shinagawa)
-- RailwayCoordinate (Points that make up a Railway)
+1. Determine Railway
+2. Determine Railway Direction
+3. **Determine Next/Current Station**
 
 ---
 
-# Illustrated Data
-
-^ TODO: map showing a railway, rail direction, station, coordinate
+^ heads up display in train car showing "Next"
 
 ---
 
-- [x] Live GPS data
-- [x] **Static railway data**
+- **Next**: Kawasaki
+- **Approaching**: Kawasaki
+- **Now**: Kawasaki
+- **Next**: ...
 
 ---
 
-# Let's finally write the tracking algorithm
+^ Illustration of map showing approximate zones for each
 
 ---
 
-# Problems
-
-- Parallel railways
-- Above ground & Underground
-- GPS dead zones
-- Cars & Bikes
-- Shared train car between railways
-- Doubling back on the same Railway
-- Underground transfers
-- Long stops
-- Front car vs. back car
-- Emergency stops between stations
-- Transfer from local to express mid-journey
-
-^ TODO: lay out in grid
+Station proximity without history?
 
 ---
 
-We need a way to iterate quickly on our algorithm
+# Station Algorithm 1
+
+- Calculate distance and direction from location to closest station S
+- If distance < 200m 
+	- "Now: S"
+- If distance < 500m and direction is in travel direction
+	- "Approaching: S"
+- Else
+	- "Next: S+1"
 
 ---
 
-# Prototype #5: macOS viewer app
-
-^ TODO: screenshot of just sidebar and map and locations
+^ Illustration of map showing example "Now: S"
 
 ---
 
-# Scoring system
-
-- Higher scores are better
-- Instantaneous score: calculated for each GPS coordinate
-- Overall score: maintained over lifetime of session
+^ Illustration of map showing example "Approaching: S"
 
 ---
 
-# Railway proximity score
-
-- GPS coordinate distance and accuracy from closest railway coordinate
-- Compare to railway coordinate due to:
-	- Fastest detection when tracking starts while between stations
-	- Tokaido vs. Keihin-Tohoku problem (TODO)
-	- Toyoko-sen vs. Meguro-sen problem (TODO)
-	
-^ TODO: expand on this and show examples on map
+^ Illustration of map showing example "Next: S+1"
 
 ---
 
-# Instantaneous Rail Direction score
+We did it!
 
-- Each scored railway gets a proposed Rail Direction
-- Use dot product on 4 nearest stations
-	- Musashi-Kosugi problem (TODO)
-- Assume this doesn't change over a session
+However...
 
-^ TODO: expand on this and show examples on map
+---
 
+GPS data is unreliable
 
+^ especially within big stations
+^ especially when not moving
 
+---
 
-```
->>>>>>>>>> TODO tomorrow
->>>>>>>>>> Finish main tracking algorithm outline
->>>>>>>>>> Prototype #5 macOS app    
->>>>>>>>>> Stopping algorithm outline
->>>>>>>>>> Live Activity push notification outline
+^ Illustration of map showing dead zone near Kawasaki
+
+---
+
+Let's create a history for each station
+
+---
+
+```swift
+struct StationDirectionalLocationHistory {
+    // Locations within 200 meters from station (date asc)
+    var visitingLocations: [Location] = []
+
+    // Locations within 500 directional meters from station but outside 200 meters (date asc)
+    var approachingLocations: [Location] = []
+
+    // First location that does not fall within visiting/approaching
+    // or same as last visiting location if it's the last station on the line
+    var firstDepartureLocation: Location?
+}
 ```
 
+---
+
+^ Illustration: show 3-color binning for a station in SessionViewer with categories annotated
+
+---
+
+# Station Algorithm 2
+
+- Phase 1: assign locations to stations
+- Phase 2: update station phase history
+- Phase 3: select most relevant station phase
+
+---
+
+# Phase 1: assign locations to stations
+
+- Add each location to `visitingLocations` or `approachingLocations` for the closest station on each railway
+- If there is no station history, add `firstDepartureLocation` to the closest station in opposite travel direction
+- If a station has `visitingLocations` or `approachingLocations`, set a `firstDepartureLocation`
+- If a location is stopped between stations, add it to `orphanedLocations` for the railway
+
+---
+
+# Phase 2: update station phase history
+
+`visitingLocations` | `approachingLocations` | `firstDepartureLocation` | -> Phase
+-|-|-|-
+[]|[]|nil|departure
+[]|[...]|nil|approaching
+[...]|-|non-nil|visiting
+[...]|-|non-nil|visited
+
+---
+
+# Phase 3: select most relevant station phase
+
+- Find last station `S` in travel direction where `phase != nil`
+
+Station Phase|Result
+-|-
+departure|Next: `S`+1
+approaching|Approaching: `S`
+visiting|Visiting: `S`
+visited|Next: `S`+1
+
+---
+
+Station|Latest Phase
+-|-
+Tsurumi|Visited
+Kawasaki|Visited
+
+# Next: **Kamata**
+
+---
+
+Station|Latest Phase
+-|-
+Musashi-Kosugi|Visited
+Motosumiyoshi|Approaching
+
+# Approaching: **Motosumiyoshi**
+
+---
+
+We did it!
+
+but can we distinguish "visited" and "passed"?
+
+---
+
+Train is **stopped** within station bounds for more than 20 seconds => `visited`
+
+```swift
+let earliestStoppedLocation = visitingLocations.first(where: { $0.speed <= 1.0 })
+let latestStoppedLocation = visitingLocations.reversed().first(where: { $0.speed <= 1.0 })
+latestStoppedLocation.timestamp.timeIntervalSince(earliestStoppedLocation.timestamp) > 20.0
+```
+
+---
+
+Train is **moving** within station bounds for more than 70 seconds => `visited`
+
+```swift
+let earliestVisitedLocation = stationLocationHistory.visitingLocations.first
+firstDepartureLocation.timestamp.timeIntervalSince(earliestVisitedLocation.timestamp) > 70.0
+```
+
+---
+
+Else => `passed`
+
+---
+
+We did it!
+
+---
+
+TODO: Full demo of SessionViewer
+
+---
+
+This is open source!
+
+github.com/twocentstudios/train-tracker-talk
+
+^ TODO: QR Code
 
 ---
 
@@ -339,7 +481,7 @@ We need a way to iterate quickly on our algorithm
 
 - Subway support
 	- Custom ML Model for device velocity using accelerometer
-	- Stairway counter to detect subway entrance
+	- Stairs counter to detect subway entrance
 - Estimate exact train car from timetable
 	- Show arrival times
 	- Show next stop for express vs. local
@@ -351,7 +493,6 @@ We need a way to iterate quickly on our algorithm
 # Full version
 
 - Eki Live on the App Store
-- Research Preview quality
 
 ^ TODO: QR Code
 
@@ -361,18 +502,7 @@ We need a way to iterate quickly on our algorithm
 
 - Freelance or full-time
 - iOS generalist (not just train apps)
-
----
-
-# Contact
-
 - twocentstudios.com
-- English blog
 
 ^ TODO: QR Code
 
----
-
-# Thanks
-
-Ask me questions at Q&A

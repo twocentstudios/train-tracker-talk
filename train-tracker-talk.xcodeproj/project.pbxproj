@@ -34,7 +34,7 @@
 		4303FDD0DE57ED0A6C46442A /* RailwayTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1113A5C5D57396BBCD00E465 /* RailwayTracker.swift */; };
 		43685311A4EC64051EF0B5E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */; };
 		43C3F7C88E8B85E7483E8107 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4D12C1D4B47F063B4B17B2 /* RootView.swift */; };
-		45EC915B1E0E4F5471D6227F /* RailwayDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3842EC37FB5803B2EC0805 /* RailwayDatabase.swift */; };
+		453A1DA248DCE0DA2186852A /* RailwayDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08181188D7F801DF8D611489 /* RailwayDatabase.swift */; };
 		4B78F4BEB098A523D5E9F6A4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E13B17C8C3FED78E865937A /* RootView.swift */; };
 		5054E20E33A88546D41C82CD /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA0F7F3304FEDC073F6D5B8 /* Location.swift */; };
 		54BF39CEB1B04F2BB6EB4C8F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = DD0E48B0332783F82F0CB992 /* SharingGRDB */; };
@@ -92,6 +92,7 @@
 /* Begin PBXFileReference section */
 		0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		07F5422266AA1794A50424F9 /* MotionActivityFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityFormatters.swift; sourceTree = "<group>"; };
+		08181188D7F801DF8D611489 /* RailwayDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RailwayDatabase.swift; sourceTree = "<group>"; };
 		0BAA85299D526CCD40F8FA7F /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 		0D53BD5A16BF0E9944384945 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 		1113A5C5D57396BBCD00E465 /* RailwayTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RailwayTracker.swift; sourceTree = "<group>"; };
@@ -179,7 +180,6 @@
 		EE705A7A0AF5A9C780685B5B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF2093617E9C15E5C8706DF3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F6C8F19549FCB66EE08B89EB /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
-		FA3842EC37FB5803B2EC0805 /* RailwayDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RailwayDatabase.swift; sourceTree = "<group>"; };
 		FE51EBF3B74A513AD41194F2 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -253,7 +253,6 @@
 				362F803740CAC7771300288E /* ContentView.swift */,
 				80DD8A32B87D0B6DBA8ACF89 /* Info.plist */,
 				666CA49FD4D0BDC2C4E4E02A /* Media.xcassets */,
-				FA3842EC37FB5803B2EC0805 /* RailwayDatabase.swift */,
 				E9E5D6FE59B306F30286543F /* RailwayModels.swift */,
 				1113A5C5D57396BBCD00E465 /* RailwayTracker.swift */,
 				246A04E3703C5A553C869F6F /* SerialProcessor.swift */,
@@ -397,6 +396,7 @@
 			isa = PBXGroup;
 			children = (
 				28B3907FCF345029F8021400 /* railway.sqlite */,
+				08181188D7F801DF8D611489 /* RailwayDatabase.swift */,
 			);
 			path = data;
 			sourceTree = "<group>";
@@ -759,7 +759,7 @@
 				DC9CAF0813C59642FCCFE271 /* ColorExtension.swift in Sources */,
 				6AD2A4015FDA2B6B27673479 /* ContentView.swift in Sources */,
 				C4B0803B41A23BEC7A170107 /* Location.swift in Sources */,
-				45EC915B1E0E4F5471D6227F /* RailwayDatabase.swift in Sources */,
+				453A1DA248DCE0DA2186852A /* RailwayDatabase.swift in Sources */,
 				B9F8A2CB680D26DEB41CEE89 /* RailwayModels.swift in Sources */,
 				4303FDD0DE57ED0A6C46442A /* RailwayTracker.swift in Sources */,
 				BE4CD3F9E64C871F01E66D8A /* SerialProcessor.swift in Sources */,

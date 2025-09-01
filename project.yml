@@ -167,6 +167,7 @@ targets:
           - "CLAUDE.md"
       - StartEndLocation/Session.swift
       - StartEndLocation/Location.swift
+      - data/RailwayDatabase.swift
       - path: data/railway.sqlite
         buildPhase: resources
     dependencies:

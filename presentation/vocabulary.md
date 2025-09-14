@@ -1,0 +1,37 @@
+- 列車行程追跡アルゴリズム - train journey tracking algorithm
+- 行程 こうてい - journey, trip
+- 追跡 ついせき - tracking, following
+- 案内表示器 - train information display
+- ライブアクティビティ - live activity
+- ダイナミックアイランド - dynamic island
+- 上り - inbound
+- 下り - outbound
+- ドット積 どっとせき - dot product
+- 進行方位 しんこうほうい - heading, direction
+- ○○方面 - towards (destination)
+- 行先 - destination (label)
+- 推定 すいてい - probabilistic estimate.
+- 路線 ろせん - railway service line
+- 線路 せんろ - physical rails
+- 静的 せいてき - static (vs. real-time; data)
+- 順序付き じゅんじょつき - ordered (list)
+- 双方向　そうほうこう - both directions (railway)
+- 連行 れんこう - service operation
+- Xで表現できます - can be represented by X
+- 座標点 ざひょうてん - coordinate points
+- 端末内 たんまつない - on-device (local; database)
+- 取得 しゅとく - acquisition (data)
+- 緯度 いど - latitude
+- 経度 けいど - longitude
+- 速度 そくど - speed
+- 進行方位 しんこうほうい - course (direction)
+- 精度 せいど - accuracy
+- 一目で ひとめで - at a glance
+- 時系列 じけいれつ - time series
+- 算出 さんしゅつ - calculate, compute (by algorithm)
+- 距離 きょり - distance (between two points)
+- Xを近い順に並べます - sort X by proximity
+- Xを時間方向に足し合わせていきます - add up X over time
+- 累積スコア るいせき - accumulated score
+- 駅間 えきかん - between stations
+- 減点する　げんてん - subtract points

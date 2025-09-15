@@ -6,8 +6,8 @@
 - ダイナミックアイランド - dynamic island
 - 上り - inbound
 - 下り - outbound
-- ドット積 どっとせき - dot product
-- 進行方位 しんこうほうい - heading, direction
+- 内積 ないせき - dot product
+- 単位ベクトル たんいべくとる - unit vector
 - ○○方面 - towards (destination)
 - 行先 - destination (label)
 - 推定 すいてい - probabilistic estimate.
@@ -35,3 +35,12 @@
 - 累積スコア るいせき - accumulated score
 - 駅間 えきかん - between stations
 - 減点する　げんてん - subtract points
+- 候補 こうほ - candidate (railway)
+- 発車標 はっしゃひょう - Departure board
+- 同じ向き おなじむき - same direction
+- 逆向き ぎゃくむき - opposite direction
+- 正 せい - positive (number, value)
+- 負 ふ - negative (number, value)
+- 最寄り駅 もより - closest (station)
+- 分類 ぶんるい - classify, sort
+- 範囲内 はんいない - within the bounds

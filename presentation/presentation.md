@@ -31,9 +31,9 @@ Chris Trott
 ^ I worked at Cookpad for 6 years.
 ^ Since then, I've been working on my own apps in the App Store.
 ^ TODO: app icons
-^ ニューヨークにTimehopというSNSのスタートアップで仕事して
-^ クックパッドで6年間仕事しました。
-^ それ以来、いろいろなアプリを開発して、アプリストアで販売しています。
+^ ニューヨークで Timehop という SNS スタートアップで働きました。
+^ クックパッドで6年間働きました。
+^ それ以来、個人でいろいろなアプリを作って、App Store で販売しています。
 
 ---
 
@@ -50,8 +50,8 @@ Chris Trott
 
 ^ So what do I mean by train tracking algorithm?
 ^ Well, when riding a train, it's useful to know the upcoming station.
-^ 列車移動追跡アルゴリズムはなんという意味でしょうか？
-^ 電車に乗る時に、次の駅の情報を知っていることは便利でしょうね。
+^ 「列車移動追跡アルゴリズム」とは何でしょうか？
+^ 電車に乗るとき、次の駅がわかると便利ですよね。
 
 ---
 
@@ -65,7 +65,7 @@ Chris Trott
 ![fit, autoplay, loop](images/den-en-chofu-next-soon-crop.mp4)
 
 ^ But would it also be useful to see this information in your Dynamic Island?
-^ けど、この情報、ダイナミックアイランドで一目で確認できたら便利ですよね。
+^ でも、この情報がダイナミックアイランドに出たらもっと便利ですよね。
 
 ---
 
@@ -76,7 +76,7 @@ Chris Trott
 
 ^ In my talk, we'll first review the data prerequisites we'll need for the algorithm.
 ^ Then, we'll write each part of the algorithm, improving it step-by-step.
-^ 発表では、まずアルゴリズムに必要なデータ要件を整理します。
+^ 発表では、まずアルゴリズムに必要なデータを整理します。
 ^ 次に、各パートを実装して、段階的に良くしていきます。
 
 ---
@@ -89,7 +89,7 @@ Chris Trott
 ^ We need two types of data for the train tracking algorithm:
 ^ static railway data and Live GPS data from the iPhone user
 ^ 列車移動追跡アルゴリズムには、2種類のデータが必要です。
-^ 鉄道路線の静的データとiPhoneからのリアルタイムGPSデータ。
+^ 鉄道路線の静的データと、iPhone からのリアルタイム GPS データです。
 
 ---
 
@@ -121,7 +121,7 @@ Chris Trott
 ^ Trains travel in both Directions on a Railway.
 ^ Coordinates make up the path of a Railway's physical tracks.
 ^ 路線では、列車は双方向に運行します。
-^ 線路の物理的な経路は、座標点の順序付きリストで表せます。
+^ 線路の物理的な経路は、座標点の並びで表せます。
 
 ---
 
@@ -148,8 +148,8 @@ Chris Trott
 
 ^ We collect live GPS data from an iPhone using the Core Location framework.
 ^ We store the data in a local SQLite database.
-^ Core Locationを使って、iPhoneからリアルタイムに位置情報を取得します。
-^ そのデータは、端末内のSQLiteに保存します。
+^ Core Location を使って、iPhone からリアルタイムに位置情報を取得します。
+^ そのデータは、端末内の SQLite に保存します。
 
 ---
 
@@ -160,7 +160,7 @@ Chris Trott
 ^ A `Location` has all data from CLLocation.
 ^ Latitude, longitude, speed, course, accuracy.
 ^ `Location`は`CLLocation`の情報を一通り含みます。
-^ 緯度、経度、速度、進行方位、精度
+^ 緯度、経度、速度、進行方位、精度などです。
 
 ---
 
@@ -172,7 +172,7 @@ Chris Trott
 ^ A Session represents a possible journey.
 ^ The green color is for fast and red is for stopped.
 ^ `Session`は`Location`の時系列リストです。
-^* `Session`は可能な移動を表します。
+^ `Session`は可能な移動を表します。
 ^ 緑は走行中、赤は停止中、という意味です。
 
 ---
@@ -184,10 +184,10 @@ Chris Trott
 ^ In the top panel there is map.
 ^ In the bottom panel there is a list of ordered Locations for a Session.
 ^ Clicking on a Location shows its position and course on the map.
-^ 生データの可視化のために、macOSアプリを実装しました。
-^ 左側のサイドバーには、Sessionリストです。
-^ 上側のパネルには、地図です。
-^ 下側のパネルには、選択したSessionのLocationの時系列リストです。
+^ 生データの可視化のために、macOS アプリを作りました。
+^ 左側のサイドバーには、Session のリストがあります。
+^ 上側のパネルには、地図があります。
+^ 下側のパネルには、選択した Session の Location の時系列リストがあります。
 ^ Locationを選択すると、地図に位置と進行方位を表示します。
 
 ---
@@ -201,7 +201,7 @@ Chris Trott
 ^ Our goal is to make an algorithm that determines 3 types of information:
 ^ The railway, the direction of the train, and the next or current station.
 ^ 目的は、3つの情報を推定できるアルゴリズムを作ることです。
-^ 鉄道路線、進行方向、次の駅か今いる駅
+^ 路線、進行方向、次の駅か今いる駅です。
 
 ---
 
@@ -215,7 +215,7 @@ Chris Trott
 ![](images/system-flow-chart-01.png)
 
 ^ The app channels Location values to the algorithm.
-^ アプリは、Core Locationからのocationを順次アルゴリズムに流します。
+^ アプリは、Core Location からの Location を順次アルゴリズムに流します。
 
 ---
 
@@ -238,7 +238,7 @@ Chris Trott
 ^ The algorithm calculates a new result set of railway, direction, and station phase.
 ^ The result is used to update the app UI and Live Activity.
 ^ アルゴリズムは、路線、進行方向、駅フェーズの新しい結果を算出します。
-^ この結果で、アプリのUIとライブアクティビティを更新します。
+^ この結果で、アプリの UI と Live Activity を更新します。
 
 ---
 
@@ -282,7 +282,7 @@ Chris Trott
 
 ^ First, we find the closest RailwayCoordinate to the Location for each Railway.
 ^ Then, we order the railways by which RailwayCoordinate is nearest.
-^ まず、各路線ごとに、この Location に最寄り座標を見つけます。
+^ まず、各路線ごとに、この `Location` に最も近い線路座標を見つけます。
 ^ 次に、その距離で、路線を近い順に並べます。
 
 ---
@@ -319,7 +319,7 @@ Tokyu Meguro|2266.07
 However...
 
 ^ but...
-^ けど、、、
+^ でも…
 
 ---
 
@@ -423,7 +423,7 @@ However...
 ^ Several lines run parallel in this corridor.
 ^ The Tokaido Line follows the same track as the Keihin-Tohoku Line
 ^ この区間では、複数の路線が並行しています。
-^ 東海道線は、京浜東北線と同じ並びで並行しています。
+^ 東海道線は、京浜東北線と並行して走っています。
 
 ---
 
@@ -458,7 +458,7 @@ However...
 ![original, 300%](images/railway-example-03-05.png)
 
 ^ Using this algorithm, the Keihin-Tohoku score is now slightly larger than the Tokaido score.
-^ このアルゴリズムでは、京浜東北線のスコアが東海道線をわずかに高いです。
+^ このアルゴリズムでは、京浜東北線のスコアのほうが東海道線よりわずかに高いです。
 
 ---
 
@@ -499,7 +499,7 @@ However...
 ![fit](images/railway-example-03-trip-02-01.png)
 
 ^ For an example trip 2 that starts at Tokyo...
-^ ケース2、また東京駅スタートです。
+^ ケース2、同じく東京駅スタートです。
 
 ---
 
@@ -523,7 +523,7 @@ However...
 
 ^ The Keihin-Tohoku score receives many penalties.
 ^ The algorithm determines the trip was on the Tokaido Line.
-^ 京浜東北側はペナルティが重なります。
+^ 京浜東北線側はペナルティが重なります。
 ^ アルゴリズムは「東海道線」と判断します。
 
 ---
@@ -658,7 +658,7 @@ Use `Location.course`!
 ![original](images/location-annotated.png)
 
 ^ Remember that course is included with some CLLocations by Core Location
-^ Core Locationからの`CLLocation`には、場合によって進行方位が含まれます。
+^ Core Location からの`CLLocation`には、場合によって進行方位が含まれます。
 
 ---
 
@@ -667,7 +667,7 @@ Use `Location.course`!
 ^ Core Location provides an estimate of the iPhone's course in degrees.
 ^ 0 degrees means North
 ^ 180 degrees means South
-^ Core Locationは、iPhoneの進行方位を度数で返してくれます。
+^ Core Location は、iPhone の進行方位を度数で返してくれます。
 ^ 0度が北、180度が南です。
 
 ---
@@ -923,7 +923,7 @@ GPS data is **unreliable**
 ![](images/kawasaki-station-gps-accuracy.png)
 
 ^ Here is an example location stopped inside Kawasaki station that has an abysmal 1km accuracy 
-^ 例えば、これは川崎駅の構内で`Location`です。
+^ 例えば、これは川崎駅構内で `Location` です。
 ^ 精度が約1キロメートルと悪い例です。
 
 ---
@@ -965,7 +965,7 @@ struct StationDirectionalLocationHistory {
 - Step 3: select most relevant station phase
 
 ^ Station algorithm version 2 has 3 steps.
-^ 駅フェーズのアルゴリズムは3つのステップがあります。
+^ 駅フェーズのアルゴリズムは3ステップです。
 
 ---
 
@@ -976,7 +976,7 @@ struct StationDirectionalLocationHistory {
 ![right](images/railway-example-05-phase-visiting.png)
 
 ^ In step 1, we categorize a location as "visiting" or "approaching" if it lies within the bounds of a station.
-^ ステップ1では、`Location`の歴史で、
+^ ステップ1では、駅の範囲内なら "visiting" か "approaching" に分類します。
 
 ---
 
@@ -987,7 +987,7 @@ struct StationDirectionalLocationHistory {
 ![right](images/railway-example-05-phase-visited.png)
 
 ^ If the location is outside the bounds of a station, we set the "firstDepartureLocation".
-^ `Location`が駅の範囲外にあれば、`Location`を"firstDepartureLocation"に設定します。
+^ `Location` が駅の範囲外にあれば、`Location` を "firstDepartureLocation" に設定します。
 
 ---
 
@@ -1001,7 +1001,7 @@ struct StationDirectionalLocationHistory {
 `!isEmpty`|`any`|`!nil`|visited
 
 ^ In step 2, we use the station history to calculate the phase for each station.
-^ ステップ2では、駅の歴史を使って、駅のフェーズを判定します。
+^ ステップ2では、駅の履歴を使って、駅のフェーズを判定します。
 
 ---
 
@@ -1049,7 +1049,7 @@ visiting|Visiting: `S`
 visited|Next: `S`+1
 
 ^ In step 3, we look through the phase history for all stations to determine the "focus" phase.
-^ ステップ3では、駅フェーズの歴史に探して、"Focus"というフェーズを判定します。
+^ ステップ3では、駅フェーズの履歴に探して、"Focus"というフェーズを判定します。
 
 ---
 
@@ -1138,17 +1138,17 @@ Else => `passed`
 
 # Demo
 
-^ 最後に、開発したmacOSアプリをデモします。
-^ 京浜東北線に関内駅から川崎駅までの乗車を見せます。
-^ アルゴリズムがすべての`Location`を処理するのに、少し時間はかかりますが、
+^ 最後に、開発した macOS アプリをデモします。
+^ 京浜東北線で、関内から川崎までの乗車を見ています。
+^ アルゴリズムがすべての `Location` を処理するのに、少し時間はかかりますが、
 ^ 再生は10倍速で始められます。
-^ "Inspector"では、アルゴリズムの結果を見ます。
+^ "Inspector" では、アルゴリズムの結果が見られます。
 ^ 京浜東北線のスコアが最も高くなっています。
-^ 進行方面は大宮方面、北行きです。
-^ 各駅の最新のフェーズを見ます。
-^ 駅のフェーズをクリックすると、駅のフェーズ歴史を見ます。
-^ 駅を選択すると、地図に分類した`Location`を見ます。
-^ 最後の`Location`を選択すると、完全のフェーズ歴史を見ます。
+^ 進行方向は大宮方面、北行きです。
+^ 各駅の最新フェーズも見られます。
+^ 駅のフェーズをクリックすると、フェーズ履歴が見られます。
+^ 駅を選ぶと、地図に分類された `Location` が出ます。
+^ 最後の `Location` を選ぶと、全体のフェーズ履歴が見られます。
 
 ---
 
@@ -1157,9 +1157,9 @@ Else => `passed`
 [github.com/twocentstudios/train-tracker-talk](https://github.com/twocentstudios/train-tracker-talk)
 
 ^ The apps I used to collect this data are open source on github.
-^ 取得するために、5つのアプリを実装しました。
-^ GitHubにOpen Sourceのリリースしました。
-^ macOSアプリもアルゴリズムも。
+^ データ取得のために、5つのアプリを作りました。
+^ GitHub にオープンソースとして公開しています。
+^ macOS アプリもアルゴリズムもあります。
 ^ TODO: screenshots of all apps
 
 ---
@@ -1185,8 +1185,8 @@ Else => `passed`
 
 ^ But if you want to try it, Eki Live is on the App Store now.
 ^ The app starts up automatically in the background and shows the next station in the dynamic island.
-^ Eki Liveのアプリを使ってみてください。
-^ アプリは、バックグラウンドに自動で起きて、ダイナミックアイランドに路線と次の駅を表示します。
+^ Eki Live のアプリを使ってみてください。
+^ アプリはバックグラウンドで自動起動して、ダイナミックアイランドに路線と次の駅を表示します。
 
 ---
 
@@ -1201,6 +1201,6 @@ Else => `passed`
 ^ I'm available for full-time or contract work.
 ^ I write regularly on my blog twocentstudios.
 ^ That's all for today.
-^ ブログでよく書きます。
+^ ブログに記事をよく書いています。
 ^ 一緒に仕事したかったら、ぜひ連絡してください。
-^ これでおしまいです。ありがとうございました
+^ これでおしまいです。ありがとうございました。

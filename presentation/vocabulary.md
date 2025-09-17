@@ -4,8 +4,8 @@
 - 案内表示器 - train information display
 - ライブアクティビティ - live activity
 - ダイナミックアイランド - dynamic island
-- 上り - inbound
-- 下り - outbound
+- 上り のぼり - inbound
+- 下り くだり - outbound
 - 内積 ないせき - dot product
 - 単位ベクトル たんいべくとる - unit vector
 - ○○方面 - towards (destination)
@@ -44,3 +44,4 @@
 - 最寄り駅 もより - closest (station)
 - 分類 ぶんるい - classify, sort
 - 範囲内 はんいない - within the bounds
+- 開発中 かいはつちゅう - developing

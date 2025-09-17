@@ -16,7 +16,7 @@ Chris Trott
 ^ My name is Chris Trott.
 ^ I'm an iOS Engineer originally from Chicago.
 ^ But I've lived and worked in Japan for 8 years.
-^ クリスといいます。
+^ クリスといいます。よろしくお願いします。
 ^ アメリカ人ですけど8年間日本に住んでいます。
 
 ---
@@ -50,7 +50,7 @@ Chris Trott
 
 ^ So what do I mean by train tracking algorithm?
 ^ Well, when riding a train, it's useful to know the upcoming station.
-^ 「列車移動追跡アルゴリズム」とは何でしょうか？
+^ 「列車ルート追跡アルゴリズム」とは何でしょうか？
 ^ 電車に乗るとき、次の駅がわかると便利ですよね。
 
 ---
@@ -88,7 +88,7 @@ Chris Trott
 
 ^ We need two types of data for the train tracking algorithm:
 ^ static railway data and Live GPS data from the iPhone user
-^ 列車移動追跡アルゴリズムには、2種類のデータが必要です。
+^ 列車ルート追跡アルゴリズムには、2種類のデータが必要です。
 ^ 鉄道路線の静的データと、iPhone からのリアルタイム GPS データです。
 
 ---
@@ -121,7 +121,7 @@ Chris Trott
 ^ Trains travel in both Directions on a Railway.
 ^ Coordinates make up the path of a Railway's physical tracks.
 ^ 路線では、列車は双方向に運行します。
-^ 線路の物理的な経路は、座標点の並びで表せます。
+^ 線路の物理的なルートは、座標点の並びで表せます。
 
 ---
 
@@ -143,8 +143,8 @@ Chris Trott
 
 ![right](images/gps-database-tables.png)
 
-- Sessions table
-- Locations table
+- Local SQLite Database
+- `sessions` & `locations` tables
 
 ^ We collect live GPS data from an iPhone using the Core Location framework.
 ^ We store the data in a local SQLite database.
@@ -171,8 +171,9 @@ Chris Trott
 ^ A Session is an ordered list of Locations.
 ^ A Session represents a possible journey.
 ^ The green color is for fast and red is for stopped.
+^ TODO: zoomed in pic on the right of the session with individual points visible
 ^ `Session`は`Location`の時系列リストです。
-^ `Session`は可能な移動を表します。
+^ `Session`は可能なルートを表します。
 ^ 緑は走行中、赤は停止中、という意味です。
 
 ---
@@ -186,7 +187,6 @@ Chris Trott
 ^ Clicking on a Location shows its position and course on the map.
 ^ 生データの可視化のために、macOS アプリを作りました。
 ^ 左側のサイドバーには、Session のリストがあります。
-^ 上側のパネルには、地図があります。
 ^ 下側のパネルには、選択した Session の Location の時系列リストがあります。
 ^ Locationを選択すると、地図に位置と進行方位を表示します。
 
@@ -201,7 +201,7 @@ Chris Trott
 ^ Our goal is to make an algorithm that determines 3 types of information:
 ^ The railway, the direction of the train, and the next or current station.
 ^ 目的は、3つの情報を推定できるアルゴリズムを作ることです。
-^ 路線、進行方向、次の駅か今いる駅です。
+^ 路線、進行方向、次の駅です。
 
 ---
 
@@ -215,14 +215,14 @@ Chris Trott
 ![](images/system-flow-chart-01.png)
 
 ^ The app channels Location values to the algorithm.
-^ アプリは、Core Location からの Location を順次アルゴリズムに流します。
+^ アプリは、Core Location からの `Location` をアルゴリズムに順次流します。
 
 ---
 
 ![](images/system-flow-chart-02.png)
 
 ^ The algorithm reads the Location and gathers information from its memory
-^ アルゴリズムは`Location`を取り込み、メモリから情報を引き出して組み合わせます。
+^ アルゴリズムは `Location` を取り込み、メモリから情報を引き出して組み合わせます。
 
 ---
 
@@ -237,7 +237,7 @@ Chris Trott
 
 ^ The algorithm calculates a new result set of railway, direction, and station phase.
 ^ The result is used to update the app UI and Live Activity.
-^ アルゴリズムは、路線、進行方向、駅フェーズの新しい結果を算出します。
+^ アルゴリズムは、新しい結果を算出します。
 ^ この結果で、アプリの UI と Live Activity を更新します。
 
 ---
@@ -263,7 +263,7 @@ Chris Trott
 3. Determine Next/Current Station
 
 ^ Can we determine the Railway from this Location?
-^ この`Location`だけで、鉄道路線を推定できますか？
+^ この`Location`だけで、路線を推定できますか？
 
 ---
 
@@ -282,8 +282,8 @@ Chris Trott
 
 ^ First, we find the closest RailwayCoordinate to the Location for each Railway.
 ^ Then, we order the railways by which RailwayCoordinate is nearest.
-^ まず、各路線ごとに、この `Location` に最も近い線路座標を見つけます。
-^ 次に、その距離で、路線を近い順に並べます。
+^ 各路線ごとに、この `Location` に最も近い線路座標を見つけて、
+^ 距離順に並べます。
 
 ---
 
@@ -334,8 +334,7 @@ However...
 ^ Let's consider another Location.
 ^ This Location was also captured on the Toyoko Line.
 ^ 8C1B-507-9935
-^ では、別の`Location`に注目しましょう。
-^ 東横線でもこの`Location`を記録しました。
+^ 東横線での別の `Location` に注目しましょう。
 
 ---
 
@@ -346,8 +345,8 @@ Problem: Toyoko Line and Meguro Line run parallel
 
 ^ But in this section of the railway track, the Toyoko Line and Meguro Line run parallel.
 ^ It's not possible to determine whether the correct line is Toyoko or Meguro from just this one Location.
-^ この区間の線路は、東横線と目黒線が並走しています。
-^ この一点の`Location`だけでは、路線の特定はできません。
+^ この区間では、東横線と目黒線の線路が並行しています。
+^ この一点の `Location` だけでは、路線の特定はできません。
 
 ---
 
@@ -359,7 +358,7 @@ We need history
 ^ The example journey follows the Toyoko Line for longer than the Meguro Line.
 ^ We can see this at the top.
 ^ TODO: update graphic for trip from nakameguro
-^ アルゴリズムは、行程中の`Location`をすべて使って推定します。
+^ アルゴリズムは、ルートの `Location` をすべて使って推定します。
 ^ この例では、目黒線よりも東横線に沿っている区間のほうが長いです。
 ^ 上の部分を見てください。
 
@@ -384,7 +383,7 @@ We need history
 ![original, 300%](images/railway-example-02-04.png)
 
 ^ The score from Nakameguro to Hiyoshi is now higher for the Toyoko Line than the Meguro Line.
-^ 中目黒・日吉の区間では、東横線の累積スコアのほうが目黒線よりも高くなっています。
+^ 東横線の累積スコアのほうが目黒線よりも高くなっています。
 
 ---
 
@@ -413,7 +412,7 @@ However...
 ^ Let's consider a third Location.
 ^ This Location was captured on the Keihin-Tohoku Line which runs the east corridor of Tokyo.
 ^ 6E8C-785-41BB
-^ では、三つ目の`Location`に注目しましょう。
+^ 3つ目の`Location`に注目しましょう。
 ^ この`Location`は、東京の東側の幹線である京浜東北線の車内で記録しました。
 
 ---
@@ -422,7 +421,6 @@ However...
 
 ^ Several lines run parallel in this corridor.
 ^ The Tokaido Line follows the same track as the Keihin-Tohoku Line
-^ この区間では、複数の路線が並行しています。
 ^ 東海道線は、京浜東北線と並行して走っています。
 
 ---
@@ -466,7 +464,7 @@ However...
 
 ^ Let's consider two example trips to better understand penalties
 ^ For an example trip 1 that starts at Tokyo...
-^ ペナルティの影響を確認するため、2つの行程例を見ていきましょう。
+^ ペナルティの影響を確認するため、2つのルートの例を見ていきましょう。
 ^ まず、ケース1、東京駅スタートです。
 
 ---
@@ -708,7 +706,7 @@ Use `Location.course`!
 ^ Next, we calculate the vector between the 2 closest stations for the "ascending" direction in our database.
 ^ For the Toyoko line, the ascending direction is "outbound".
 ^ Therefore the vector goes from Tsunashima to Okurayama.
-^ 次に、データベースの"ascending"に合わせて、二駅間の方向ベクトルを出します。
+^ 次に、データベースの"ascending"に合わせて、2駅間の方向ベクトルを出します。
 ^ 東横線では、"ascending"の方向は下りです。
 ^ なので、ベクトルは綱島から大倉山への向きになります。
 
@@ -746,7 +744,7 @@ Use `Location.course`!
 ^ If the dot product is positive, then the railway direction is "ascending"
 ^ If the dot product is negative, then the railway direction is "descending"
 ^ 内積が正なら、進行方向は"ascending"です。
-^ 内積が負なら、進行方向は"descending"です。
+^ 負なら"descending"です。
 
 ---
 
@@ -1079,7 +1077,7 @@ visited|Next: `S`+1
 ^ Our algorithm works well...
 ^ できたー
 
----
+<!---
 
 # Bonus
 
@@ -1134,6 +1132,7 @@ Else => `passed`
 ^ When I click on a station, I can see the Locations used to calculate its phase.
 ^ When I click on the last Location, we can see the full station history.
 
+--->
 ---
 
 # Demo

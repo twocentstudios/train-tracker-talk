@@ -49,3 +49,4 @@ build/exports/
 progress/
 docs/
 data/railway.sqlite
+/collected/private

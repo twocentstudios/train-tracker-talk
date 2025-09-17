@@ -46,6 +46,7 @@
 		6D39DA0FC02F616C6CB07348 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = ADFBA59BD17E6946420D0029 /* SharingGRDB */; };
 		6E3EF25CDFF2FDD918703F22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C0A33E2C737495DD6F0E3E1 /* Assets.xcassets */; };
 		716DE7557C82DD9149668CB4 /* StartEndLocationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C7A324E0E2ED1C631BB4FD /* StartEndLocationApp.swift */; };
+		7C6DA3D307B3F6ED87F78661 /* TalkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F19939B95078D09A87E715 /* TalkView.swift */; };
 		7F56D14ACE3A1596EEFDA931 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AEAE8A0D8067E23297CED8 /* RootView.swift */; };
 		7FE675FA6BCE6AC24A88D8CD /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0B1AF77B1C360C708EF95C /* ExportDatabaseView.swift */; };
 		88774950FFC0BCE756A06405 /* ExportDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95304CDAE4CA09B57E2D0FF6 /* ExportDatabaseView.swift */; };
@@ -149,6 +150,7 @@
 		91A980B6C9D8758336F7EFD2 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
 		94D01E4D3CB69187EA2A47BA /* MotionActivityGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityGroup.swift; sourceTree = "<group>"; };
 		95304CDAE4CA09B57E2D0FF6 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
+		98F19939B95078D09A87E715 /* TalkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TalkView.swift; sourceTree = "<group>"; };
 		997C9461B3362018AE665CE9 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		9D248DB47E5D3E0016341B09 /* LocationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListView.swift; sourceTree = "<group>"; };
 		9E12E8055F2BD4273C80AA7F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 				814B9B7C3E7F8C36023BC931 /* SessionsListView.swift */,
 				2FE2439A37D9380005852A0C /* SessionViewer.entitlements */,
 				5CE8B77794FF5699C9968AD2 /* Tagged+SwiftStructuredQueries.swift */,
+				98F19939B95078D09A87E715 /* TalkView.swift */,
 			);
 			path = SessionViewer;
 			sourceTree = "<group>";
@@ -768,6 +771,7 @@
 				D9DAA8A9361ECB743B0BD5BA /* SessionDetailView.swift in Sources */,
 				F3162DD15E2D43BA880984A0 /* SessionsListView.swift in Sources */,
 				98EE2C6741E785D223FA0530 /* Tagged+SwiftStructuredQueries.swift in Sources */,
+				7C6DA3D307B3F6ED87F78661 /* TalkView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

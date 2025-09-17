@@ -334,6 +334,11 @@ struct LocationMapView: View {
                 }
             } else if locations.count <= playingTrailLength || store.isShowingDetailedPolyline {
                 ForEach(locations) { location in
+                    if (location.horizontalAccuracy ?? .greatestFiniteMagnitude) > 100 && !store.isPlaying {
+                        MapCircle(center: location.coordinate, radius: location.horizontalAccuracy ?? 5000)
+                            .foregroundStyle(.blue.opacity(0.1))
+                            .stroke(Color.primary, lineWidth: 2)
+                    }
                     Annotation("", coordinate: location.coordinate) {
                         Image(systemName: (location.horizontalAccuracy ?? 0) > 500 ? "xmark" : (location.course ?? -1) >= 0 ? "arrow.up" : "circle")
                             .symbolVariant(store.selectedLocationID == location.id ? .fill : .circle)

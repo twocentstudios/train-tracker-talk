@@ -306,8 +306,14 @@ struct LocationMapView: View {
             // Single location selected: center on it
             return regionThatFits(displayedLocations, padding: 0.0)
         } else if isPlaying {
-            // Playing: fit current trail segment
-            return regionThatFits(displayedLocations, padding: 0.1)
+            // Playing: lock to a fixed span centered on the active location
+            guard
+                let selectedLocationID = store.selectedLocationID,
+                let selectedLocation = store.locations.first(where: { $0.id == selectedLocationID })
+            else {
+                return regionThatFits(displayedLocations, padding: 0.1)
+            }
+            return MKCoordinateRegion(center: selectedLocation.coordinate, span: playbackMapSpan)
         } else {
             // No specific selection: fit all locations or return nil for automatic
             return displayedLocations.count > 100 ? nil : regionThatFits(displayedLocations, padding: 0.1)
@@ -391,13 +397,13 @@ struct LocationMapView: View {
                 store.selectedStationRailDirection = nil
             }
 
-            if newSelectedLocationID != nil, !store.isPlaying {
-                // Use smart bounds calculation
-                if let region = appropriateMapRegion {
-                    store.cameraPosition = MapCameraPosition.region(region)
-                } else {
-                    store.cameraPosition = .automatic
-                }
+            guard newSelectedLocationID != nil else {
+                store.cameraPosition = .automatic
+                return
+            }
+
+            if let region = appropriateMapRegion {
+                store.cameraPosition = MapCameraPosition.region(region)
             } else {
                 store.cameraPosition = .automatic
             }
@@ -438,6 +444,11 @@ struct LocationMapView: View {
         } else {
             return .blue
         }
+    }
+
+    private var playbackMapSpan: MKCoordinateSpan {
+        // Fixed zoom used while animating through points
+        MKCoordinateSpan(latitudeDelta: 0.013, longitudeDelta: 0.013)
     }
 
     private func regionThatFits(_ locations: [Location], padding: Double = 0.2) -> MKCoordinateRegion? {

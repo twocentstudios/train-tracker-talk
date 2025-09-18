@@ -21,16 +21,11 @@ Chris Trott
 
 ---
 
-# Work History
-
-- Timehop (SNS History)
-- Cookpad (Cooking)
-- twocentstudios (Indie)
+![fit](images/app-icons.png)
 
 ^ I worked at a startup called Timehop in New York City.
 ^ I worked at Cookpad for 6 years.
 ^ Since then, I've been working on my own apps in the App Store.
-^ TODO: app icons
 ^ ニューヨークで Timehop という SNS スタートアップで働きました。
 ^ クックパッドで6年間働きました。
 ^ それ以来、個人でいろいろなアプリを作って、App Store で販売しています。
@@ -88,8 +83,8 @@ Chris Trott
 
 ^ We need two types of data for the train tracking algorithm:
 ^ static railway data and Live GPS data from the iPhone user
-^ 列車ルート追跡アルゴリズムには、2種類のデータが必要です。
-^ 鉄道路線の静的データと、iPhone からのリアルタイム GPS データです。
+^ アルゴリズムには、2種類のデータが必要です。
+^ 路線の静的データと、リアルタイム GPS データです。
 
 ---
 
@@ -132,13 +127,6 @@ Chris Trott
 
 ---
 
-![](images/all-railways-zoom.png)
-
-^ And a closer look.
-^ 少しズームイン。
-
----
-
 # GPS data
 
 ![right](images/gps-database-tables.png)
@@ -164,31 +152,38 @@ Chris Trott
 
 ---
 
-# Session
+# *Session*
 
-![original, fit](images/session.png)
+![original, left](images/session.png)
+![original, right](images/session-zoom.png)
 
 ^ A Session is an ordered list of Locations.
 ^ A Session represents a possible journey.
 ^ The green color is for fast and red is for stopped.
-^ TODO: zoomed in pic on the right of the session with individual points visible
 ^ `Session`は`Location`の時系列リストです。
 ^ `Session`は可能なルートを表します。
-^ 緑は走行中、赤は停止中、という意味です。
 
 ---
 
-![original, fit](images/session-viewer-only.png)
+![original, fit](images/session-viewer-intro-1.png)
 
 ^ I created a macOS app to visualize the raw data.
+^ 生データの可視化のために、macOS アプリを作りました。
+
+---
+
+![original, fit](images/session-viewer-intro-2.png)
+
 ^ In the left sidebar there is a list of Sessions.
-^ In the top panel there is map.
+^ 左側のサイドバーには、Session のリストがあります。
+
+---
+
+![original, fit](images/session-viewer-intro-3.png)
+
 ^ In the bottom panel there is a list of ordered Locations for a Session.
 ^ Clicking on a Location shows its position and course on the map.
-^ 生データの可視化のために、macOS アプリを作りました。
-^ 左側のサイドバーには、Session のリストがあります。
 ^ 下側のパネルには、選択した Session の Location の時系列リストがあります。
-^ Locationを選択すると、地図に位置と進行方位を表示します。
 
 ---
 
@@ -350,14 +345,13 @@ Problem: Toyoko Line and Meguro Line run parallel
 
 ---
 
-We need history
+We need **history**
 
-![original](images/railway-example-02-03.png)
+![original, fill](images/railway-example-02-05.png)
 
 ^ The algorithm needs to use all Locations from the journey.
 ^ The example journey follows the Toyoko Line for longer than the Meguro Line.
 ^ We can see this at the top.
-^ TODO: update graphic for trip from nakameguro
 ^ アルゴリズムは、ルートの `Location` をすべて使って推定します。
 ^ この例では、目黒線よりも東横線に沿っている区間のほうが長いです。
 ^ 上の部分を見てください。
@@ -413,7 +407,7 @@ However...
 ^ This Location was captured on the Keihin-Tohoku Line which runs the east corridor of Tokyo.
 ^ 6E8C-785-41BB
 ^ 3つ目の`Location`に注目しましょう。
-^ この`Location`は、東京の東側の幹線である京浜東北線の車内で記録しました。
+^ 東京の東側の幹線である京浜東北線の車内で記録しました。
 
 ---
 
@@ -456,7 +450,7 @@ However...
 ![original, 300%](images/railway-example-03-05.png)
 
 ^ Using this algorithm, the Keihin-Tohoku score is now slightly larger than the Tokaido score.
-^ このアルゴリズムでは、京浜東北線のスコアのほうが東海道線よりわずかに高いです。
+^ 京浜東北線のスコアがわずかに高いです。
 
 ---
 
@@ -497,7 +491,7 @@ However...
 ![fit](images/railway-example-03-trip-02-01.png)
 
 ^ For an example trip 2 that starts at Tokyo...
-^ ケース2、同じく東京駅スタートです。
+^ ケース2、
 
 ---
 
@@ -522,7 +516,7 @@ However...
 ^ The Keihin-Tohoku score receives many penalties.
 ^ The algorithm determines the trip was on the Tokaido Line.
 ^ 京浜東北線側はペナルティが重なります。
-^ アルゴリズムは「東海道線」と判断します。
+^ 「東海道線」と判断します。
 
 ---
 
@@ -595,7 +589,7 @@ Every Railway has **2 directions**
 # Direction Algorithm V1
 
 - Mark timestamp for 2 stations
-- Compare order of first and second station
+- Compare order of 1st and 2nd station
 
 ^ Once we have visited two stations, we can compare the temporal order the station visits.
 ^ If the visit order matches the order of the stations in the database, the iPhone is heading in the "ascending" direction.
@@ -607,7 +601,7 @@ Every Railway has **2 directions**
 ![](images/railway-example-04-03.png)
 
 ^ The iPhone visited Kikuna and then Okurayama.
-^ 菊名に停車し、そのあと大倉山に停車しました。
+^ 菊名に停車して、そのあと大倉山に停車しました。
 
 ---
 
@@ -635,7 +629,7 @@ However...
 We must visit 2 stations in order to get a prediction...
 
 ^ It could take 5 minutes to determine the train direction.
-^ 進行方向の判定には、場合によっては5分ほどかかります。
+^ 判定には、場合によっては5分ほどかかります。
 
 ---
 
@@ -656,7 +650,7 @@ Use `Location.course`!
 ![original](images/location-annotated.png)
 
 ^ Remember that course is included with some CLLocations by Core Location
-^ Core Location からの`CLLocation`には、場合によって進行方位が含まれます。
+^ Core Location は、iPhone の進行方位を度数で返してくれます。
 
 ---
 
@@ -665,7 +659,6 @@ Use `Location.course`!
 ^ Core Location provides an estimate of the iPhone's course in degrees.
 ^ 0 degrees means North
 ^ 180 degrees means South
-^ Core Location は、iPhone の進行方位を度数で返してくれます。
 ^ 0度が北、180度が南です。
 
 ---
@@ -673,11 +666,13 @@ Use `Location.course`!
 ![fit](images/no-compass.png)
 
 ^ Note that this is *not* the iPhone's orientation using the compass.
-^ コンパスのヘディングじゃないです。進行方位です。
+^ ご注意、コンパスのヘディングじゃないです。
 
 ---
 
-![fit](images/railway-example-04-course.png)
+# 359.6°
+
+![original](images/railway-example-04-course.png)
 
 ^ The course for the example Location is 359.6 degrees.
 ^ It's almost directly North.
@@ -734,7 +729,7 @@ Use `Location.course`!
 (3) Calculate dot product between location course vector and closest stations vector
 
 ^ Next, we calculate the dot product between the Location's course vector and the stations vector.
-^ 次に、2駅間ベクトルと、`Location`の進行方位ベクトルの内積を取ります。
+^ 次に、内積を取ります。
 
 ---
 
@@ -805,7 +800,7 @@ Use `Location.course`!
 
 ![fit](images/kikuna-info-display.jpg)
 
-^ The next station is shown on the train information display (案内表示器)
+^ The next station is shown on the train information display
 ^ 車内の案内表示器には、次の駅が案内されますよね。
 
 ---
@@ -828,7 +823,7 @@ Use `Location.course`!
 - ~~**Soon**: Kawasaki~~
 - **Now**: Kawasaki
 
-^ ただいまというフェーズを順に切り替わります。
+^ ただいま
 
 ---
 
@@ -836,6 +831,8 @@ Use `Location.course`!
 - ~~**Soon**: Kawasaki~~
 - ~~**Now**: Kawasaki~~
 - **Next**: Kamata
+
+^ というフェーズを順に切り替わります。
 
 ---
 
@@ -907,21 +904,17 @@ However...
 
 ---
 
-GPS data is **unreliable**
+## *GPS data is unreliable*
+
+![original](images/kawasaki-station-gps-accuracy.png)
 
 ^ GPS data is unreliable.
 ^ Especially within big stations.
 ^ Especially when not moving.
+^ Here is an example location stopped inside Kawasaki station that has an abysmal 1km accuracy 
 ^ GPSだけだと不安定です。
 ^ とくに大きな駅の構内では。
 ^ とくに動いていないときは。
-
----
-
-![](images/kawasaki-station-gps-accuracy.png)
-
-^ Here is an example location stopped inside Kawasaki station that has an abysmal 1km accuracy 
-^ 例えば、これは川崎駅構内で `Location` です。
 ^ 精度が約1キロメートルと悪い例です。
 
 ---
@@ -945,14 +938,14 @@ struct StationDirectionalLocationHistory {
 ```
 
 ^ For each station, let's categorize each Location according to its distance and direction.
-^ 各駅ごとに、`Location`を駅からの距離と進行方向で分類しましょう。
+^ 各駅ごとに、 `Location` を駅からの距離と進行方向で分類しましょう。
 
 ---
 
 ![](images/kawasaki-station-gps-points.png)
 
 ^ In this example, "approaching" points are orange, "visiting" points are green, and the departure point is "red".
-^ イメージでは、"approaching"の`Location`はオレンジ、"visiting"のは緑、"departure"のは赤です。
+^ イメージでは、approaching、visiting、departure の `Location` です。
 
 ---
 
@@ -999,55 +992,64 @@ struct StationDirectionalLocationHistory {
 `!isEmpty`|`any`|`!nil`|visited
 
 ^ In step 2, we use the station history to calculate the phase for each station.
-^ ステップ2では、駅の履歴を使って、駅のフェーズを判定します。
+^ ステップ2では、駅の履歴を使って、駅フェーズを判定します。
 
----
+<!---
 
-![](images/railway-example-05-phase-departure.png)
+## *Departure*
+
+![original](images/railway-example-05-phase-departure.png)
 
 ^ This is a departure phase for Minami-Senju station.
 ^ The StationDirectionalLocationHistory has only a firstDepartureLocation.
 ^ これは、南千住駅での"departure"というフェーズです。
 ^ `StationDirectionalLocationHistory`は`firstDepartureLocation`だけを持ちます。
 
+--->
 ---
 
-![](images/railway-example-05-phase-approaching.png)
+## *Approaching*
+
+![original](images/railway-example-05-phase-approaching.png)
 
 ^ This is an approaching phase for Kita-Senju station.
-^ これは、北千住駅での"approaching"というフェーズです。
+^ これは、北千住駅での"approaching"の駅フェーズです。
 
 ---
 
-![](images/railway-example-05-phase-visiting.png)
+## *Visiting*
+
+![original](images/railway-example-05-phase-visiting.png)
 
 ^ This is a visiting phase.
-^ これは、"visiting"というフェーズです。
+^ これは、"visiting"の駅フェーズです。
 
 ---
 
-![](images/railway-example-05-phase-visited.png)
+## *Visited*
+
+![original](images/railway-example-05-phase-visited.png)
 
 ^ This is a visited phase.
 ^ You can see the firstDepartureLocation in red.
-^ これは、"visited"というフェーズです。
+^ これは、"visited"の駅フェーズです。
 ^ 赤い丸は`firstDepartureLocation`です。
 
 ---
 
-# Step 3: select most relevant station phase
+# Step 3: determine focus phase
 
 - Find last station `S` in travel direction where `phase != nil`
 
-Station Phase|Result
+Latest Station Phase|Focus Phase
 -|-
-departure|Next: `S`+1
-approaching|Approaching: `S`
-visiting|Visiting: `S`
-visited|Next: `S`+1
+departure|`Next`: `S`+1
+approaching|`Soon`: `S`
+visiting|`Now`: `S`
+visited|`Next`: `S`+1
 
 ^ In step 3, we look through the phase history for all stations to determine the "focus" phase.
-^ ステップ3では、駅フェーズの履歴に探して、"Focus"というフェーズを判定します。
+^ ステップ3では、駅フェーズの履歴に探して、"Focus"フェーズを判定します。
 
 ---
 
@@ -1056,19 +1058,20 @@ visited|Next: `S`+1
 ^ In an example, when the latest phase for Kawasaki is "Visited", then the focus phase is "Next: Kamata"
 ^ 例えば、川崎駅の最新のフェーズは"Visited"なら、"Focus"フェーズは"次：カマタ"。
 
----
+<!---
 
 ![fit](images/railway-example-05-soon-motosumiyoshi.png)
 
 ^ In another example, when the latest phase for Musashi-Kosugi is "Visited" and Motosumiyoshi is "Approaching", then the focus phase is "Soon: Motosumiyoshi"
 ^ 例えば、武蔵小杉駅の最新のフェーズは"Visited"、元住吉駅は"Approaching"なら、"Focus"フェーズは"まもなく：元住吉"。
 
+--->
 --- 
 
 ![](images/phase-state-machine.png)
 
 ^ Using a state machine gives us more stable results
-^ ステートマシンを使うと、結果がより安定します。
+^ State machineを使うと、結果がより安定します。
 
 ---
 
@@ -1137,6 +1140,7 @@ Else => `passed`
 
 # Demo
 
+^ TODO: Record demo video backup
 ^ 最後に、開発した macOS アプリをデモします。
 ^ 京浜東北線で、関内から川崎までの乗車を見ています。
 ^ アルゴリズムがすべての `Location` を処理するのに、少し時間はかかりますが、
@@ -1145,23 +1149,24 @@ Else => `passed`
 ^ 京浜東北線のスコアが最も高くなっています。
 ^ 進行方向は大宮方面、北行きです。
 ^ 各駅の最新フェーズも見られます。
-^ 駅のフェーズをクリックすると、フェーズ履歴が見られます。
+^ 駅のフェーズをクリックすると、駅フェーズ履歴が見られます。
 ^ 駅を選ぶと、地図に分類された `Location` が出ます。
-^ 最後の `Location` を選ぶと、全体のフェーズ履歴が見られます。
+^ 最後の `Location` を選ぶと、全体の駅フェーズ履歴が見られます。
 
 ---
 
-![right](images/train-tracker-talk-github-qr.png)
+![original](images/open-source.png)
 
 [github.com/twocentstudios/train-tracker-talk](https://github.com/twocentstudios/train-tracker-talk)
+
+[^1]: For more details on the citation guidelines of the American Psychological Association check out their [website](https://www.library.cornell.edu/research/citation/apa).
 
 ^ The apps I used to collect this data are open source on github.
 ^ データ取得のために、5つのアプリを作りました。
 ^ GitHub にオープンソースとして公開しています。
 ^ macOS アプリもアルゴリズムもあります。
-^ TODO: screenshots of all apps
 
----
+<!---
 
 # Future Research
 
@@ -1174,13 +1179,12 @@ Else => `passed`
 
 ^ The algorithm can still be improved.
 
+--->
 ---
 
-# Full version
+## Try Eki Live
 
-![right](images/eki-live-app-store-qr.png)
-
-- Eki Live on the App Store
+![original](images/eki-live-app-store.png)
 
 ^ But if you want to try it, Eki Live is on the App Store now.
 ^ The app starts up automatically in the background and shows the next station in the dynamic island.
@@ -1195,11 +1199,10 @@ Else => `passed`
 
 - Available for full-time or contract work
 - iOS generalist (not just train apps)
-- [twocentstudios.com](https://twocentstudios.com)
+- [twocentstudios.com/blog](https://twocentstudios.com/blog)
 
 ^ I'm available for full-time or contract work.
 ^ I write regularly on my blog twocentstudios.
 ^ That's all for today.
-^ ブログに記事をよく書いています。
 ^ 一緒に仕事したかったら、ぜひ連絡してください。
 ^ これでおしまいです。ありがとうございました。

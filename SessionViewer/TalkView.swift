@@ -209,7 +209,7 @@ struct Talk02View: View {
                 try! await userDatabase.read { db in
                     try Location
                         .where {
-                            $0.sessionID.eq(Session.ID(uuidString: "f152c05e-45c3-4f6b-94b9-0eb9db398c1b")!)
+                            $0.sessionID.eq(Session.ID(uuidString: "4bdda56f-04bc-4f61-b7f3-9cde8fcdeb96")!)
                         }
                         .order(by: \.timestamp)
                         .fetchAll(db)

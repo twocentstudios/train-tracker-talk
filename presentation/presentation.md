@@ -217,14 +217,14 @@ Chris Trott
 ![](images/system-flow-chart-02.png)
 
 ^ The algorithm reads the Location and gathers information from its memory
-^ アルゴリズムは `Location` を取り込み、メモリから情報を引き出して組み合わせます。
+^ ~~アルゴリズムは `Location` を取り込み、メモリから情報を引き出して組み合わせます。~~
 
 ---
 
 ![](images/system-flow-chart-03.png)
 
 ^ The algorithm updates its understanding of the device's location in the world.
-^ アルゴリズムは、iPhoneの現在地の推定を更新していきます。
+^ ~~アルゴリズムは、iPhoneの現在地の推定を更新していきます。~~
 
 ---
 
@@ -249,7 +249,7 @@ Chris Trott
 ^ I captured this Location while riding the Toyoko Line close to Tsunashima Station.
 ^ 38D9-449-63A0
 ^ まず、`Location`を一点だけ注目しましょう。
-^ 東急東横線に乗っていて、綱島駅の近くでこの`Location`を記録しました。
+^ 東横線に乗っていて、綱島駅の近くでこの`Location`を記録しました。
 
 ---
 
@@ -299,7 +299,7 @@ Tokyu Meguro|2266.07
 ^ The closest RailwayCoordinate is the Toyoko Line is only about 12 meters away.
 ^ The next closest RailwayCoordinate is the Shin-Yokohama Line about 177 meters away.
 ^ 一番近いのは、東横線の座標で、約12メートルです。
-^ 次に近いのは、新横浜線の座標で、約177メートルです。
+^ ~~次に近いのは、新横浜線の座標で、約177メートルです。~~
 
 ---
 
@@ -354,7 +354,6 @@ We need **history**
 ^ We can see this at the top.
 ^ アルゴリズムは、ルートの `Location` をすべて使って推定します。
 ^ この例では、目黒線よりも東横線に沿っている区間のほうが長いです。
-^ 上の部分を見てください。
 
 ---
 
@@ -915,7 +914,7 @@ However...
 ^ GPSだけだと不安定です。
 ^ とくに大きな駅の構内では。
 ^ とくに動いていないときは。
-^ 精度が約1キロメートルと悪い例です。
+^ ~~精度が約1キロメートルと悪い例です。~~
 
 ---
 

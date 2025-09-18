@@ -1,3 +1,8 @@
+
+![autoplay, loop](images/kannai-akihabara-journey.mp4)
+
+---
+
 # Let's Write a Train Tracking Algorithm
 
 Chris Trott

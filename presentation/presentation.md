@@ -430,6 +430,8 @@ However...
 
 ---
 
+# *Equal?! 🤔* 
+
 ![original, 300%](images/railway-example-03-03.png)
 
 ^ If we only compare railway coordinate proximity scores, the scores will be the same.
@@ -890,7 +892,7 @@ else|"Next: `S+1`"
 ^ Even though the Location is within 500m from the closest station, the station is not in the travel direction.
 ^ Therefore, the phase will be "next" for the next station in the travel direction.
 ^ A Location not in the travel direction will be "next" for the next station.
-^ これも「次」のイメージですが、最寄り駅が進行方向側にないので、フェーズ駅は最寄り駅じゃないです。
+^ これも「次」のイメージですが、最寄り駅が進行方向側にないので、表示される駅は最寄り駅じゃなくて、カマタ駅です。
 
 ---
 
@@ -1043,7 +1045,8 @@ struct StationDirectionalLocationHistory {
 
 # Step 3: determine focus phase
 
-- Find last station `S` in travel direction where `phase != nil`
+- Find last station `S` in travel direction where 
+  `phase != nil`
 
 Latest Station Phase|Focus Phase
 -|-
@@ -1144,18 +1147,35 @@ Else => `passed`
 
 # Demo
 
-^ TODO: Record demo video backup
 ^ 最後に、開発した macOS アプリをデモします。
+
+---
+
+![](images/train-tracker-talk-demo-p1.mp4)
+
 ^ 京浜東北線で、関内から川崎までの乗車を見ています。
-^ アルゴリズムがすべての `Location` を処理するのに、少し時間はかかりますが、
+^ ~~start~~
+^ アルゴリズムがすべての `Location` を処理するのに、
+^ 少し時間はかかりますが、
 ^ 再生は10倍速で始められます。
 ^ "Inspector" では、アルゴリズムの結果が見られます。
 ^ 京浜東北線のスコアが最も高くなっています。
 ^ 進行方向は大宮方面、北行きです。
 ^ 各駅の最新フェーズも見られます。
-^ 駅のフェーズをクリックすると、駅フェーズ履歴が見られます。
-^ 駅を選ぶと、地図に分類された `Location` が出ます。
+
+---
+
+![](images/train-tracker-talk-demo-p2.mp4)
+
 ^ 最後の `Location` を選ぶと、全体の駅フェーズ履歴が見られます。
+^ ~~start~~
+^ 駅のフェーズをクリックする と、駅フェーズ履歴が見られます。
+
+---
+
+![autoplay](images/train-tracker-talk-demo-p3.mp4)
+
+^ 駅を選ぶと、地図に分類された `Location` が出ます。
 
 ---
 
@@ -1186,7 +1206,7 @@ Else => `passed`
 --->
 ---
 
-## Try Eki Live
+## Try Eki Live!
 
 ![original](images/eki-live-app-store.png)
 
@@ -1197,7 +1217,7 @@ Else => `passed`
 
 ---
 
-# Hire Me
+# ✨Hire Me✨
 
 ![right](images/twocentstudios-qr.png)
 

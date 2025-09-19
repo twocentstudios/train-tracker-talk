@@ -9,7 +9,7 @@ Chris Trott
 *iOSDC 2025/09/20*
 
 ^ Hi everyone. Welcome to my talk.
-^ みなさん、こんにちは。ようこそ。
+^ みなさん、こんにちは。Track D、ようこそ。
 
 ---
 
@@ -180,7 +180,7 @@ Chris Trott
 ![original, fit](images/session-viewer-intro-2.png)
 
 ^ In the left sidebar there is a list of Sessions.
-^ 左側のサイドバーには、Session のリストがあります。
+^ サイドバーには、Session のリストがあります。
 
 ---
 
@@ -651,7 +651,7 @@ Use `Location.course`!
 
 ---
 
-![original](images/location-annotated.png)
+![original](images/location-annotated-course.png)
 
 ^ Remember that course is included with some CLLocations by Core Location
 ^ Core Location は、iPhone の進行方位を度数で返してくれます。
@@ -670,7 +670,7 @@ Use `Location.course`!
 ![fit](images/no-compass.png)
 
 ^ Note that this is *not* the iPhone's orientation using the compass.
-^ ご注意、コンパスのヘディングじゃないです。
+^ 注意点ですが、コンパスの方位は使っていません。
 
 ---
 
@@ -1012,7 +1012,7 @@ struct StationDirectionalLocationHistory {
 --->
 ---
 
-## *Approaching*
+## *approaching*
 
 ![original](images/railway-example-05-phase-approaching.png)
 
@@ -1021,7 +1021,7 @@ struct StationDirectionalLocationHistory {
 
 ---
 
-## *Visiting*
+## *visiting*
 
 ![original](images/railway-example-05-phase-visiting.png)
 
@@ -1030,7 +1030,7 @@ struct StationDirectionalLocationHistory {
 
 ---
 
-## *Visited*
+## *visited*
 
 ![original](images/railway-example-05-phase-visited.png)
 
@@ -1204,9 +1204,11 @@ Else => `passed`
 - Available for full-time or contract work
 - iOS generalist (not just train apps)
 - [twocentstudios.com/blog](https://twocentstudios.com/blog)
+- [@twocentstudios](https://twitter.com/twocentstudios)
 
 ^ I'm available for full-time or contract work.
 ^ I write regularly on my blog twocentstudios.
 ^ That's all for today.
-^ 一緒に仕事したかったら、ぜひ連絡してください。
+^ 仕事を探していますので、
+^ 一緒に仕事したい方は、ぜひ連絡してください。
 ^ これでおしまいです。ありがとうございました。

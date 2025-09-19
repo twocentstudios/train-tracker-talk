@@ -46,7 +46,6 @@ build/exports/
 *.temp
 
 ## Other
-progress/
 docs/
 data/railway.sqlite
 /collected/private

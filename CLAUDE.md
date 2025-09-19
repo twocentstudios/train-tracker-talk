@@ -4,9 +4,11 @@ This is a repo for the Train Tracker conference talk for iOSDC. The repo showcas
 
 ## Targets
 
-- `SignificantChange` - collects data to understand CoreLocation significant location change API.
-- `SignificantStartLocation` - uses CoreLocation significant location change data to trigger collection of additional location data in the background.
+- `SignificantChange` - collects data to understand Core Location significant location change API.
+- `SignificantStartLocation` - uses Core Location significant location change data to trigger collection of additional location data in the background.
 - `MotionActivity` - views both live and historical Motion Activity entries using Core Motion to understand the device motion lifecycle as related to riding trains.
+- `StartEndLocation` - automatically logs train journeys in the background.
+- `SessionViewer` - view the data collected by `StartEndLocation` and process it with a tracking algorithm.
 
 ## Workflow
 
@@ -22,8 +24,6 @@ This is a repo for the Train Tracker conference talk for iOSDC. The repo showcas
 - Use the latest iOS 18 compatible SwiftUI APIs and techniques. Do research when necessary.
 
 ## Package Documentation
-
-- [Sharing-GRDB & Swift Structured Queries guide](/docs/agents-sharing-grdb-structured-queries.md) - always read this before implementing anything related to databases.
 
 ### Sharing-GRDB Documentation
 - [SharingGRDB](./DerivedData/train-tracker-talk/SourcePackages/checkouts/sharing-grdb/Sources/SharingGRDB/Documentation.docc)

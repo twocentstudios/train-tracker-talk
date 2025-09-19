@@ -1,10 +1,11 @@
 ## Project Overview
 
-This macOS target provides a desktop viewer for examining database files created by the StartEndLocation iOS app. The app allows users to select and view train tracking session data, locations, and motion activities stored in the GRDB database files.
+This macOS target provides a desktop viewer for examining database files created by the StartEndLocation iOS app. The app allows users to select and view train tracking session data, locations, and motion activities stored in the SQLite database files.
 
 ## Files used
 
 - `data/railway.sqlite` - static database of railway info like Railway, Station, Coordinate, etc.
+- `data/RailwayDatabase.swift` - utilities for opening `railway.sqlite`.
 - `StartEndLocation/*` - opens databases created by `StartEndLocation` app and therefore uses its database schema.
 
 ## CLI Commands

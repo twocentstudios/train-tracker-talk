@@ -13,7 +13,7 @@ This is a repo containing materials for [my](https://twocentstudios.com) present
 
 My presentation has very little code. Each part of the algorithm is explained at a high level with maps and diagrams. If you're interested in seeing this looks in Swift, the code in this repo shows that it's not smoke and mirrors (although the code is not production-ready).
 
-If you're working on an app that's using Core Location's [significant location change](https://developer.apple.com/documentation/corelocation/cllocationmanager/1423523-startmonitoringsignificantlocatio) APIs or Core Motion's [motion activity](https://developer.apple.com/documentation/coremotion/cmmotionactivitymanager) APIs, these apps can serve as off-the-shelf data collection tools or reference implementations to help you get started or to visualize the shape of data that is available.
+If you're working on an app that's using Core Location's [significant location change](https://developer.apple.com/documentation/corelocation/cllocationmanager/startmonitoringsignificantlocationchanges()) APIs or Core Motion's [motion activity](https://developer.apple.com/documentation/coremotion/cmmotionactivitymanager) APIs, these apps can serve as off-the-shelf data collection tools or reference implementations to help you get started or to visualize the shape of data that is available.
 
 ## Getting started
 

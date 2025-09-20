@@ -8,7 +8,7 @@ Slides|Video (EN)|Video (JP)
 -|-|-
 [Speaker Deck](https://speakerdeck.com/twocentstudios/lets-write-a-train-tracking-algorithm)|(coming soon)|(coming soon)
 
-- The `presentation` folder contains the presentation materials, with the raw markdown file for [Deckset](https://www.deckset.com/) and all images.
+- The `presentation` folder contains the presentation materials, with the raw markdown file for [Deckset](https://www.deckset.com/) and all images. I've excluded the videos from the repo, but the images are still quite large (sorry).
 - `train-tracker-talk.xcodeproj` is the Xcode Project containing targets for 5 iOS apps used to collect data and 1 macOS app and algorithm used to display and process the data.
 
 ## Why does this repo exist?

@@ -4,16 +4,14 @@
 
 This is a repo containing materials for [my](https://twocentstudios.com) presentation for [iOSDC 2025](https://fortee.jp/iosdc-japan-2025/proposal/a5e991ef-fec8-420b-8da8-de1f38c58182) in Tokyo, Japan.
 
-Slides|Video (EN)|Video (JP)
--|-|-
-[Speaker Deck](https://speakerdeck.com/twocentstudios/lets-write-a-train-tracking-algorithm)|(coming soon)|(coming soon)
+[Presentation contents & video](https://twocentstudios.com/2025/09/22/lets-write-a-train-tracking-algorithm/)
 
 - The `presentation` folder contains the presentation materials, with the raw markdown file for [Deckset](https://www.deckset.com/) and all images. I've excluded the videos from the repo, but the images are still quite large (sorry).
 - `train-tracker-talk.xcodeproj` is the Xcode Project containing targets for 5 iOS apps used to collect data and 1 macOS app and algorithm used to display and process the data.
 
 ## Why does this repo exist?
 
-My presentation has very little code. Each part of the algorithm is explained at a high level with maps and diagrams. If you're interested in seeing this looks in Swift, the code in this repo shows that it's not smoke and mirrors (although the code is not production-ready).
+My presentation has very little code. Each part of the algorithm is explained at a high level with maps and diagrams. If you're interested in seeing how this looks in Swift, the code in this repo shows that it's not smoke and mirrors (although the code is not production-ready).
 
 If you're working on an app that's using Core Location's [significant location change](https://developer.apple.com/documentation/corelocation/cllocationmanager/startmonitoringsignificantlocationchanges()) APIs or Core Motion's [motion activity](https://developer.apple.com/documentation/coremotion/cmmotionactivitymanager) APIs, these apps can serve as off-the-shelf data collection tools or reference implementations to help you get started or to visualize the shape of data that is available.
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -29,7 +29,6 @@
 		3ECCFB828971F3FF6D0AAE23 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A4B00357F402F88EA6A4D /* Session.swift */; };
 		3F5E9F2380B2CB12934E625B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4057DB167E12A06C3BFE00D4 /* Preview Assets.xcassets */; };
 		402FBF98A15C4C7B2CBEAAED /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A2E7A8554B937A77675F /* Session.swift */; };
-		40DC02E111557E5090FB9B57 /* railway.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 28B3907FCF345029F8021400 /* railway.sqlite */; };
 		4155086E41B9FA8C47FF5831 /* MotionActivityFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F5422266AA1794A50424F9 /* MotionActivityFormatters.swift */; };
 		4303FDD0DE57ED0A6C46442A /* RailwayTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1113A5C5D57396BBCD00E465 /* RailwayTracker.swift */; };
 		43685311A4EC64051EF0B5E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0472EC67F9ACD187FE037CC1 /* AppDelegate.swift */; };
@@ -38,6 +37,7 @@
 		4B78F4BEB098A523D5E9F6A4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E13B17C8C3FED78E865937A /* RootView.swift */; };
 		5054E20E33A88546D41C82CD /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA0F7F3304FEDC073F6D5B8 /* Location.swift */; };
 		54BF39CEB1B04F2BB6EB4C8F /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = DD0E48B0332783F82F0CB992 /* SharingGRDB */; };
+		57BB5C2D69CC2AA1863F469E /* railway-template.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = C8A3FC9BB53553473BDCF13B /* railway-template.sqlite */; };
 		5C2B830B1FA9B051520E4D1C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41091A4E98BE7AB371DFE5BA /* Assets.xcassets */; };
 		5D944246B50B7DB0A38BE890 /* GroundTruthLoggerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBB3DDDC52E6AB06A04C854 /* GroundTruthLoggerApp.swift */; };
 		6219471F49867A780C3B7B9E /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D53BD5A16BF0E9944384945 /* RootStore.swift */; };
@@ -169,6 +169,7 @@
 		BD6C9EA8F14181CFC46B7FB9 /* GroundTruthLogger.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GroundTruthLogger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDF8463872AEE31643326F14 /* ExportDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDatabaseView.swift; sourceTree = "<group>"; };
 		C4265C695B3D3FCAF7294813 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		C8A3FC9BB53553473BDCF13B /* railway-template.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "railway-template.sqlite"; sourceTree = "<group>"; };
 		D1BF42960E46892C2915F62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D25FD24C7AEA4738005B9025 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		D2952707513CA49ECF8D7804 /* MillisecondDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MillisecondDatePicker.swift; sourceTree = "<group>"; };
@@ -398,6 +399,7 @@
 		825CEC5DC8A6338879BF1A35 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				C8A3FC9BB53553473BDCF13B /* railway-template.sqlite */,
 				28B3907FCF345029F8021400 /* railway.sqlite */,
 				08181188D7F801DF8D611489 /* RailwayDatabase.swift */,
 			);
@@ -599,7 +601,6 @@
 				C46381C78FF4F43BAADBE003 /* XCRemoteSwiftPackageReference "sharing-grdb" */,
 				F9100BBF1D0B402CDE39B7B3 /* XCRemoteSwiftPackageReference "swift-tagged" */,
 			);
-			preferredProjectObjectVersion = 54;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -654,7 +655,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDA68B63A63E3C70B59F7080 /* Media.xcassets in Resources */,
-				40DC02E111557E5090FB9B57 /* railway.sqlite in Resources */,
+				57BB5C2D69CC2AA1863F469E /* railway-template.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

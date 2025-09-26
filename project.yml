@@ -168,7 +168,7 @@ targets:
       - StartEndLocation/Session.swift
       - StartEndLocation/Location.swift
       - data/RailwayDatabase.swift
-      - path: data/railway.sqlite
+      - path: data/railway-template.sqlite
         buildPhase: resources
     dependencies:
       - package: SharingGRDB

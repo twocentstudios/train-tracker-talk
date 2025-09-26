@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import IssueReporting
 import OSLog
 
 /*
@@ -35,7 +36,9 @@ func openRailwayDatabase() throws -> any DatabaseReader {
         }
     #endif
 
-    guard let databaseURL = Bundle.main.url(forResource: "railway", withExtension: "sqlite") else {
+    reportIssue("NOTE TO DEVELOPER: real railway data is not included in this repo due to licensing issues. `railway-template.sqlite` is included so the project will run. But the algorithm will not return results.")
+
+    guard let databaseURL = Bundle.main.url(forResource: "railway-template", withExtension: "sqlite") else {
         throw DatabaseNotFoundError()
     }
 
@@ -47,6 +50,6 @@ func openRailwayDatabase() throws -> any DatabaseReader {
 
 struct DatabaseNotFoundError: Error {
     var localizedDescription: String {
-        "Railway database file (railway.sqlite) not found in app bundle."
+        "Railway database file (railway-template.sqlite) not found in app bundle."
     }
 }

@@ -18,7 +18,7 @@ fileGroups:
   - StartEndLocation/CLAUDE.md
   - GroundTruthLogger/CLAUDE.md
   - SessionViewer/CLAUDE.md
-  - data/railway.sqlite
+  - data/railway-template.sqlite
 
 packages:
   SharingGRDB:

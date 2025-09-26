@@ -17,6 +17,10 @@ If you're working on an app that's using Core Location's [significant location c
 
 ## Getting started
 
+- Open `train-tracker-talk.xcodeproj`.
+
+## About the project
+
 - Regenerate the project using [XcodeGen](https://github.com/yonaskolb/XcodeGen) and `project.yml`.
 - Format the code with [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) and `.swiftformat`.
 - Apps require iOS 18+, macOS 15+, Xcode 16.4+.
@@ -26,7 +30,9 @@ If you're working on an app that's using Core Location's [significant location c
 
 The Tokyo-area static railway data used by *SessionViewer* and the tracking algorithm is *not* open source and not included in this repo. It is available through the [Public Transportation Open Data Center](https://www.odpt.org/).
 
-Journey data for use with the tracking algorithm can be recorded with the `StartEndLocation` app (see below) by installing the app and riding a train.
+Journey data for use with the tracking algorithm (via `SessionViewer`) can be recorded with the `StartEndLocation` app (see below) by installing the app and riding a train. However, without railway data, the algorithm will not return any results. `SessionViewer` and the algorithm should be considered read-only code (sorry).
+
+However, `railway-template.sqlite` is included so that `SessionViewer` still builds and runs.
 
 # Projects
 
@@ -35,6 +41,8 @@ The apps included in this repo were created for educational, algorithm developme
 ## SessionViewer - macOS app
 
 ![](progress/05_00.png)
+
+**Note: no static railway data is included in this repository, therefore this app is runnable, but will not produce tracking results in the inspector.**
 
 *SessionViewer* loads an SQLite file containing `Session`s and `Location`s produced by the iOS app *StartEndLocation* [04].
 
